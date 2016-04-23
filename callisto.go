@@ -34,6 +34,7 @@ import (
 
   "github.com/go-gl/gl/v4.1-core/gl"
   "github.com/go-gl/glfw/v3.1/glfw"
+  "github.com/go-gl/mathgl/mgl32"
 )
 
 func init() {
@@ -55,11 +56,16 @@ func main() {
   var (
     err     error
     window  *glfw.Window
-    buffer  uint32
+    vao     uint32
+    vbo_sphere_vertices  uint32
+    vbo_sphere_indices   uint32
+    angle   float32
+    time    float64
+    elapsed float64
   )
 
   // Create window
-  if err := glfw.Init(); err != nil {
+  if err = glfw.Init(); err != nil {
       log.Fatalln("Failed to initialize glfw:", err)
   }
   defer glfw.Terminate()
@@ -80,10 +86,109 @@ func main() {
 
   // Initialize OpenGL
   gl.Init()
-  gl.GenBuffers(1, &buffer)
 
+  // Configure the shaders program
+  program, err := newProgram(vertexShader, fragmentShader)
+  if err != nil {
+    panic(err)
+  }
+
+  gl.UseProgram(program)
+
+  // Create the view projection
+  projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.1, 10.0)
+  projectionUniform := gl.GetUniformLocation(program, gl.Str("projectionUniform\x00"))
+
+  // Create the normal matrix
+  normal := mgl32.Mat4Normal(projection)
+  normalUniform := gl.GetUniformLocation(program, gl.Str("normalUniform\x00"))
+
+  // Create the camera
+  camera := mgl32.LookAtV(mgl32.Vec3{3, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
+  cameraUniform := gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
+
+  // Create the model (used for rotation)
+  model := mgl32.Ident4()
+  modelUniform := gl.GetUniformLocation(program, gl.Str("modelUniform\x00"))
+
+  // Create lighting
+  lighting := mgl32.Vec4{2, 2, -2, 1}
+  lightingUniform := gl.GetUniformLocation(program, gl.Str("lightingUniform\x00"))
+
+  // Color storage
+  gl.BindFragDataLocation(program, 0, gl.Str("objectColor\x00"))
+
+  // Generate the sphere
+  var sphere_vertices, sphere_indices = generateSphere(128, 64)
+
+  // Create the VAO (Vertex Array Objects)
+  // Notice: this stores links between attributes and active vertex data
+  gl.GenVertexArrays(1, &vao)
+  gl.BindVertexArray(vao)
+
+  // Create the VBO (Vertex Buffer Object)
+  // Notice: this passes buffer data to the GPU (cache to GPU for I/O performance)
+  gl.GenBuffers(1, &vbo_sphere_vertices)
+  gl.BindBuffer(gl.ARRAY_BUFFER, vbo_sphere_vertices)
+  gl.BufferData(gl.ARRAY_BUFFER, len(sphere_vertices)*4, gl.Ptr(sphere_vertices), gl.STATIC_DRAW)
+  gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+
+  gl.GenBuffers(1, &vbo_sphere_indices)
+  gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_sphere_indices)
+  gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(sphere_indices)*4, gl.Ptr(sphere_indices), gl.STATIC_DRAW)
+  gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
+
+  // Bind buffer to shaders attributes
+  vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vertAttrib\x00")))
+
+  // Configure global settings
+  gl.Enable(gl.DEPTH_TEST)
+  gl.DepthFunc(gl.LESS)
+  gl.ClearColor(0.2, 0.2, 0.2, 1.0)
+
+  // Model angle
+  angle = 0.0
+  previousTime := glfw.GetTime()
+
+  // Render loop
   for !window.ShouldClose() {
-    window.SwapBuffers()
+    gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
+    // Calculate angle (relative to elapsed time)
+    time = glfw.GetTime()
+    elapsed = time - previousTime
+    previousTime = time
+    angle += float32(elapsed / 4)
+
+    // Process model
+    model = mgl32.HomogRotate3D(angle, mgl32.Vec3{0, 1, 0})
+
+    gl.UseProgram(program)
+
+    // Process matrixes
+    gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
+    gl.UniformMatrix4fv(normalUniform, 1, false, &normal[0])
+    gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
+    gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
+    gl.UniformMatrix4fv(lightingUniform, 1, false, &lighting[0])
+    gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
+
+    // Render buffers
+    gl.BindBuffer(gl.ARRAY_BUFFER, vbo_sphere_vertices)
+    gl.EnableVertexAttribArray(vertAttrib)
+    gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
+
+    gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_sphere_indices)
+
+    // Draw elements
+    gl.DrawElements(gl.TRIANGLES, int32(len(sphere_indices) * 2), gl.UNSIGNED_SHORT, gl.PtrOffset(0))
+
+    // Reset buffers
+    gl.DisableVertexAttribArray(vertAttrib)
+    gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+    gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
+
     glfw.PollEvents()
+    window.SwapBuffers()
   }
 }
