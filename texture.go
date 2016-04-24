@@ -38,11 +38,11 @@ import (
 )
 
 func newTexture(file string) (uint32, error) {
-  //filePath := fmt.Sprintf("assets/%s.jpg ", file)
+  filePath := fmt.Sprintf("assets/%s.jpg", file)
 
-  imgFile, err := os.Open(file)
+  imgFile, err := os.Open(filePath)
   if err != nil {
-    return 0, fmt.Errorf("texture %q not found on disk: %v", file, err)
+    return 0, fmt.Errorf("texture %q not found on disk: %v", filePath, err)
   }
   img, _, err := image.Decode(imgFile)
   if err != nil {

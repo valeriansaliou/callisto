@@ -116,7 +116,7 @@ func main() {
   gl.BindFragDataLocation(program, 0, gl.Str("objectColor\x00"))
 
   // Load the texture
-  texture, err := newTexture("assets/sun.jpg")
+  texture, err := newTexture("sun")
   if err != nil {
     log.Fatalln(err)
   }
@@ -153,7 +153,7 @@ func main() {
   // Configure global settings
   gl.Enable(gl.DEPTH_TEST)
   gl.DepthFunc(gl.LESS)
-  gl.ClearColor(0.05, 0.05, 0.05, 1.0)
+  gl.ClearColor(0.025, 0.025, 0.025, 1.0)
 
   // Model angle
   angle = 0.0
