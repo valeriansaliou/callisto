@@ -34,15 +34,15 @@ uniform mat4 projectionUniform;
 uniform mat4 cameraUniform;
 uniform mat4 modelUniform;
 
-in vec3 vertAttrib;
-in vec2 vertexTextureCoord;
+in vec3 vertexAttributes;
+in vec2 vertexTextureCoords;
 
 out vec3 N;
-out vec2 shaderTextureCoord;
+out vec2 shaderTextureCoords;
 
 void main() {
-  gl_Position = projectionUniform * cameraUniform * modelUniform * vec4(vertAttrib, 1);
-  shaderTextureCoord = vertexTextureCoord;
+  gl_Position = projectionUniform * cameraUniform * modelUniform * vec4(vertexAttributes, 1);
+  shaderTextureCoords = vertexTextureCoords;
 }
 ` + "\x00"
 
@@ -51,11 +51,11 @@ var fragmentShader = `
 
 uniform sampler2D textureUniform;
 
-in vec2 shaderTextureCoord;
+in vec2 shaderTextureCoords;
 
 out vec4 objectColor;
 
 void main() {
-  objectColor = texture(textureUniform, shaderTextureCoord);
+  objectColor = texture(textureUniform, shaderTextureCoords);
 }
 ` + "\x00"

@@ -37,8 +37,8 @@ import (
   "github.com/go-gl/gl/v4.1-core/gl"
 )
 
-func newTexture(file string) (uint32, error) {
-  filePath := fmt.Sprintf("assets/%s.jpg", file)
+func loadTexture(name string) (uint32, error) {
+  filePath := fmt.Sprintf("assets/%s.jpg", name)
 
   imgFile, err := os.Open(filePath)
   if err != nil {
@@ -77,13 +77,3 @@ func newTexture(file string) (uint32, error) {
 
   return texture, nil
 }
-
-// func applyTexture(texture uint32) {
-//   gl.PixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-//   gl.BindTexture(gl.TEXTURE_2D, texture);
-//   gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture);
-//   gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-//   gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-//   gl.GenerateMipmap(gl.TEXTURE_2D);
-//   gl.BindTexture(gl.TEXTURE_2D, null);
-// }

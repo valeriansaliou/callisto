@@ -28,83 +28,75 @@
 package main
 
 import (
-  "math"
+  "fmt"
+  "io/ioutil"
+  "encoding/json"
+
+  "github.com/go-gl/gl/v4.1-core/gl"
+  "github.com/go-gl/mathgl/mgl32"
 )
 
-// Object format: [vertex<X, Y, Z>]
+type Object struct {
+  Name       string
+  Radius     float32
+  Angle      float32
+  Velocity   float32
+  Revolution float32
 
-func generateSphere(radius float32) ([]float32, []int32, []float32) {
-  var (
-    i                int
-    j                int
-    k                int
+  Objects    []Object
+}
 
-    nb_vertices      float32
+func loadObjects(map_name string) ([]Object) {
+  var objects_map []Object
 
-    unary_size_full  int
-    unary_size_short int
+  // Load objects map
+  filePath := fmt.Sprintf("maps/%s.json", map_name)
 
-    res_longitude    float32
-
-    longitude        int
-    latitude         int
-
-    longitude_r_f    float64
-    latitude_r_f     float64
-  )
-
-  unary_size_full = (2 * OBJECT_TEXTURE_PHI_MAX / OBJECT_TEXTURE_STEP_LATITUDE + 1) * (OBJECT_TEXTURE_THETA_MAX / OBJECT_TEXTURE_STEP_LONGITUDE + 1)
-  unary_size_short = (2 * OBJECT_TEXTURE_PHI_MAX / OBJECT_TEXTURE_STEP_LATITUDE) * (OBJECT_TEXTURE_THETA_MAX / OBJECT_TEXTURE_STEP_LONGITUDE)
-
-  vertices := make([]float32, 3 * unary_size_full)
-  indices := make([]int32, 6 * unary_size_short)
-  texture_coords := make([]float32, 2 * unary_size_full)
-
-  i = 0
-  j = 0
-  k = 0
-
-  nb_vertices = 0.0
-  res_longitude = float32(OBJECT_TEXTURE_THETA_MAX) / float32(OBJECT_TEXTURE_STEP_LONGITUDE) + 1.0;
-
-  // Map sphere data
-  for latitude = -90; latitude <= OBJECT_TEXTURE_PHI_MAX; latitude += OBJECT_TEXTURE_STEP_LATITUDE {
-    for longitude = 0; longitude <= OBJECT_TEXTURE_THETA_MAX; longitude += OBJECT_TEXTURE_STEP_LONGITUDE {
-      // Convert latitude & longitude to radians
-      longitude_r_f = float64(MATH_DEG_TO_RAD) * float64(longitude)
-      latitude_r_f = float64(MATH_DEG_TO_RAD) * float64(latitude)
-
-      // Bind sphere vertices
-      vertices[i] = radius * float32(math.Sin(longitude_r_f) * math.Cos(latitude_r_f))
-      vertices[i + 1] = radius * float32(math.Sin(latitude_r_f))
-      vertices[i + 2] = radius * float32(math.Cos(latitude_r_f) * math.Cos(longitude_r_f))
-
-      i += 3
-
-      // Bind sphere indices
-      if (longitude != OBJECT_TEXTURE_THETA_MAX) {
-        if (latitude < OBJECT_TEXTURE_PHI_MAX) {
-          indices[j] = int32(nb_vertices)
-          indices[j + 1] = int32(nb_vertices + 1.0)
-          indices[j + 2] = int32(nb_vertices + 1.0 + res_longitude)
-
-          indices[j + 3] = int32(nb_vertices)
-          indices[j + 4] = int32(nb_vertices + 1.0 + res_longitude)
-          indices[j + 5] = int32(nb_vertices + res_longitude)
-
-          j += 6
-        }
-      }
-
-      nb_vertices += 1.0
-
-      // Bind sphere texture coordinates
-      texture_coords[k] = float32(longitude) / float32(OBJECT_TEXTURE_THETA_MAX)
-      texture_coords[k + 1] = float32(90 + latitude) / float32(90 + OBJECT_TEXTURE_PHI_MAX)
-
-      k += 2
-    }
+  file, err := ioutil.ReadFile(filePath)
+  if err != nil {
+    panic(err)
   }
 
-  return vertices, indices, texture_coords
+  // Transform JSON map into Go map
+  err = json.Unmarshal(file, &objects_map)
+
+  if err != nil {
+    panic(err)
+  }
+
+  return objects_map
+}
+
+func renderObjects(objects []Object, angle float32) {
+  for o := range objects {
+    buffers := getBuffers(objects[o].Name)
+
+    // Process model
+    buffers.Model = mgl32.HomogRotate3D(angle, mgl32.Vec3{0, 1, 0})
+    gl.UniformMatrix4fv(buffers.ModelUniform, 1, false, &buffers.Model[0])
+
+    // Render vertices
+    gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVertices)
+    gl.EnableVertexAttribArray(buffers.VertexAttributes)
+    gl.VertexAttribPointer(buffers.VertexAttributes, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
+
+    // Render textures
+    gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereTexture)
+    gl.EnableVertexAttribArray(buffers.VertexTextureCoords)
+    gl.VertexAttribPointer(buffers.VertexTextureCoords, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
+
+    // Render indices
+    gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.VBOSphereIndices)
+
+    gl.BindTexture(gl.TEXTURE_2D, buffers.Texture)
+
+    // Draw elements
+    gl.DrawElements(gl.TRIANGLES, int32(len(buffers.Sphere.Indices) * 2), gl.UNSIGNED_INT, gl.PtrOffset(0))
+
+    // Reset buffers
+    gl.DisableVertexAttribArray(buffers.VertexAttributes)
+    gl.DisableVertexAttribArray(buffers.VertexTextureCoords)
+    gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+    gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
+  }
 }

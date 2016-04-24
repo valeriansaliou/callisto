@@ -57,9 +57,6 @@ func main() {
     err     error
     window  *glfw.Window
     vao     uint32
-    vbo_sphere_vertices  uint32
-    vbo_sphere_texture   uint32
-    vbo_sphere_indices   uint32
     angle   float32
     time    float64
     elapsed float64
@@ -104,51 +101,18 @@ func main() {
   camera := mgl32.LookAtV(mgl32.Vec3{8, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
   cameraUniform := gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
 
-  // Create the model (used for rotation)
-  model := mgl32.Ident4()
-  modelUniform := gl.GetUniformLocation(program, gl.Str("modelUniform\x00"))
-
-  // Create the texture storage
-  textureUniform := gl.GetUniformLocation(program, gl.Str("textureUniform\x00"))
-  gl.Uniform1i(textureUniform, 0)
-
-  // Color storage
-  gl.BindFragDataLocation(program, 0, gl.Str("objectColor\x00"))
-
-  // Load the texture
-  texture, err := newTexture("sun")
-  if err != nil {
-    log.Fatalln(err)
-  }
-
-  // Generate the sphere
-  var sphere_vertices, sphere_indices, texture_coords = generateSphere(2.0)
-
   // Create the VAO (Vertex Array Objects)
   // Notice: this stores links between attributes and active vertex data
   gl.GenVertexArrays(1, &vao)
-  gl.BindVertexArray(vao)
 
-  // Create the VBO (Vertex Buffer Object)
-  // Notice: this passes buffer data to the GPU (cache to GPU for I/O performance)
-  gl.GenBuffers(1, &vbo_sphere_vertices)
-  gl.BindBuffer(gl.ARRAY_BUFFER, vbo_sphere_vertices)
-  gl.BufferData(gl.ARRAY_BUFFER, len(sphere_vertices)*4, gl.Ptr(sphere_vertices), gl.STATIC_DRAW)
-  gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+  // Load the map of stellar objects
+  objects := loadObjects("solar-system")
 
-  gl.GenBuffers(1, &vbo_sphere_texture)
-  gl.BindBuffer(gl.ARRAY_BUFFER, vbo_sphere_texture)
-  gl.BufferData(gl.ARRAY_BUFFER, len(texture_coords)*4, gl.Ptr(texture_coords), gl.STATIC_DRAW)
-  gl.BindBuffer(gl.ARRAY_BUFFER, 0)
-
-  gl.GenBuffers(1, &vbo_sphere_indices)
-  gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_sphere_indices)
-  gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(sphere_indices)*4, gl.Ptr(sphere_indices), gl.STATIC_DRAW)
-  gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
-
-  // Bind buffer to shaders attributes
-  vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vertAttrib\x00")))
-  vertexTextureCoord := uint32(gl.GetAttribLocation(program, gl.Str("vertexTextureCoord\x00")))
+  // Add objects to scene
+  for o := range objects {
+    // Create the object buffers
+    createBuffers(objects[o], program, vao)
+  }
 
   // Configure global settings
   gl.Enable(gl.DEPTH_TEST)
@@ -169,39 +133,14 @@ func main() {
     previousTime = time
     angle += float32(elapsed / 4)
 
-    // Process model
-    model = mgl32.HomogRotate3D(angle, mgl32.Vec3{0, 1, 0})
-
     gl.UseProgram(program)
 
     // Process matrixes
     gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
     gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
-    gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
-    // Render vertices
-    gl.BindBuffer(gl.ARRAY_BUFFER, vbo_sphere_vertices)
-    gl.EnableVertexAttribArray(vertAttrib)
-    gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
-
-    // Render textures
-    gl.BindBuffer(gl.ARRAY_BUFFER, vbo_sphere_texture)
-    gl.EnableVertexAttribArray(vertexTextureCoord)
-    gl.VertexAttribPointer(vertexTextureCoord, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
-
-    // Render indices
-    gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_sphere_indices)
-
-    gl.BindTexture(gl.TEXTURE_2D, texture)
-
-    // Draw elements
-    gl.DrawElements(gl.TRIANGLES, int32(len(sphere_indices) * 2), gl.UNSIGNED_INT, gl.PtrOffset(0))
-
-    // Reset buffers
-    gl.DisableVertexAttribArray(vertAttrib)
-    gl.DisableVertexAttribArray(vertexTextureCoord)
-    gl.BindBuffer(gl.ARRAY_BUFFER, 0)
-    gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
+    // Render all objects in the map
+    renderObjects(objects, angle)
 
     glfw.PollEvents()
     window.SwapBuffers()
