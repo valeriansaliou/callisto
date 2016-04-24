@@ -45,6 +45,7 @@ func generateSphere(name string, radius float32) (Sphere) {
     j                int
     k                int
 
+    radius_n         float32
     nb_vertices      float32
 
     unary_size_full  int
@@ -70,6 +71,7 @@ func generateSphere(name string, radius float32) (Sphere) {
   j = 0
   k = 0
 
+  radius_n = radius * float32(OBJECT_FACTOR_RADIUS)
   nb_vertices = 0.0
   res_longitude = float32(OBJECT_TEXTURE_THETA_MAX) / float32(OBJECT_TEXTURE_STEP_LONGITUDE) + 1.0;
 
@@ -81,9 +83,9 @@ func generateSphere(name string, radius float32) (Sphere) {
       latitude_r_f = float64(MATH_DEG_TO_RAD) * float64(latitude)
 
       // Bind sphere vertices
-      sphere.Vertices[i] = radius * float32(math.Sin(longitude_r_f) * math.Cos(latitude_r_f))
-      sphere.Vertices[i + 1] = radius * float32(math.Sin(latitude_r_f))
-      sphere.Vertices[i + 2] = radius * float32(math.Cos(latitude_r_f) * math.Cos(longitude_r_f))
+      sphere.Vertices[i] = radius_n * float32(math.Sin(longitude_r_f) * math.Cos(latitude_r_f))
+      sphere.Vertices[i + 1] = radius_n * float32(math.Sin(latitude_r_f))
+      sphere.Vertices[i + 2] = radius_n * float32(math.Cos(latitude_r_f) * math.Cos(longitude_r_f))
 
       i += 3
 

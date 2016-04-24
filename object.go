@@ -37,16 +37,18 @@ import (
 )
 
 type Object struct {
-  Name       string
-  Radius     float32
-  Angle      float32
-  Velocity   float32
-  Revolution float32
+  Name        string
 
-  Objects    []Object
+  Radius      float32
+  Inclination float32
+  Revolution  float32
+  Rotation    float32
+  Distance    float32
+
+  Objects     []Object
 }
 
-func loadObjects(map_name string) ([]Object) {
+func loadObjects(map_name string) (*[]Object) {
   var objects_map []Object
 
   // Load objects map
@@ -64,39 +66,64 @@ func loadObjects(map_name string) ([]Object) {
     panic(err)
   }
 
-  return objects_map
+  return &objects_map
 }
 
-func renderObjects(objects []Object, angle float32) {
-  for o := range objects {
-    buffers := getBuffers(objects[o].Name)
+func renderObjects(objects *[]Object, program uint32) {
+  for o := range *objects {
+    buffers := getBuffers((*objects)[o].Name)
 
-    // Process model
-    buffers.Model = mgl32.HomogRotate3D(angle, mgl32.Vec3{0, 1, 0})
-    gl.UniformMatrix4fv(buffers.ModelUniform, 1, false, &buffers.Model[0])
+    gl.ActiveTexture(uint32(buffers.Texture.Id))
+    gl.BindTexture(gl.TEXTURE_2D, buffers.Texture.Data)
+    gl.Uniform1i(TEXTURE_UNIFORM, buffers.Texture.Id)
+
+    // Toggle to child context
+    pushMatrix()
+
+    // Update angles for object
+    buffers.addToAngleRotation(rotationAngleSinceLast(&(*objects)[o]))
+    buffers.addToAngleRevolution(revolutionAngleSinceLast(&(*objects)[o]))
+
+    // Apply model transforms
+    if (*objects)[o].Revolution != 0 {
+      CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.HomogRotate3D(buffers.AngleRevolution, mgl32.Vec3{0, 1, 0}))
+    }
+
+    if (*objects)[o].Distance > 0 {
+      CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.Translate3D(OBJECT_FACTOR_DISTANCE * (*objects)[o].Distance * 1.0, 0.0, 0.0))
+    }
+
+    if (*objects)[o].Rotation != 0 {
+      CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.HomogRotate3D(buffers.AngleRotation, mgl32.Vec3{0, 1, 0}))
+    }
+
+    // Apply model
+    gl.UniformMatrix4fv(MODEL_UNIFORM, 1, false, &CURRENT_MATRIX[0])
 
     // Render vertices
     gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVertices)
-    gl.EnableVertexAttribArray(buffers.VertexAttributes)
-    gl.VertexAttribPointer(buffers.VertexAttributes, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
+    gl.VertexAttribPointer(SHADER_VERTEX_ATTRIBUTES, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
     // Render textures
     gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereTexture)
-    gl.EnableVertexAttribArray(buffers.VertexTextureCoords)
-    gl.VertexAttribPointer(buffers.VertexTextureCoords, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
+    gl.VertexAttribPointer(SHADER_VERTEX_TEXTURE_COORDS, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
     // Render indices
     gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.VBOSphereIndices)
 
-    gl.BindTexture(gl.TEXTURE_2D, buffers.Texture)
+    setMatrixUniforms(program)
 
     // Draw elements
     gl.DrawElements(gl.TRIANGLES, int32(len(buffers.Sphere.Indices) * 2), gl.UNSIGNED_INT, gl.PtrOffset(0))
 
     // Reset buffers
-    gl.DisableVertexAttribArray(buffers.VertexAttributes)
-    gl.DisableVertexAttribArray(buffers.VertexTextureCoords)
     gl.BindBuffer(gl.ARRAY_BUFFER, 0)
     gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
+
+    // Render children (if any?)
+    renderObjects(&((*objects)[o].Objects), program)
+
+    // Toggle back to parent context
+    popMatrix()
   }
 }

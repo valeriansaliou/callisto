@@ -56,9 +56,6 @@ func main() {
     err     error
     window  *glfw.Window
     vao     uint32
-    angle   float32
-    time    float64
-    elapsed float64
   )
 
   // Create window
@@ -85,12 +82,15 @@ func main() {
   gl.Init()
 
   // Configure the shaders program
-  program, err := newProgram(vertexShader, fragmentShader)
+  program, err := newProgram(SHADER_VERTEX, SHADER_FRAGMENT)
   if err != nil {
     panic(err)
   }
 
   gl.UseProgram(program)
+
+  // Initialize stack matrix
+  initializeMatrix()
 
   // Create environment
   createProjection(program)
@@ -106,25 +106,20 @@ func main() {
   // Create each object buffers
   createAllBuffers(objects, program, vao)
 
+  // Initialize shaders
+  initializeShaders(program)
+
   // Configure global settings
   gl.Enable(gl.DEPTH_TEST)
   gl.DepthFunc(gl.LESS)
   gl.ClearColor(0.025, 0.025, 0.025, 1.0)
 
-  // Model angle
-  angle = 0.0
-  previousTime := glfw.GetTime()
-
   // Render loop
   for !window.ShouldClose() {
     gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    // Calculate angle (relative to elapsed time)
-    time = glfw.GetTime()
-    elapsed = time - previousTime
-    previousTime = time
-    angle += float32(elapsed / 4)
-
+    // Global routines
+    updateElaspedTime(glfw.GetTime())
     gl.UseProgram(program)
 
     // Bind context
@@ -132,7 +127,7 @@ func main() {
     bindCamera()
 
     // Render all objects in the map
-    renderObjects(objects, angle)
+    renderObjects(objects, program)
 
     glfw.PollEvents()
     window.SwapBuffers()

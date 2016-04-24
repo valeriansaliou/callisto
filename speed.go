@@ -27,49 +27,26 @@
 
 package main
 
-import (
-  "math"
-  "github.com/go-gl/mathgl/mgl32"
-)
+var SPEED_TIME_PREVIOUS float64 = 0.0
+var SPEED_TIME_ELAPSED float64 = 0.0
 
-// Math
-const (
-  MATH_DEG_TO_RAD = math.Pi / 180
-)
+func updateElaspedTime(nowTime float64) {
+  SPEED_TIME_ELAPSED = nowTime - SPEED_TIME_PREVIOUS
+  SPEED_TIME_PREVIOUS = nowTime
+}
 
-// Time
-const (
-  TIME_DAY_TO_MILLISECONDS = 24 * 60 * 60 * 1000
-  TIME_YEAR_TO_MILLISECONDS = 365 * 24 * 60 * 60 * 1000
-)
+func revolutionAngleSinceLast(object *Object) float32 {
+  // revolution_time from years to milliseconds
+  // SPEED_TIME_ELAPSED in milliseconds
+  //  -> angle = (SPEED_TIME_ELAPSED / revolution_time) * OBJECT_REVOLUTION_FULL_ANGLE
 
-// Window
-const (
-  WINDOW_WIDTH  = 1200
-  WINDOW_HEIGHT = 800
+  return float32(OBJECT_FACTOR_SPEED_REVOLUTION * SPEED_TIME_ELAPSED) / ((*object).Revolution * float32(TIME_YEAR_TO_MILLISECONDS)) * float32(OBJECT_REVOLUTION_FULL_ANGLE)
+}
 
-  WINDOW_TITLE  = "Callisto - Solar System Simulator"
-)
+func rotationAngleSinceLast(object *Object) float32 {
+  // rotation_time from days to milliseconds
+  // SPEED_TIME_ELAPSED in milliseconds
+  //  -> angle = (SPEED_TIME_ELAPSED / rotation_time) * OBJECT_ROTATION_FULL_ANGLE
 
-// Camera
-var (
-  CAMERA_DEFAULT_EYE = mgl32.Vec3{8, 3, 3}
-  CAMERA_DEFAULT_CENTER = mgl32.Vec3{0, 0, 0}
-  CAMERA_DEFAULT_UP = mgl32.Vec3{0, 1, 0}
-)
-
-// Object
-const (
-  OBJECT_TEXTURE_PHI_MAX = 90
-  OBJECT_TEXTURE_THETA_MAX = 360
-  OBJECT_TEXTURE_STEP_LATITUDE = 3
-  OBJECT_TEXTURE_STEP_LONGITUDE = 6
-
-  OBJECT_ROTATION_FULL_ANGLE = 2 * math.Pi
-  OBJECT_REVOLUTION_FULL_ANGLE = 2 * math.Pi
-
-  OBJECT_FACTOR_RADIUS = 0.00005436781609
-  OBJECT_FACTOR_DISTANCE = 0.000000018536842
-  OBJECT_FACTOR_SPEED_ROTATION = 60 * 60 * 1000 * 4
-  OBJECT_FACTOR_SPEED_REVOLUTION = 60 * 60 * 1000 * 4 * 10
-)
+  return float32(OBJECT_FACTOR_SPEED_ROTATION * SPEED_TIME_ELAPSED) / ((*object).Rotation * float32(TIME_DAY_TO_MILLISECONDS)) * float32(OBJECT_ROTATION_FULL_ANGLE)
+}

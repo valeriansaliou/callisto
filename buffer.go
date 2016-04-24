@@ -31,44 +31,51 @@ import (
   "log"
 
   "github.com/go-gl/gl/v4.1-core/gl"
-  "github.com/go-gl/mathgl/mgl32"
 )
 
 type Buffers struct {
   Sphere              Sphere
-  Texture             uint32
+  Texture             Texture
 
-  Model               mgl32.Mat4
-  ModelUniform        int32
-
-  TextureUniform      int32
+  AngleRotation       float32
+  AngleRevolution     float32
 
   VBOSphereVertices   uint32
   VBOSphereTexture    uint32
   VBOSphereIndices    uint32
-
-  VertexAttributes    uint32
-  VertexTextureCoords uint32
 }
 
-var BUFFERS map[string]Buffers = make(map[string]Buffers)
+func (buffers *Buffers) addToAngleRotation(angle float32) {
+  buffers.AngleRotation += angle
+}
 
-func getBuffers(name string) (Buffers) {
+func (buffers *Buffers) addToAngleRevolution(angle float32) {
+  buffers.AngleRevolution += angle
+}
+
+var BUFFERS map[string]*Buffers = make(map[string]*Buffers)
+
+func getBuffers(name string) (*Buffers) {
   return BUFFERS[name]
 }
 
-func createAllBuffers(objects []Object, program uint32, vao uint32) {
-  for o := range objects {
+func createAllBuffers(objects *[]Object, program uint32, vao uint32) {
+  for o := range *objects {
     // Create the object buffers
-    createBuffers(objects[o], program, vao)
+    createBuffers((*objects)[o], program, vao)
   }
 }
 
 func createBuffers(object Object, program uint32, vao uint32) {
   var (
-    buffers Buffers
-    err     error
+    err error
   )
+
+  buffers := &Buffers{}
+
+  // Zero angle
+  buffers.AngleRotation = 0.0
+  buffers.AngleRevolution = 0.0
 
   // Generate sphere
   buffers.Sphere = generateSphere(object.Name, object.Radius)
@@ -80,13 +87,8 @@ func createBuffers(object Object, program uint32, vao uint32) {
     log.Fatalln(err)
   }
 
-  // Create the model (used for rotation)
-  buffers.Model = mgl32.Ident4()
-  buffers.ModelUniform = gl.GetUniformLocation(program, gl.Str("modelUniform\x00"))
-
   // Create the texture storage
-  buffers.TextureUniform = gl.GetUniformLocation(program, gl.Str("textureUniform\x00"))
-  gl.Uniform1i(buffers.TextureUniform, 0)
+  //gl.Uniform1i(buffers.TextureUniform, 0)
 
   // Color storage
   gl.BindFragDataLocation(program, 0, gl.Str("objectColor\x00"))
@@ -111,10 +113,12 @@ func createBuffers(object Object, program uint32, vao uint32) {
   gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(buffers.Sphere.Indices)*4, gl.Ptr(buffers.Sphere.Indices), gl.STATIC_DRAW)
   gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
 
-  // Bind buffer to shaders attributes
-  buffers.VertexAttributes = uint32(gl.GetAttribLocation(program, gl.Str("vertexAttributes\x00")))
-  buffers.VertexTextureCoords = uint32(gl.GetAttribLocation(program, gl.Str("vertexTextureCoords\x00")))
+  // Go deeper (if any child)
+  for o := range object.Objects {
+    createBuffers(object.Objects[o], program, vao)
+  }
 
   // Store buffers
+  // Notice: if a lower level buffer is set w/ the same name, the higher-level object will always override it
   BUFFERS[object.Name] = buffers
 }

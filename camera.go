@@ -40,7 +40,7 @@ type CameraData struct {
 var CAMERA CameraData
 
 func createCamera(program uint32) {
-  CAMERA.Camera = mgl32.LookAtV(mgl32.Vec3{8, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
+  CAMERA.Camera = mgl32.LookAtV(CAMERA_DEFAULT_EYE, CAMERA_DEFAULT_CENTER, CAMERA_DEFAULT_UP)
   CAMERA.CameraUniform = gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
 }
 

@@ -27,7 +27,16 @@
 
 package main
 
-var vertexShader = `
+import (
+  "github.com/go-gl/gl/v4.1-core/gl"
+)
+
+var (
+  SHADER_VERTEX_ATTRIBUTES     uint32
+  SHADER_VERTEX_TEXTURE_COORDS uint32
+)
+
+var SHADER_VERTEX = `
 #version 330
 
 uniform mat4 projectionUniform;
@@ -46,7 +55,7 @@ void main() {
 }
 ` + "\x00"
 
-var fragmentShader = `
+var SHADER_FRAGMENT = `
 #version 330
 
 uniform sampler2D textureUniform;
@@ -59,3 +68,12 @@ void main() {
   objectColor = texture(textureUniform, shaderTextureCoords);
 }
 ` + "\x00"
+
+func initializeShaders(program uint32) {
+  // Bind buffer to shaders attributes
+  SHADER_VERTEX_ATTRIBUTES = uint32(gl.GetAttribLocation(program, gl.Str("vertexAttributes\x00")))
+  gl.EnableVertexAttribArray(SHADER_VERTEX_ATTRIBUTES)
+
+  SHADER_VERTEX_TEXTURE_COORDS = uint32(gl.GetAttribLocation(program, gl.Str("vertexTextureCoords\x00")))
+  gl.EnableVertexAttribArray(SHADER_VERTEX_TEXTURE_COORDS)
+}

@@ -37,27 +37,39 @@ import (
   "github.com/go-gl/gl/v4.1-core/gl"
 )
 
-func loadTexture(name string) (uint32, error) {
+type Texture struct {
+  Id   int32
+  Data uint32
+}
+
+var TEXTURE_ID_MAX int32 = 0
+
+func loadTexture(name string) (Texture, error) {
+  var texture = Texture{}
+
   filePath := fmt.Sprintf("assets/%s.jpg", name)
 
   imgFile, err := os.Open(filePath)
   if err != nil {
-    return 0, fmt.Errorf("texture %q not found on disk: %v", filePath, err)
+    return texture, fmt.Errorf("texture %q not found on disk: %v", filePath, err)
   }
   img, _, err := image.Decode(imgFile)
   if err != nil {
-    return 0, err
+    return texture, err
   }
 
   rgba := image.NewRGBA(img.Bounds())
   if rgba.Stride != rgba.Rect.Size().X*4 {
-    return 0, fmt.Errorf("unsupported stride")
+    return texture, fmt.Errorf("unsupported stride")
   }
   draw.Draw(rgba, rgba.Bounds(), img, image.Point{0, 0}, draw.Src)
 
-  var texture uint32
+  // Assign an unique texture identifier
+  TEXTURE_ID_MAX += 1
+  texture.Id = TEXTURE_ID_MAX
 
-  gl.BindTexture(gl.TEXTURE_2D, texture);
+  gl.ActiveTexture(uint32(texture.Id))
+  gl.BindTexture(gl.TEXTURE_2D, texture.Data);
 
   gl.TexImage2D(
     gl.TEXTURE_2D,

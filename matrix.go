@@ -28,48 +28,43 @@
 package main
 
 import (
-  "math"
+  "container/list"
+
+  "github.com/go-gl/gl/v4.1-core/gl"
   "github.com/go-gl/mathgl/mgl32"
 )
 
-// Math
-const (
-  MATH_DEG_TO_RAD = math.Pi / 180
-)
-
-// Time
-const (
-  TIME_DAY_TO_MILLISECONDS = 24 * 60 * 60 * 1000
-  TIME_YEAR_TO_MILLISECONDS = 365 * 24 * 60 * 60 * 1000
-)
-
-// Window
-const (
-  WINDOW_WIDTH  = 1200
-  WINDOW_HEIGHT = 800
-
-  WINDOW_TITLE  = "Callisto - Solar System Simulator"
-)
-
-// Camera
 var (
-  CAMERA_DEFAULT_EYE = mgl32.Vec3{8, 3, 3}
-  CAMERA_DEFAULT_CENTER = mgl32.Vec3{0, 0, 0}
-  CAMERA_DEFAULT_UP = mgl32.Vec3{0, 1, 0}
+  CURRENT_MATRIX  mgl32.Mat4
+  MATRIX_STACK    *list.List
+
+  MODEL_UNIFORM   int32
+  TEXTURE_UNIFORM int32
 )
 
-// Object
-const (
-  OBJECT_TEXTURE_PHI_MAX = 90
-  OBJECT_TEXTURE_THETA_MAX = 360
-  OBJECT_TEXTURE_STEP_LATITUDE = 3
-  OBJECT_TEXTURE_STEP_LONGITUDE = 6
+func initializeMatrix() {
+  MATRIX_STACK = list.New()
+  CURRENT_MATRIX = mgl32.Mat4{}
+}
 
-  OBJECT_ROTATION_FULL_ANGLE = 2 * math.Pi
-  OBJECT_REVOLUTION_FULL_ANGLE = 2 * math.Pi
+func getMatrix() (*mgl32.Mat4) {
+  return &CURRENT_MATRIX
+}
 
-  OBJECT_FACTOR_RADIUS = 0.00005436781609
-  OBJECT_FACTOR_DISTANCE = 0.000000018536842
-  OBJECT_FACTOR_SPEED_ROTATION = 60 * 60 * 1000 * 4
-  OBJECT_FACTOR_SPEED_REVOLUTION = 60 * 60 * 1000 * 4 * 10
-)
+func pushMatrix() {
+  CURRENT_MATRIX = mgl32.Ident4()
+  MATRIX_STACK.PushFront(CURRENT_MATRIX)
+}
+
+func popMatrix() {
+  if MATRIX_STACK.Len() == 0 {
+    panic("Cannot pop: matrix stack is empty")
+  }
+
+  MATRIX_STACK.Remove(MATRIX_STACK.Front())
+}
+
+func setMatrixUniforms(program uint32) {
+  MODEL_UNIFORM = gl.GetUniformLocation(program, gl.Str("modelUniform\x00"))
+  TEXTURE_UNIFORM = gl.GetUniformLocation(program, gl.Str("textureUniform\x00"))
+}
