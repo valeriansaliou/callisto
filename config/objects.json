@@ -1,0 +1,273 @@
+{
+  "objects" : [
+    {
+      "name"       : "sun",
+      "radius"     : 2,
+      "angle"      : 0,
+      "velocity"   : 0,
+      "revolution" : 0.5,
+
+      "objects"    : [
+        {
+          "name"       : "mercury",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : []
+        },
+
+        {
+          "name"       : "venus",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : []
+        },
+
+        {
+          "name"       : "earth",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : [
+            {
+              "name"       : "moon",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            }
+          ]
+        },
+
+        {
+          "name"       : "mars",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : [
+            {
+              "name"       : "phobos",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            },
+
+            {
+              "name"       : "deimos",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            }
+          ]
+        },
+
+        {
+          "name"       : "ceres",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : []
+        },
+
+        {
+          "name"       : "jupiter",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : [
+            {
+              "name"       : "io",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            },
+
+            {
+              "name"       : "europa",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            },
+
+            {
+              "name"       : "ganymede",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            },
+
+            {
+              "name"       : "callisto",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            }
+          ]
+        },
+
+        {
+          "name"       : "saturn",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : [
+            {
+              "name"       : "titan",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            },
+
+            {
+              "name"       : "enceladus",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            },
+
+            {
+              "name"       : "iapetus",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            }
+          ]
+        },
+
+        {
+          "name"       : "mimas",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : []
+        },
+
+        {
+          "name"       : "uranus",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : [
+            {
+              "name"       : "miranda",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            }
+          ]
+        },
+
+        {
+          "name"       : "neptune",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : [
+            {
+              "name"       : "triton",
+              "radius"     : 2,
+              "angle"      : 0,
+              "velocity"   : 0,
+              "revolution" : 0.5,
+
+              "objects"    : []
+            }
+          ]
+        },
+
+        {
+          "name"       : "pluto",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : []
+        },
+
+        {
+          "name"       : "eris",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : []
+        },
+
+        {
+          "name"       : "makemake",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : []
+        },
+
+        {
+          "name"       : "haumea",
+          "radius"     : 2,
+          "angle"      : 0,
+          "velocity"   : 0,
+          "revolution" : 0.5,
+
+          "objects"    : []
+        }
+      ]
+    }
+  ]
+}
