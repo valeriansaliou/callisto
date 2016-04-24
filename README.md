@@ -14,3 +14,7 @@ Yet another Solar System simulator, written by Valerian Saliou.
 ## Thanks
 
 This project has been achieved following the excellent step-by-step tutorial available on [https://open.gl](https://open.gl)
+
+## Copyrights
+
+Assets (planets, moons, miscellaneous space object) are copyright NASA.
