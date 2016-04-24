@@ -34,7 +34,6 @@ import (
 
   "github.com/go-gl/gl/v4.1-core/gl"
   "github.com/go-gl/glfw/v3.1/glfw"
-  "github.com/go-gl/mathgl/mgl32"
 )
 
 func init() {
@@ -93,13 +92,9 @@ func main() {
 
   gl.UseProgram(program)
 
-  // Create the view projection
-  projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.1, 10.0)
-  projectionUniform := gl.GetUniformLocation(program, gl.Str("projectionUniform\x00"))
-
-  // Create the camera
-  camera := mgl32.LookAtV(mgl32.Vec3{8, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
-  cameraUniform := gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
+  // Create environment
+  createProjection(program)
+  createCamera(program)
 
   // Create the VAO (Vertex Array Objects)
   // Notice: this stores links between attributes and active vertex data
@@ -108,11 +103,8 @@ func main() {
   // Load the map of stellar objects
   objects := loadObjects("solar-system")
 
-  // Add objects to scene
-  for o := range objects {
-    // Create the object buffers
-    createBuffers(objects[o], program, vao)
-  }
+  // Create each object buffers
+  createAllBuffers(objects, program, vao)
 
   // Configure global settings
   gl.Enable(gl.DEPTH_TEST)
@@ -135,9 +127,9 @@ func main() {
 
     gl.UseProgram(program)
 
-    // Process matrixes
-    gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
-    gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
+    // Bind context
+    bindProjection()
+    bindCamera()
 
     // Render all objects in the map
     renderObjects(objects, angle)

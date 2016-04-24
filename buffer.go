@@ -57,6 +57,13 @@ func getBuffers(name string) (Buffers) {
   return BUFFERS[name]
 }
 
+func createAllBuffers(objects []Object, program uint32, vao uint32) {
+  for o := range objects {
+    // Create the object buffers
+    createBuffers(objects[o], program, vao)
+  }
+}
+
 func createBuffers(object Object, program uint32, vao uint32) {
   var (
     buffers Buffers
