@@ -1,11 +1,11 @@
 callisto
 ========
 
-Yet another Solar System simulator, written by Valerian Saliou.
+Yet another Solar System simulator, written by Valerian Saliou in Go.
 
 ## Dependencies
 
- * go (install it via: `brew install golang`)
+ * **Go** (install it via: `brew install golang`)
 
 ## Install
 
