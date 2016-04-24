@@ -11,9 +11,8 @@ Yet another Solar System simulator, written by Valerian Saliou in Go.
 
 ## Install & Run
 
-> `go get github.com/valeriansaliou/callisto`
-
-> `callisto`
+ 1. `go get github.com/valeriansaliou/callisto`
+ 2. `callisto`
 
 ## Thanks
 
