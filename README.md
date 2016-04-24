@@ -9,9 +9,10 @@ Yet another Solar System simulator, written by Valerian Saliou in Go.
 
  * **Go** (install it via: `brew install golang` on MacOS w/ Homebrew)
 
-## Install
+## Install & Run
 
 > `go get github.com/valeriansaliou/callisto`
+> `callisto`
 
 ## Thanks
 
