@@ -27,9 +27,27 @@
 
 package main
 
+import (
+  "math"
+)
+
+// Math
+const (
+  MATH_DEG_TO_RAD = math.Pi / 180
+)
+
+// Window
 const (
   WINDOW_WIDTH  = 1200
   WINDOW_HEIGHT = 800
 
   WINDOW_TITLE  = "Callisto - Solar System Simulator"
+)
+
+// Object
+const (
+  OBJECT_TEXTURE_PHI_MAX = 90
+  OBJECT_TEXTURE_THETA_MAX = 360
+  OBJECT_TEXTURE_STEP_LATITUDE = 3
+  OBJECT_TEXTURE_STEP_LONGITUDE = 6
 )

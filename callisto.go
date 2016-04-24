@@ -58,6 +58,7 @@ func main() {
     window  *glfw.Window
     vao     uint32
     vbo_sphere_vertices  uint32
+    vbo_sphere_texture   uint32
     vbo_sphere_indices   uint32
     angle   float32
     time    float64
@@ -99,27 +100,29 @@ func main() {
   projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.1, 10.0)
   projectionUniform := gl.GetUniformLocation(program, gl.Str("projectionUniform\x00"))
 
-  // Create the normal matrix
-  normal := mgl32.Mat4Normal(projection)
-  normalUniform := gl.GetUniformLocation(program, gl.Str("normalUniform\x00"))
-
   // Create the camera
-  camera := mgl32.LookAtV(mgl32.Vec3{3, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
+  camera := mgl32.LookAtV(mgl32.Vec3{8, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
   cameraUniform := gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
 
   // Create the model (used for rotation)
   model := mgl32.Ident4()
   modelUniform := gl.GetUniformLocation(program, gl.Str("modelUniform\x00"))
 
-  // Create lighting
-  lighting := mgl32.Vec4{2, 2, -2, 1}
-  lightingUniform := gl.GetUniformLocation(program, gl.Str("lightingUniform\x00"))
+  // Create the texture storage
+  textureUniform := gl.GetUniformLocation(program, gl.Str("textureUniform\x00"))
+  gl.Uniform1i(textureUniform, 0)
 
   // Color storage
   gl.BindFragDataLocation(program, 0, gl.Str("objectColor\x00"))
 
+  // Load the texture
+  texture, err := newTexture("assets/sun.jpg")
+  if err != nil {
+    log.Fatalln(err)
+  }
+
   // Generate the sphere
-  var sphere_vertices, sphere_indices = generateSphere(128, 64)
+  var sphere_vertices, sphere_indices, texture_coords = generateSphere(2.0)
 
   // Create the VAO (Vertex Array Objects)
   // Notice: this stores links between attributes and active vertex data
@@ -133,6 +136,11 @@ func main() {
   gl.BufferData(gl.ARRAY_BUFFER, len(sphere_vertices)*4, gl.Ptr(sphere_vertices), gl.STATIC_DRAW)
   gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
+  gl.GenBuffers(1, &vbo_sphere_texture)
+  gl.BindBuffer(gl.ARRAY_BUFFER, vbo_sphere_texture)
+  gl.BufferData(gl.ARRAY_BUFFER, len(texture_coords)*4, gl.Ptr(texture_coords), gl.STATIC_DRAW)
+  gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+
   gl.GenBuffers(1, &vbo_sphere_indices)
   gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_sphere_indices)
   gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(sphere_indices)*4, gl.Ptr(sphere_indices), gl.STATIC_DRAW)
@@ -140,11 +148,12 @@ func main() {
 
   // Bind buffer to shaders attributes
   vertAttrib := uint32(gl.GetAttribLocation(program, gl.Str("vertAttrib\x00")))
+  vertexTextureCoord := uint32(gl.GetAttribLocation(program, gl.Str("vertexTextureCoord\x00")))
 
   // Configure global settings
   gl.Enable(gl.DEPTH_TEST)
   gl.DepthFunc(gl.LESS)
-  gl.ClearColor(0.2, 0.2, 0.2, 1.0)
+  gl.ClearColor(0.05, 0.05, 0.05, 1.0)
 
   // Model angle
   angle = 0.0
@@ -167,24 +176,30 @@ func main() {
 
     // Process matrixes
     gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
-    gl.UniformMatrix4fv(normalUniform, 1, false, &normal[0])
     gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
     gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
-    gl.UniformMatrix4fv(lightingUniform, 1, false, &lighting[0])
-    gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 
-    // Render buffers
+    // Render vertices
     gl.BindBuffer(gl.ARRAY_BUFFER, vbo_sphere_vertices)
     gl.EnableVertexAttribArray(vertAttrib)
     gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
+    // Render textures
+    gl.BindBuffer(gl.ARRAY_BUFFER, vbo_sphere_texture)
+    gl.EnableVertexAttribArray(vertexTextureCoord)
+    gl.VertexAttribPointer(vertexTextureCoord, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
+
+    // Render indices
     gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_sphere_indices)
 
+    gl.BindTexture(gl.TEXTURE_2D, texture)
+
     // Draw elements
-    gl.DrawElements(gl.TRIANGLES, int32(len(sphere_indices) * 2), gl.UNSIGNED_SHORT, gl.PtrOffset(0))
+    gl.DrawElements(gl.TRIANGLES, int32(len(sphere_indices) * 2), gl.UNSIGNED_INT, gl.PtrOffset(0))
 
     // Reset buffers
     gl.DisableVertexAttribArray(vertAttrib)
+    gl.DisableVertexAttribArray(vertexTextureCoord)
     gl.BindBuffer(gl.ARRAY_BUFFER, 0)
     gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
 

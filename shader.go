@@ -35,46 +35,27 @@ uniform mat4 cameraUniform;
 uniform mat4 modelUniform;
 
 in vec3 vertAttrib;
-in mat3 normalUniform;
+in vec2 vertexTextureCoord;
 
 out vec3 N;
-out vec4 point;
+out vec2 shaderTextureCoord;
 
 void main() {
-  point = modelUniform * vec4(vertAttrib, 1.0);
-  N = normalUniform * vertAttrib;
-
   gl_Position = projectionUniform * cameraUniform * modelUniform * vec4(vertAttrib, 1);
+  shaderTextureCoord = vertexTextureCoord;
 }
 ` + "\x00"
 
 var fragmentShader = `
 #version 330
 
-precision mediump float;
+uniform sampler2D textureUniform;
 
-const vec3 Kd = vec3(0.4, 0.9, 0.1);
-const vec3 Ks = vec3(0.9, 0.9, 0.9);
-const float ns = 80.0;
+in vec2 shaderTextureCoord;
 
-uniform vec4 lighting;
-
-in vec3 N;
-in vec4 point;
-
-out vec4 color;
+out vec4 objectColor;
 
 void main() {
-  vec3 N1 = normalize(N);
-
-  vec3 L1 = normalize((lighting - point).xyz);
-
-  float NL = clamp(dot(N1, L1), 0.0, 1.0);
-  color = vec4(Kd * NL, 1.0);
-
-  vec3 mV = normalize(point.xyz);
-  vec3 R = reflect(mV, N1);
-  float RL = clamp(dot(R, L1), 0.0, 1.0);
-  color += vec4(Ks * pow(RL, ns), 0.0);
+  objectColor = texture(textureUniform, shaderTextureCoord);
 }
 ` + "\x00"
