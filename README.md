@@ -7,7 +7,7 @@ Yet another Solar System simulator, written by Valerian Saliou in Go.
 
 ## Dependencies
 
- * **Go** (install it via: `brew install golang`)
+ * **Go** (install it via: `brew install golang` on MacOS)
 
 ## Install
 
