@@ -1,7 +1,7 @@
 [
   {
     "name"        : "sun",
-    "radius"      : 20000,
+    "radius"      : 40000,
     "inclination" : 0,
     "revolution"  : 0,
     "rotation"    : 25.38,
