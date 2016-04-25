@@ -53,8 +53,8 @@ const (
 
 // Controls
 const (
-  CONTROLS_ENABLE_KEY bool = false
-  CONTROLS_ENABLE_MOUSE bool = false
+  CONTROLS_ENABLE_KEY bool = true
+  CONTROLS_ENABLE_MOUSE bool = true
 )
 
 // Projection
@@ -66,11 +66,9 @@ var (
 // Camera
 var (
   CAMERA_DEFAULT_EYE mgl32.Vec3 = mgl32.Vec3{8, 3, 3}
-  CAMERA_DEFAULT_CENTER mgl32.Vec3 = mgl32.Vec3{0, 0, 0}
-  CAMERA_DEFAULT_UP mgl32.Vec3 = mgl32.Vec3{0, 1, 0}
+  CAMERA_DEFAULT_TARGET mgl32.Vec3 = mgl32.Vec3{0, 0, 0}
 
-  CAMERA_MOVE_CELERITY_FORWARD float32 = 10
-  CAMERA_MOVE_CELERITY_BACKWARD float32 = -10
+  CAMERA_MOVE_CELERITY float64 = 15.0
 
   CAMERA_WATCH_REDUCER float32 = 0.01
 )
@@ -86,6 +84,6 @@ const (
   OBJECT_REVOLUTION_FULL_ANGLE float64 = 2.0 * math.Pi
 
   OBJECT_FACTOR_RADIUS float64 = 0.25
-  OBJECT_FACTOR_DISTANCE float64 = 0.3
-  OBJECT_FACTOR_SPEED_SCENE float64 = 60 * 60 * 1000 * 4
+  OBJECT_FACTOR_DISTANCE float64 = 0.2
+  OBJECT_FACTOR_SPEED_SCENE float64 = 60 * 60 * 1000
 )

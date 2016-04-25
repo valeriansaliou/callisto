@@ -38,7 +38,3 @@ func importPathToDir(importPath string) (string, error) {
   }
   return p.Dir, nil
 }
-
-func flipBool(value bool) (bool) {
-  return (value || true) && !(value && true)
-}

@@ -28,6 +28,8 @@
 package main
 
 import (
+  "math"
+
   "github.com/go-gl/gl/v4.1-core/gl"
   "github.com/go-gl/mathgl/mgl32"
 )
@@ -37,46 +39,57 @@ type CameraData struct {
   CameraUniform  int32
 
   PositionEye mgl32.Vec3
-  PositionCenter mgl32.Vec3
-  PositionUp mgl32.Vec3
+  PositionTarget mgl32.Vec3
 }
 
 var CAMERA CameraData
 
-func (camera_data *CameraData) moveEyeX(position float32) {
-  camera_data.PositionEye[0] = position
+func (camera_data *CameraData) getEyeX() (position float32) {
+  return camera_data.PositionEye[0]
 }
 
-func (camera_data *CameraData) moveEyeY(position float32) {
-  camera_data.PositionEye[1] = position
+func (camera_data *CameraData) getEyeY() (position float32) {
+  return camera_data.PositionEye[1]
 }
 
-func (camera_data *CameraData) moveEyeZ(position float32) {
-  camera_data.PositionEye[2] = position
+func (camera_data *CameraData) getEyeZ() (position float32) {
+  return camera_data.PositionEye[2]
 }
 
-func (camera_data *CameraData) moveCenterX(increment float32) {
-  camera_data.PositionCenter[0] += increment
+func (camera_data *CameraData) getTargetX() (position float32) {
+  return camera_data.PositionTarget[0]
 }
 
-func (camera_data *CameraData) moveCenterY(increment float32) {
-  camera_data.PositionCenter[1] += increment
+func (camera_data *CameraData) getTargetY() (position float32) {
+  return camera_data.PositionTarget[1]
 }
 
-func (camera_data *CameraData) moveCenterZ(increment float32) {
-  camera_data.PositionCenter[2] += increment
+func (camera_data *CameraData) getTargetZ() (position float32) {
+  return camera_data.PositionTarget[2]
 }
 
-func (camera_data *CameraData) moveUpX(increment float32) {
-  camera_data.PositionUp[0] += increment
+func (camera_data *CameraData) moveEyeX(increment float32) {
+  camera_data.PositionEye[0] += increment
 }
 
-func (camera_data *CameraData) moveUpY(increment float32) {
-  camera_data.PositionUp[1] += increment
+func (camera_data *CameraData) moveEyeY(increment float32) {
+  camera_data.PositionEye[1] += increment
 }
 
-func (camera_data *CameraData) moveUpZ(increment float32) {
-  camera_data.PositionUp[2] += increment
+func (camera_data *CameraData) moveEyeZ(increment float32) {
+  camera_data.PositionEye[2] += increment
+}
+
+func (camera_data *CameraData) updateTargetX(position float32) {
+  camera_data.PositionTarget[0] = position
+}
+
+func (camera_data *CameraData) updateTargetY(position float32) {
+  camera_data.PositionTarget[1] = position
+}
+
+func (camera_data *CameraData) updateTargetZ(position float32) {
+  camera_data.PositionTarget[2] = position
 }
 
 func getCamera() (*CameraData) {
@@ -88,33 +101,37 @@ func createCamera(program uint32) {
 
   // Default camera position
   CAMERA.PositionEye = CAMERA_DEFAULT_EYE
-  CAMERA.PositionCenter = CAMERA_DEFAULT_CENTER
-  CAMERA.PositionUp = CAMERA_DEFAULT_UP
+  CAMERA.PositionTarget = CAMERA_DEFAULT_TARGET
 }
 
 func updateCamera() {
   key_state := getEventKeyState()
 
-  // Camera position: Move
+  // Decrease speed if diagonal move
+  speed := CAMERA_MOVE_CELERITY
+
+  if (key_state.MoveUp == true || key_state.MoveDown == true) && (key_state.MoveLeft == true || key_state.MoveRight == true) {
+    speed /= math.Sqrt(2.0)
+  }
+
+  // Process camera move position (keyboard)
   if key_state.MoveUp == true {
-    getCamera().moveCenterY(CAMERA_MOVE_CELERITY_FORWARD)
+    getCamera().moveEyeZ(float32(1.0 * speed))
   }
   if key_state.MoveDown == true {
-    getCamera().moveCenterY(CAMERA_MOVE_CELERITY_BACKWARD)
+    getCamera().moveEyeZ(float32(-1.0 * speed))
   }
   if key_state.MoveLeft == true {
-    getCamera().moveCenterX(CAMERA_MOVE_CELERITY_BACKWARD)
+    getCamera().moveEyeX(float32(1.0 * speed))
   }
   if key_state.MoveRight == true {
-    getCamera().moveCenterX(CAMERA_MOVE_CELERITY_FORWARD)
+    getCamera().moveEyeX(float32(-1.0 * speed))
   }
 
-  // Camera position: Watch
-  getCamera().moveEyeX(key_state.WatchX)
-  getCamera().moveEyeY(key_state.WatchY)
-
   // Update overall camera position
-  CAMERA.Camera = mgl32.LookAtV(CAMERA.PositionEye, CAMERA.PositionCenter, CAMERA.PositionUp)
+  CAMERA.Camera = mgl32.Mat4{1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0}
+
+  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.Translate3D(getCamera().getEyeX(), getCamera().getEyeY(), getCamera().getEyeZ()))
 }
 
 func bindCamera() {

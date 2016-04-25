@@ -48,31 +48,52 @@ func getEventKeyState() (*EventKeyState) {
 }
 
 func handleKey(window *glfw.Window, k glfw.Key, s int, action glfw.Action, mods glfw.ModifierKey) {
-  if action != glfw.Press {
-    return
-  }
-
   // Main controls
   if k == glfw.KeyEscape {
-    window.SetShouldClose(true)
+    if action == glfw.Press {
+      window.SetShouldClose(true)
+    }
   }
 
   // Camera controls
   if k == glfw.KeyUp {
-    EVENT_KEY_STATE.MoveDown = false
-    EVENT_KEY_STATE.MoveUp = flipBool(EVENT_KEY_STATE.MoveUp)
+    // Press or release?
+    if action == glfw.Press {
+      EVENT_KEY_STATE.MoveDown = false
+      EVENT_KEY_STATE.MoveUp = true
+    } else if action == glfw.Release {
+      EVENT_KEY_STATE.MoveUp = false
+    }
   }
+
   if k == glfw.KeyDown {
-    EVENT_KEY_STATE.MoveUp = false
-    EVENT_KEY_STATE.MoveDown = flipBool(EVENT_KEY_STATE.MoveDown)
+    // Press or release?
+    if action == glfw.Press {
+      EVENT_KEY_STATE.MoveUp = false
+      EVENT_KEY_STATE.MoveDown = true
+    } else if action == glfw.Release {
+      EVENT_KEY_STATE.MoveDown = false
+    }
   }
+
   if k == glfw.KeyLeft {
-    EVENT_KEY_STATE.MoveRight = false
-    EVENT_KEY_STATE.MoveLeft = flipBool(EVENT_KEY_STATE.MoveLeft)
+    // Press or release?
+    if action == glfw.Press {
+      EVENT_KEY_STATE.MoveRight = false
+      EVENT_KEY_STATE.MoveLeft = true
+    } else if action == glfw.Release {
+      EVENT_KEY_STATE.MoveLeft = false
+    }
   }
+
   if k == glfw.KeyRight {
-    EVENT_KEY_STATE.MoveLeft = false
-    EVENT_KEY_STATE.MoveRight = flipBool(EVENT_KEY_STATE.MoveRight)
+    // Press or release?
+    if action == glfw.Press {
+      EVENT_KEY_STATE.MoveLeft = false
+      EVENT_KEY_STATE.MoveRight = true
+    } else if action == glfw.Release {
+      EVENT_KEY_STATE.MoveRight = false
+    }
   }
 }
 

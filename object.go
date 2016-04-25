@@ -138,5 +138,5 @@ func normalizeObjectRadius(radius float32) (float32) {
 }
 
 func normalizeObjectDistance(distance float32) (float32) {
-  return float32(math.Cbrt(float64(distance)) * OBJECT_FACTOR_DISTANCE)
+  return float32(math.Sqrt(float64(distance)) * OBJECT_FACTOR_DISTANCE)
 }
