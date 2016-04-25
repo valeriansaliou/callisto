@@ -30,19 +30,16 @@ package main
 import (
   "fmt"
   "image"
-  "image/draw"
   _ "image/jpeg"
+  "image/draw"
   "os"
 
   "github.com/go-gl/gl/v4.1-core/gl"
 )
 
 type Texture struct {
-  Id   uint32
-  Data uint32
+  Ref uint32
 }
-
-var TEXTURE_ID_NEXT uint32 = 0
 
 func loadTexture(name string) (Texture, error) {
   var texture = Texture{}
@@ -59,17 +56,12 @@ func loadTexture(name string) (Texture, error) {
   }
 
   rgba := image.NewRGBA(img.Bounds())
-  if rgba.Stride != rgba.Rect.Size().X*4 {
-    return texture, fmt.Errorf("unsupported stride")
-  }
   draw.Draw(rgba, rgba.Bounds(), img, image.Point{0, 0}, draw.Src)
 
-  // Assign an unique texture identifier
-  texture.Id = TEXTURE_ID_NEXT
-  TEXTURE_ID_NEXT += 1
-
-  gl.ActiveTexture(texture.Id)
-  gl.BindTexture(gl.TEXTURE_2D, texture.Data);
+  // Generate unique texture
+  gl.GenTextures(1, &texture.Ref);
+  gl.ActiveTexture(texture.Ref)
+  gl.BindTexture(gl.TEXTURE_2D, texture.Ref);
 
   gl.TexImage2D(
     gl.TEXTURE_2D,

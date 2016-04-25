@@ -1,7 +1,7 @@
 [
   {
     "name"        : "sun",
-    "radius"      : 40000,
+    "radius"      : 16000,
     "inclination" : 0,
     "revolution"  : 0,
     "rotation"    : 25.38,
@@ -98,7 +98,7 @@
 
       {
         "name"        : "jupiter",
-        "radius"      : 15000,
+        "radius"      : 12000,
         "inclination" : 1.31,
         "revolution"  : 11.862615,
         "rotation"    : 0.41354,
@@ -153,7 +153,7 @@
 
       {
         "name"        : "saturn",
-        "radius"      : 13500,
+        "radius"      : 11500,
         "inclination" : 2.48,
         "revolution"  : 29.447498,
         "rotation"    : 0.44401,
@@ -208,7 +208,7 @@
 
       {
         "name"        : "uranus",
-        "radius"      : 25557.25,
+        "radius"      : 8557.25,
         "inclination" : 0.76,
         "revolution"  : 84.016846,
         "rotation"    : -0.71833,
@@ -230,7 +230,7 @@
 
       {
         "name"        : "neptune",
-        "radius"      : 24766.36,
+        "radius"      : 8766.36,
         "inclination" : 1.77,
         "revolution"  : 164.79132,
         "rotation"    : 0.67125,
