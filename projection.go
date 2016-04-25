@@ -40,7 +40,7 @@ type ProjectionData struct {
 var PROJECTION ProjectionData
 
 func createProjection(program uint32) {
-  PROJECTION.Projection = mgl32.Perspective(mgl32.DegToRad(45.0), float32(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.1, 10.0)
+  PROJECTION.Projection = mgl32.Perspective(mgl32.DegToRad(45.0), float32(WINDOW_WIDTH) / float32(WINDOW_HEIGHT), 0.1, 10.0)
   PROJECTION.ProjectionUniform = gl.GetUniformLocation(program, gl.Str("projectionUniform\x00"))
 }
 

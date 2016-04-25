@@ -123,6 +123,9 @@ func main() {
     updateElaspedTime(glfw.GetTime())
     gl.UseProgram(program)
 
+    // Update context
+    updateCamera()
+
     // Bind context
     bindProjection()
     bindCamera()

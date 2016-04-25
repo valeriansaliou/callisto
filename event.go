@@ -31,12 +31,44 @@ import (
   "github.com/go-gl/glfw/v3.1/glfw"
 )
 
+type EventKeyState struct {
+  Up    bool
+  Down  bool
+  Right bool
+  Left  bool
+}
+
+var EVENT_KEY_STATE = EventKeyState{false, false, false, false}
+
+func getEventKeyState() (*EventKeyState) {
+  return &EVENT_KEY_STATE
+}
+
 func handleKey(window *glfw.Window, k glfw.Key, s int, action glfw.Action, mods glfw.ModifierKey) {
   if action != glfw.Press {
     return
   }
 
+  // Main controls
   if k == glfw.KeyEscape {
     window.SetShouldClose(true)
+  }
+
+  // Camera controls
+  if k == glfw.KeyUp {
+    EVENT_KEY_STATE.Down = false
+    EVENT_KEY_STATE.Up = flipBool(EVENT_KEY_STATE.Up)
+  }
+  if k == glfw.KeyDown {
+    EVENT_KEY_STATE.Up = false
+    EVENT_KEY_STATE.Down = flipBool(EVENT_KEY_STATE.Down)
+  }
+  if k == glfw.KeyLeft {
+    EVENT_KEY_STATE.Right = false
+    EVENT_KEY_STATE.Left = flipBool(EVENT_KEY_STATE.Left)
+  }
+  if k == glfw.KeyRight {
+    EVENT_KEY_STATE.Left = false
+    EVENT_KEY_STATE.Right = flipBool(EVENT_KEY_STATE.Right)
   }
 }
