@@ -60,6 +60,7 @@ func getBuffers(name string) (*Buffers) {
 }
 
 func createAllBuffers(objects *[]Object, program uint32, vao uint32) {
+  // Object buffers
   for o := range *objects {
     // Create the object buffers
     createBuffers((*objects)[o], program, vao)

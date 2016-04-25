@@ -104,11 +104,13 @@ func main() {
   // Notice: this stores links between attributes and active vertex data
   gl.GenVertexArrays(1, &vao)
 
-  // Load the map of stellar objects
-  objects := loadObjects("solar-system")
+  // Load the map of stellar objects + voidbox (aKa skybox)
+  voidbox := loadObjects("voidbox")
+  stellar := loadObjects("stellar")
 
-  // Create each object buffers
-  createAllBuffers(objects, program, vao)
+  // Create all object buffers
+  createAllBuffers(voidbox, program, vao)
+  createAllBuffers(stellar, program, vao)
 
   // Initialize shaders
   initializeShaders(program)
@@ -137,8 +139,13 @@ func main() {
     bindProjection()
     bindCamera()
 
-    // Render all objects in the map
-    renderObjects(objects, program)
+    // Render skybox
+    gl.DepthMask(false)
+    renderObjects(voidbox, program)
+    gl.DepthMask(true)
+
+    // Render all stellar objects in the map
+    renderObjects(stellar, program)
 
     glfw.PollEvents()
     window.SwapBuffers()

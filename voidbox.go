@@ -27,107 +27,11 @@
 
 package main
 
-// import (
-//   "github.com/go-gl/gl/v4.1-core/gl"
-// )
+func renderVoidBox(program uint32) {
+  // disable zdepth
 
-// func createVoidBox() {
-//   // Store the current matrix
-//   gl.PushMatrix()
+  // generate huge circle
+  // draw
 
-//   // Reset and transform the matrix.
-//   gl.LoadIdentity()
-
-//   // Enable/Disable features
-//   gl.PushAttrib(gl.ENABLE_BIT)
-//   gl.Enable(gl.TEXTURE_2D)
-//   gl.Disable(gl.DEPTH_TEST)
-//   gl.Disable(gl.LIGHTING)
-//   gl.Disable(gl.BLEND)
-
-//   // Just in case we set all vertices to white.
-//   gl.Color4f(1,1,1,1)
-
-//   // Render the front quad
-//   gl.BindTexture(gl.TEXTURE_2D, voidbox_texture[0])
-//   gl.Begin(gl.QUADS)
-//       gl.TexCoord2f(0, 0)
-//       gl.Vertex3f(  0.5, -0.5, -0.5 )
-//       gl.TexCoord2f(1, 0)
-//       gl.Vertex3f( -0.5, -0.5, -0.5 )
-//       gl.TexCoord2f(1, 1)
-//       gl.Vertex3f( -0.5,  0.5, -0.5 )
-//       gl.TexCoord2f(0, 1)
-//       gl.Vertex3f(  0.5,  0.5, -0.5 )
-//   gl.End()
-
-//   // Render the left quad
-//   gl.BindTexture(gl.TEXTURE_2D, voidbox_texture[1])
-//   gl.Begin(gl.QUADS)
-//       gl.TexCoord2f(0, 0)
-//       gl.Vertex3f(  0.5, -0.5,  0.5 )
-//       gl.TexCoord2f(1, 0)
-//       gl.Vertex3f(  0.5, -0.5, -0.5 )
-//       gl.TexCoord2f(1, 1)
-//       gl.Vertex3f(  0.5,  0.5, -0.5 )
-//       gl.TexCoord2f(0, 1)
-//       gl.Vertex3f(  0.5,  0.5,  0.5 )
-//   gl.End()
-
-//   // Render the back quad
-//   gl.BindTexture(gl.TEXTURE_2D, voidbox_texture[2])
-//   gl.Begin(gl.QUADS)
-//       gl.TexCoord2f(0, 0)
-//       gl.Vertex3f( -0.5, -0.5,  0.5 )
-//       gl.TexCoord2f(1, 0)
-//       gl.Vertex3f(  0.5, -0.5,  0.5 )
-//       gl.TexCoord2f(1, 1)
-//       gl.Vertex3f(  0.5,  0.5,  0.5 )
-//       gl.TexCoord2f(0, 1)
-//       gl.Vertex3f( -0.5,  0.5,  0.5 )
-
-//   gl.End()
-
-//   // Render the right quad
-//   gl.BindTexture(gl.TEXTURE_2D, voidbox_texture[3])
-//   gl.Begin(gl.QUADS)
-//       gl.TexCoord2f(0, 0)
-//       gl.Vertex3f( -0.5, -0.5, -0.5 )
-//       gl.TexCoord2f(1, 0)
-//       gl.Vertex3f( -0.5, -0.5,  0.5 )
-//       gl.TexCoord2f(1, 1)
-//       gl.Vertex3f( -0.5,  0.5,  0.5 )
-//       gl.TexCoord2f(0, 1)
-//       gl.Vertex3f( -0.5,  0.5, -0.5 )
-//   gl.End()
-
-//   // Render the top quad
-//   gl.BindTexture(gl.TEXTURE_2D, voidbox_texture[4])
-//   gl.Begin(gl.QUADS)
-//       gl.TexCoord2f(0, 1)
-//       gl.Vertex3f( -0.5,  0.5, -0.5 )
-//       gl.TexCoord2f(0, 0)
-//       gl.Vertex3f( -0.5,  0.5,  0.5 )
-//       gl.TexCoord2f(1, 0)
-//       gl.Vertex3f(  0.5,  0.5,  0.5 )
-//       gl.TexCoord2f(1, 1)
-//       gl.Vertex3f(  0.5,  0.5, -0.5 )
-//   gl.End()
-
-//   // Render the bottom quad
-//   gl.BindTexture(gl.TEXTURE_2D, voidbox_texture[5])
-//   gl.Begin(gl.QUADS)
-//       gl.TexCoord2f(0, 0)
-//       gl.Vertex3f( -0.5, -0.5, -0.5 )
-//       gl.TexCoord2f(0, 1)
-//       gl.Vertex3f( -0.5, -0.5,  0.5 )
-//       gl.TexCoord2f(1, 1)
-//       gl.Vertex3f(  0.5, -0.5,  0.5 )
-//       gl.TexCoord2f(1, 0)
-//       gl.Vertex3f(  0.5, -0.5, -0.5 )
-//   gl.End()
-
-//   // Restore enable bits and matrix
-//   gl.PopAttrib()
-//   gl.PopMatrix()
-// }
+  // enable zdepth
+}

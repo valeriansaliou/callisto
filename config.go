@@ -60,7 +60,7 @@ const (
 // Projection
 var (
   PROJECTION_FIELD_NEAR float32 = 0.1
-  PROJECTION_FIELD_FAR float32 = 10000.0
+  PROJECTION_FIELD_FAR float32 = 9999999999999999999.0
 )
 
 // Camera
