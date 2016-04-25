@@ -48,7 +48,7 @@ uniform mat3 normalUniform;
 uniform vec3 pointLightingLocationUniform;
 uniform vec3 pointLightingColorUniform;
 
-uniform int isLightSourceUniform;
+uniform int isLightEmitterUniform;
 
 in vec3 vertexAttributes;
 in vec3 vertexNormalAttributes;
@@ -64,7 +64,7 @@ void main() {
   shaderTextureCoords = vertexTextureCoords;
 
   // Process lighting
-  if (isLightSourceUniform == 1) {
+  if (isLightEmitterUniform == 1) {
     // Light emitter
     vec3 lightDirection = normalize(pointLightingLocationUniform - modelViewPosition.xyz);
 
@@ -83,6 +83,8 @@ var SHADER_FRAGMENT = `
 
 uniform sampler2D textureUniform;
 
+uniform int isLightReceiverUniform;
+
 in vec2 shaderTextureCoords;
 in vec3 vertexLighting;
 
@@ -92,7 +94,11 @@ void main() {
   vec4 objectColorTexture = texture(textureUniform, shaderTextureCoords);
 
   // Apply lighting to pixel
-  objectColor = vec4(objectColorTexture.rgb * vertexLighting, objectColorTexture.a);
+  if (isLightReceiverUniform == 1) {
+    objectColor = vec4(objectColorTexture.rgb * vertexLighting, objectColorTexture.a);
+  } else {
+    objectColor = objectColorTexture;
+  }
 }
 ` + "\x00"
 

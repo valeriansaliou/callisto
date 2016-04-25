@@ -46,6 +46,7 @@ type Object struct {
   Rotation    float32
   Distance    float32
   Radiate     bool
+  Cosmic      bool
 
   Objects     []Object
 }
@@ -124,12 +125,20 @@ func renderObjects(objects *[]Object, program uint32) {
     gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVerticeNormals)
     gl.VertexAttribPointer(SHADER_VERTEX_NORMAL_ATTRIBUTES, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
-    // Light source? (eg: Sun)
+    // Light emitter? (eg: Sun)
     if (*objects)[o].Radiate == true {
-      gl.Uniform1i(LIGHT.IsLightSourceUniform, 1)
+      gl.Uniform1i(LIGHT.IsLightEmitterUniform, 1)
 
       gl.Uniform3f(LIGHT.PointLightingLocationUniform, 0, 0, 0);
       gl.Uniform3f(LIGHT.PointLightingColorUniform, 1, 1, 1);
+    }
+
+    // Light receiver? (eg: planet, moon)
+    if (*objects)[o].Cosmic == true {
+      // It is a far-away cosmic object, dont light it from emitter
+      gl.Uniform1i(LIGHT.IsLightReceiverUniform, 0)
+    } else {
+      gl.Uniform1i(LIGHT.IsLightReceiverUniform, 1)
     }
 
     // Render indices

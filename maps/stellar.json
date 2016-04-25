@@ -7,6 +7,7 @@
     "rotation"    : 25.38,
     "distance"    : 0,
     "radiate"     : true,
+    "cosmic"      : false,
 
     "objects"     : [
       {
@@ -17,6 +18,7 @@
         "rotation"    : 58.646225,
         "distance"    : 57909175,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : []
       },
@@ -29,6 +31,7 @@
         "rotation"    : -243.0187,
         "distance"    : 108208930,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : []
       },
@@ -41,6 +44,7 @@
         "rotation"    : 0.99726968,
         "distance"    : 149597890,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : [
           {
@@ -51,6 +55,7 @@
             "rotation"    : 27.321582,
             "distance"    : 384399,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           }
@@ -65,6 +70,7 @@
         "rotation"    : 1.02595675,
         "distance"    : 227936640,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : [
           {
@@ -75,6 +81,7 @@
             "rotation"    : 1.02595675,
             "distance"    : 9517.58,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           },
@@ -87,6 +94,7 @@
             "rotation"    : 1.26244,
             "distance"    : 23460,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           }
@@ -101,6 +109,7 @@
         "rotation"    : 0.3781,
         "distance"    : 413700000,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : []
       },
@@ -113,6 +122,7 @@
         "rotation"    : 0.41354,
         "distance"    : 778412010,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : [
           {
@@ -123,6 +133,7 @@
             "rotation"    : 1.769,
             "distance"    : 421700,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           },
@@ -135,6 +146,7 @@
             "rotation"    : 3.551,
             "distance"    : 670900,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           },
@@ -147,6 +159,7 @@
             "rotation"    : 7.154553,
             "distance"    : 1070000,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           },
@@ -159,6 +172,7 @@
             "rotation"    : 16.68902,
             "distance"    : 1883000,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           }
@@ -173,6 +187,7 @@
         "rotation"    : 0.44401,
         "distance"    : 1426725400,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : [
           {
@@ -183,6 +198,7 @@
             "rotation"    : 15.94542,
             "distance"    : 1221850,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           },
@@ -195,6 +211,7 @@
             "rotation"    : 1.370218,
             "distance"    : 238020,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           },
@@ -207,6 +224,7 @@
             "rotation"    : 79.33018,
             "distance"    : 3561300,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           },
@@ -219,6 +237,7 @@
             "rotation"    : 0,
             "distance"    : 0,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           }
@@ -233,6 +252,7 @@
         "rotation"    : -0.71833,
         "distance"    : 2870972200,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : [
           {
@@ -243,6 +263,7 @@
             "rotation"    : 1.413479,
             "distance"    : 129780,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           }
@@ -257,6 +278,7 @@
         "rotation"    : 0.67125,
         "distance"    : 4498252900,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : [
           {
@@ -267,6 +289,7 @@
             "rotation"    : -5.87685,
             "distance"    : 354800,
             "radiate"     : false,
+            "cosmic"      : false,
 
             "objects"     : []
           }
@@ -281,6 +304,7 @@
         "rotation"    : -6.38723,
         "distance"    : 5906380000,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : []
       },
@@ -293,6 +317,7 @@
         "rotation"    : 0.167,
         "distance"    : 6484000000,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : []
       },
@@ -305,6 +330,7 @@
         "rotation"    : 0.2,
         "distance"    : 6850000000,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : []
       },
@@ -317,6 +343,7 @@
         "rotation"    : 0.2,
         "distance"    : 10210000000,
         "radiate"     : false,
+        "cosmic"      : false,
 
         "objects"     : []
       }
