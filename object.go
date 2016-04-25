@@ -95,8 +95,13 @@ func renderObjects(objects *[]Object, program uint32) {
     // Toggle to unary context
     pushMatrix()
 
+    // Apply object angles
     if (*objects)[o].Rotation != 0 {
       CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.HomogRotate3D(buffers.AngleRotation, mgl32.Vec3{0, 1, 0}))
+    }
+
+    if (*objects)[o].Inclination > 0 {
+      CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.HomogRotate3D((*objects)[o].Inclination / 90.0, mgl32.Vec3{0, 0, 1}))
     }
 
     // Apply model
