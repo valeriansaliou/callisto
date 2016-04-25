@@ -98,6 +98,12 @@ func handleKey(window *glfw.Window, k glfw.Key, s int, action glfw.Action, mods 
 }
 
 func handleMouseCursor(window *glfw.Window, position_x float64, position_y float64) {
-  EVENT_KEY_STATE.WatchX = float32(position_x) * CAMERA_WATCH_REDUCER
-  EVENT_KEY_STATE.WatchY = float32(position_y) * CAMERA_WATCH_REDUCER
+  // Bind new watch position
+  if position_x >= 0 && position_x <= float64(WINDOW_WIDTH) {
+    EVENT_KEY_STATE.WatchX = float32(position_x) * (1.0 / float32(WINDOW_WIDTH)) - 0.5
+  }
+
+  if position_y >= 0 && position_y <= float64(WINDOW_HEIGHT) {
+    EVENT_KEY_STATE.WatchY = float32(position_y) * (1.0 / float32(WINDOW_HEIGHT)) - 0.5
+  }
 }

@@ -104,7 +104,7 @@ func createCamera(program uint32) {
   CAMERA.PositionTarget = CAMERA_DEFAULT_TARGET
 }
 
-func updateCamera() {
+func processEventCameraEye() {
   key_state := getEventKeyState()
 
   // Decrease speed if diagonal move
@@ -115,11 +115,13 @@ func updateCamera() {
   }
 
   // Process camera move position (keyboard)
+  target_x := float64(getCamera().getTargetX())
+
   if key_state.MoveUp == true {
-    getCamera().moveEyeZ(float32(1.0 * speed))
+    getCamera().moveEyeZ(float32(1.0 * speed * math.Cos(target_x)))
   }
   if key_state.MoveDown == true {
-    getCamera().moveEyeZ(float32(-1.0 * speed))
+    getCamera().moveEyeZ(float32(-1.0 * speed * math.Cos(target_x)))
   }
   if key_state.MoveLeft == true {
     getCamera().moveEyeX(float32(1.0 * speed))
@@ -128,10 +130,34 @@ func updateCamera() {
     getCamera().moveEyeX(float32(-1.0 * speed))
   }
 
-  // Update overall camera position
+  // Translation: walk
+  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.Translate3D(getCamera().getEyeX(), getCamera().getEyeY(), getCamera().getEyeZ()))
+}
+
+func processEventCameraTarget() {
+  key_state := getEventKeyState()
+
+  rot_x := -1.0 * key_state.WatchY * float32(math.Pi) * 2.0
+  rot_y := key_state.WatchX * float32(math.Pi) * 2.0
+
+  getCamera().updateTargetX(rot_x)
+  getCamera().updateTargetY(rot_y)
+
+  // Rotation: view
+  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(getCamera().getTargetX(), mgl32.Vec3{1, 0, 0}))
+  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(getCamera().getTargetY(), mgl32.Vec3{0, 1, 0}))
+  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(getCamera().getTargetZ(), mgl32.Vec3{0, 0, 1}))
+}
+
+func updateCamera() {
+  // Update overall camera position (flip camera)
   CAMERA.Camera = mgl32.Mat4{1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0}
 
-  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.Translate3D(getCamera().getEyeX(), getCamera().getEyeY(), getCamera().getEyeZ()))
+  // Process new eye position in scene
+  processEventCameraEye()
+
+  // Process new eye watch target in scene
+  processEventCameraTarget()
 }
 
 func bindCamera() {

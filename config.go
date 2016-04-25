@@ -69,8 +69,6 @@ var (
   CAMERA_DEFAULT_TARGET mgl32.Vec3 = mgl32.Vec3{0, 0, 0}
 
   CAMERA_MOVE_CELERITY float64 = 15.0
-
-  CAMERA_WATCH_REDUCER float32 = 0.01
 )
 
 // Object
