@@ -38,7 +38,7 @@ type CameraData struct {
   Camera         mgl32.Mat4
   CameraUniform  int32
 
-  PositionEye mgl32.Vec3
+  PositionEye    mgl32.Vec3
   PositionTarget mgl32.Vec3
 }
 
@@ -92,6 +92,14 @@ func (camera_data *CameraData) updateTargetZ(position float32) {
   camera_data.PositionTarget[2] = position
 }
 
+func (camera_data *CameraData) defaultEye() {
+  camera_data.PositionEye = CAMERA_DEFAULT_EYE
+}
+
+func (camera_data *CameraData) defaultTarget() {
+  camera_data.PositionTarget = CAMERA_DEFAULT_TARGET
+}
+
 func getCamera() (*CameraData) {
   return &CAMERA
 }
@@ -100,38 +108,46 @@ func createCamera(program uint32) {
   CAMERA.CameraUniform = gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
 
   // Default camera position
-  CAMERA.PositionEye = CAMERA_DEFAULT_EYE
-  CAMERA.PositionTarget = CAMERA_DEFAULT_TARGET
+  CAMERA.defaultEye()
+  CAMERA.defaultTarget()
 }
 
 func processEventCameraEye() {
+  var (
+    speed float64
+  )
+
   key_state := getEventKeyState()
 
   // Decrease speed if diagonal move
-  speed := CAMERA_MOVE_CELERITY
+  if key_state.MoveTurbo == true {
+    speed = CAMERA_MOVE_CELERITY_TURBO
+  } else {
+    speed = CAMERA_MOVE_CELERITY_CRUISE
+  }
 
   if (key_state.MoveUp == true || key_state.MoveDown == true) && (key_state.MoveLeft == true || key_state.MoveRight == true) {
     speed /= math.Sqrt(2.0)
   }
 
   // Process camera move position (keyboard)
-  target_x := float64(getCamera().getTargetX())
+  target_x := float64(CAMERA.getTargetX())
 
   if key_state.MoveUp == true {
-    getCamera().moveEyeZ(float32(1.0 * speed * math.Cos(target_x)))
+    CAMERA.moveEyeZ(float32(1.0 * speed * math.Cos(target_x)))
   }
   if key_state.MoveDown == true {
-    getCamera().moveEyeZ(float32(-1.0 * speed * math.Cos(target_x)))
+    CAMERA.moveEyeZ(float32(-1.0 * speed * math.Cos(target_x)))
   }
   if key_state.MoveLeft == true {
-    getCamera().moveEyeX(float32(1.0 * speed))
+    CAMERA.moveEyeX(float32(1.0 * speed))
   }
   if key_state.MoveRight == true {
-    getCamera().moveEyeX(float32(-1.0 * speed))
+    CAMERA.moveEyeX(float32(-1.0 * speed))
   }
 
   // Translation: walk
-  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.Translate3D(getCamera().getEyeX(), getCamera().getEyeY(), getCamera().getEyeZ()))
+  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.Translate3D(CAMERA.getEyeX(), CAMERA.getEyeY(), CAMERA.getEyeZ()))
 }
 
 func processEventCameraTarget() {
@@ -140,13 +156,13 @@ func processEventCameraTarget() {
   rot_x := -1.0 * key_state.WatchY * float32(math.Pi) * 2.0
   rot_y := key_state.WatchX * float32(math.Pi) * 2.0
 
-  getCamera().updateTargetX(rot_x)
-  getCamera().updateTargetY(rot_y)
+  CAMERA.updateTargetX(rot_x)
+  CAMERA.updateTargetY(rot_y)
 
   // Rotation: view
-  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(getCamera().getTargetX(), mgl32.Vec3{1, 0, 0}))
-  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(getCamera().getTargetY(), mgl32.Vec3{0, 1, 0}))
-  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(getCamera().getTargetZ(), mgl32.Vec3{0, 0, 1}))
+  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(CAMERA.getTargetX(), mgl32.Vec3{1, 0, 0}))
+  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(CAMERA.getTargetY(), mgl32.Vec3{0, 1, 0}))
+  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(CAMERA.getTargetZ(), mgl32.Vec3{0, 0, 1}))
 }
 
 func updateCamera() {
@@ -158,6 +174,11 @@ func updateCamera() {
 
   // Process new eye watch target in scene
   processEventCameraTarget()
+}
+
+func resetCamera() {
+  CAMERA.defaultEye()
+  CAMERA.defaultTarget()
 }
 
 func bindCamera() {

@@ -53,9 +53,9 @@ func init() {
 
 func main() {
   var (
-    err     error
-    window  *glfw.Window
-    vao     uint32
+    err    error
+    window *glfw.Window
+    vao    uint32
   )
 
   // Create window
@@ -76,6 +76,9 @@ func main() {
   }
 
   window.MakeContextCurrent()
+
+  // Bind key listeners
+  window.SetInputMode(glfw.CursorMode, glfw.CursorHidden);
 
   if CONTROLS_ENABLE_KEY == true {
     window.SetKeyCallback(handleKey)

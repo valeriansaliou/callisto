@@ -32,6 +32,8 @@ import (
 )
 
 type EventKeyState struct {
+  MoveTurbo bool
+
   MoveUp    bool
   MoveDown  bool
   MoveRight bool
@@ -41,7 +43,7 @@ type EventKeyState struct {
   WatchY    float32
 }
 
-var EVENT_KEY_STATE = EventKeyState{false, false, false, false, float32(WINDOW_WIDTH) / 2.0, float32(WINDOW_HEIGHT) / 2.0}
+var EVENT_KEY_STATE = EventKeyState{false, false, false, false, false, float32(WINDOW_WIDTH) / 2.0, float32(WINDOW_HEIGHT) / 2.0}
 
 func getEventKeyState() (*EventKeyState) {
   return &EVENT_KEY_STATE
@@ -55,7 +57,25 @@ func handleKey(window *glfw.Window, k glfw.Key, s int, action glfw.Action, mods 
     }
   }
 
+  // Cruise control keys
+  if k == glfw.KeyR {
+    // Release?
+    if action == glfw.Release {
+      // Immediately reset camera
+      resetCamera()
+    }
+  }
+
   // Camera controls
+  if k == glfw.KeySpace {
+    // Press or release?
+    if action == glfw.Press {
+      EVENT_KEY_STATE.MoveTurbo = true
+    } else if action == glfw.Release {
+      EVENT_KEY_STATE.MoveTurbo = false
+    }
+  }
+
   if k == glfw.KeyUp {
     // Press or release?
     if action == glfw.Press {
