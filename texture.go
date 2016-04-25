@@ -38,11 +38,11 @@ import (
 )
 
 type Texture struct {
-  Id   int32
+  Id   uint32
   Data uint32
 }
 
-var TEXTURE_ID_MAX int32 = 0
+var TEXTURE_ID_NEXT uint32 = 0
 
 func loadTexture(name string) (Texture, error) {
   var texture = Texture{}
@@ -65,10 +65,10 @@ func loadTexture(name string) (Texture, error) {
   draw.Draw(rgba, rgba.Bounds(), img, image.Point{0, 0}, draw.Src)
 
   // Assign an unique texture identifier
-  TEXTURE_ID_MAX += 1
-  texture.Id = TEXTURE_ID_MAX
+  texture.Id = TEXTURE_ID_NEXT
+  TEXTURE_ID_NEXT += 1
 
-  gl.ActiveTexture(uint32(texture.Id))
+  gl.ActiveTexture(texture.Id)
   gl.BindTexture(gl.TEXTURE_2D, texture.Data);
 
   gl.TexImage2D(

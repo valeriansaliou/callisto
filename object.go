@@ -73,9 +73,8 @@ func renderObjects(objects *[]Object, program uint32) {
   for o := range *objects {
     buffers := getBuffers((*objects)[o].Name)
 
-    gl.ActiveTexture(uint32(buffers.Texture.Id))
+    gl.ActiveTexture(buffers.Texture.Id)
     gl.BindTexture(gl.TEXTURE_2D, buffers.Texture.Data)
-    gl.Uniform1i(TEXTURE_UNIFORM, buffers.Texture.Id)
 
     // Toggle to child context
     pushMatrix()
