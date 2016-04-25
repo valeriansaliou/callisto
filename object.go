@@ -91,6 +91,9 @@ func renderObjects(objects *[]Object, program uint32) {
       CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.Translate3D(OBJECT_FACTOR_DISTANCE * (*objects)[o].Distance * 1.0, 0.0, 0.0))
     }
 
+    // Toggle to unary context
+    pushMatrix()
+
     if (*objects)[o].Rotation != 0 {
       CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.HomogRotate3D(buffers.AngleRotation, mgl32.Vec3{0, 1, 0}))
     }
@@ -117,6 +120,9 @@ func renderObjects(objects *[]Object, program uint32) {
     // Reset buffers
     gl.BindBuffer(gl.ARRAY_BUFFER, 0)
     gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
+
+    // Toggle back from unary context
+    popMatrix()
 
     // Render children (if any?)
     renderObjects(&((*objects)[o].Objects), program)

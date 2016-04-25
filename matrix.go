@@ -44,16 +44,26 @@ var (
 
 func initializeMatrix() {
   MATRIX_STACK = list.New()
-  CURRENT_MATRIX = mgl32.Mat4{}
+  CURRENT_MATRIX = mgl32.Ident4()
 }
 
 func getMatrix() (*mgl32.Mat4) {
   return &CURRENT_MATRIX
 }
 
+func setMatrix(matrix mgl32.Mat4) {
+  CURRENT_MATRIX = matrix
+}
+
 func pushMatrix() {
-  CURRENT_MATRIX = mgl32.Ident4()
-  MATRIX_STACK.PushFront(CURRENT_MATRIX)
+  // Stack current matrix
+  MATRIX_STACK.PushBack(CURRENT_MATRIX)
+
+  // Generate new current matrix
+  new_matrix := mgl32.Ident4()
+
+  new_matrix = new_matrix.Mul4(CURRENT_MATRIX)
+  CURRENT_MATRIX = new_matrix
 }
 
 func popMatrix() {
@@ -61,7 +71,17 @@ func popMatrix() {
     panic("Cannot pop: matrix stack is empty")
   }
 
-  MATRIX_STACK.Remove(MATRIX_STACK.Front())
+  last_element_list := MATRIX_STACK.Back()
+
+  if previous_matrix, ok := (last_element_list.Value).(mgl32.Mat4); ok {
+    // Assign now-popped element
+    CURRENT_MATRIX = previous_matrix
+
+    // Remove this element from the stack
+    MATRIX_STACK.Remove(last_element_list)
+  } else {
+    panic("Cannot pop: error")
+  }
 }
 
 func setMatrixUniforms(program uint32) {

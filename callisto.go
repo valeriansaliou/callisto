@@ -90,9 +90,6 @@ func main() {
 
   gl.UseProgram(program)
 
-  // Initialize stack matrix
-  initializeMatrix()
-
   // Create environment
   createProjection(program)
   createCamera(program)
@@ -123,6 +120,9 @@ func main() {
     // Global routines
     updateElaspedTime(glfw.GetTime())
     gl.UseProgram(program)
+
+    // Initialize stack matrix
+    initializeMatrix()
 
     // Update context
     updateCamera()
