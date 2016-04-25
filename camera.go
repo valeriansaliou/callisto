@@ -33,46 +33,50 @@ import (
 )
 
 type CameraData struct {
-  Camera        mgl32.Mat4
-  CameraUniform int32
+  Camera         mgl32.Mat4
+  CameraUniform  int32
+
+  PositionEye mgl32.Vec3
+  PositionCenter mgl32.Vec3
+  PositionUp mgl32.Vec3
 }
 
 var CAMERA CameraData
 
 func (camera_data *CameraData) moveEyeX(position float32) {
-  camera_data.Camera[0] = position
+  camera_data.PositionEye[0] = position
 }
 
 func (camera_data *CameraData) moveEyeY(position float32) {
-  camera_data.Camera[1] = position
+  camera_data.PositionEye[1] = position
 }
 
 func (camera_data *CameraData) moveEyeZ(position float32) {
-  camera_data.Camera[2] = position
+  camera_data.PositionEye[2] = position
 }
 
 func (camera_data *CameraData) moveCenterX(increment float32) {
-  camera_data.Camera[3] += increment
+  camera_data.PositionCenter[0] += increment
 }
 
 func (camera_data *CameraData) moveCenterY(increment float32) {
-  camera_data.Camera[4] += increment
+  camera_data.PositionCenter[1] += increment
 }
 
 func (camera_data *CameraData) moveCenterZ(increment float32) {
-  camera_data.Camera[5] += increment
+  camera_data.PositionCenter[2] += increment
 }
 
 func (camera_data *CameraData) moveUpX(increment float32) {
-  camera_data.Camera[6] += increment
+  camera_data.PositionUp[0] += increment
 }
 
 func (camera_data *CameraData) moveUpY(increment float32) {
-  camera_data.Camera[7] += increment
+  camera_data.PositionUp[1] += increment
 }
 
 func (camera_data *CameraData) moveUpZ(increment float32) {
-  camera_data.Camera[8] += increment
+  camera_data.PositionUp[2] += increment
 }
 
 func getCamera() (*CameraData) {
@@ -80,8 +84,12 @@ func getCamera() (*CameraData) {
 }
 
 func createCamera(program uint32) {
-  CAMERA.Camera = mgl32.LookAtV(CAMERA_DEFAULT_EYE, CAMERA_DEFAULT_CENTER, CAMERA_DEFAULT_UP)
   CAMERA.CameraUniform = gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
+
+  // Default camera position
+  CAMERA.PositionEye = CAMERA_DEFAULT_EYE
+  CAMERA.PositionCenter = CAMERA_DEFAULT_CENTER
+  CAMERA.PositionUp = CAMERA_DEFAULT_UP
 }
 
 func updateCamera() {
@@ -89,21 +97,24 @@ func updateCamera() {
 
   // Camera position: Move
   if key_state.MoveUp == true {
-    getCamera().moveCenterX(CAMERA_MOVE_CELERITY_FORWARD)
-  }
-  if key_state.MoveDown == true {
-    getCamera().moveCenterX(CAMERA_MOVE_CELERITY_BACKWARD)
-  }
-  if key_state.MoveLeft == true {
     getCamera().moveCenterY(CAMERA_MOVE_CELERITY_FORWARD)
   }
-  if key_state.MoveRight == true {
+  if key_state.MoveDown == true {
     getCamera().moveCenterY(CAMERA_MOVE_CELERITY_BACKWARD)
+  }
+  if key_state.MoveLeft == true {
+    getCamera().moveCenterX(CAMERA_MOVE_CELERITY_BACKWARD)
+  }
+  if key_state.MoveRight == true {
+    getCamera().moveCenterX(CAMERA_MOVE_CELERITY_FORWARD)
   }
 
   // Camera position: Watch
   getCamera().moveEyeX(key_state.WatchX)
   getCamera().moveEyeY(key_state.WatchY)
+
+  // Update overall camera position
+  CAMERA.Camera = mgl32.LookAtV(CAMERA.PositionEye, CAMERA.PositionCenter, CAMERA.PositionUp)
 }
 
 func bindCamera() {

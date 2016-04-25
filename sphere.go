@@ -71,7 +71,8 @@ func generateSphere(name string, radius float32) (Sphere) {
   j = 0
   k = 0
 
-  radius_n = radius * float32(OBJECT_FACTOR_RADIUS)
+  radius_n = normalizeObjectRadius(radius)
+
   nb_vertices = 0.0
   res_longitude = float32(OBJECT_TEXTURE_THETA_MAX) / float32(OBJECT_TEXTURE_STEP_LONGITUDE) + 1.0;
 

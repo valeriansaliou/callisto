@@ -29,6 +29,7 @@ package main
 
 import (
   "fmt"
+  "math"
   "io/ioutil"
   "encoding/json"
 
@@ -88,7 +89,7 @@ func renderObjects(objects *[]Object, program uint32) {
     }
 
     if (*objects)[o].Distance > 0 {
-      CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.Translate3D(OBJECT_FACTOR_DISTANCE * (*objects)[o].Distance * 1.0, 0.0, 0.0))
+      CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.Translate3D(normalizeObjectDistance((*objects)[o].Distance), 0.0, 0.0))
     }
 
     // Toggle to unary context
@@ -130,4 +131,12 @@ func renderObjects(objects *[]Object, program uint32) {
     // Toggle back to parent context
     popMatrix()
   }
+}
+
+func normalizeObjectRadius(radius float32) (float32) {
+  return float32(math.Cbrt(float64(radius)) * OBJECT_FACTOR_RADIUS)
+}
+
+func normalizeObjectDistance(distance float32) (float32) {
+  return float32(math.Cbrt(float64(distance)) * OBJECT_FACTOR_DISTANCE)
 }

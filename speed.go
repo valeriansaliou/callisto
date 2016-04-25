@@ -40,7 +40,7 @@ func revolutionAngleSinceLast(object *Object) float32 {
   // SPEED_TIME_ELAPSED in milliseconds
   //  -> angle = (SPEED_TIME_ELAPSED / revolution_time) * OBJECT_REVOLUTION_FULL_ANGLE
 
-  return float32(OBJECT_FACTOR_SPEED_REVOLUTION * SPEED_TIME_ELAPSED) / ((*object).Revolution * float32(TIME_YEAR_TO_MILLISECONDS)) * float32(OBJECT_REVOLUTION_FULL_ANGLE)
+  return float32(OBJECT_FACTOR_SPEED_SCENE * SPEED_TIME_ELAPSED) / ((*object).Revolution * float32(TIME_YEAR_TO_MILLISECONDS)) * float32(OBJECT_REVOLUTION_FULL_ANGLE)
 }
 
 func rotationAngleSinceLast(object *Object) float32 {
@@ -48,5 +48,5 @@ func rotationAngleSinceLast(object *Object) float32 {
   // SPEED_TIME_ELAPSED in milliseconds
   //  -> angle = (SPEED_TIME_ELAPSED / rotation_time) * OBJECT_ROTATION_FULL_ANGLE
 
-  return float32(OBJECT_FACTOR_SPEED_ROTATION * SPEED_TIME_ELAPSED) / ((*object).Rotation * float32(TIME_DAY_TO_MILLISECONDS)) * float32(OBJECT_ROTATION_FULL_ANGLE)
+  return float32(OBJECT_FACTOR_SPEED_SCENE * SPEED_TIME_ELAPSED) / ((*object).Rotation * float32(TIME_DAY_TO_MILLISECONDS)) * float32(OBJECT_ROTATION_FULL_ANGLE)
 }
