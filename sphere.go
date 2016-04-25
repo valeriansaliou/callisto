@@ -32,49 +32,66 @@ import (
 )
 
 type Sphere struct {
-  Vertices      []float32
-  Indices       []int32
-  TextureCoords []float32
+  Vertices       []float32
+  VerticeNormals []float32
+  Indices        []int32
+  TextureCoords  []float32
 }
 
-func generateSphere(name string, radius float32) (Sphere) {
+func generateSphere(object *Object) (Sphere) {
   var (
-    sphere           Sphere
+    sphere            Sphere
 
-    i                int
-    j                int
-    k                int
+    i                 int
+    j                 int
+    k                 int
+    l                 int
 
-    radius_n         float32
-    nb_vertices      float32
+    normal_direction  float32
 
-    unary_size_full  int
-    unary_size_short int
+    radius_n          float32
+    nb_vertices       float32
 
-    res_longitude    float32
+    unary_size_full   int
+    unary_size_short  int
 
-    longitude        int
-    latitude         int
+    res_longitude     float32
 
-    longitude_r_f    float64
-    latitude_r_f     float64
+    longitude         int
+    latitude          int
+
+    longitude_r_f     float64
+    latitude_r_f      float64
+
+    vertex_position_x float32
+    vertex_position_y float32
+    vertex_position_z float32
   )
 
   unary_size_full = (2 * OBJECT_TEXTURE_PHI_MAX / OBJECT_TEXTURE_STEP_LATITUDE + 1) * (OBJECT_TEXTURE_THETA_MAX / OBJECT_TEXTURE_STEP_LONGITUDE + 1)
   unary_size_short = (2 * OBJECT_TEXTURE_PHI_MAX / OBJECT_TEXTURE_STEP_LATITUDE) * (OBJECT_TEXTURE_THETA_MAX / OBJECT_TEXTURE_STEP_LONGITUDE)
 
   sphere.Vertices = make([]float32, 3 * unary_size_full)
+  sphere.VerticeNormals = make([]float32, 3 * unary_size_full)
   sphere.Indices = make([]int32, 6 * unary_size_short)
   sphere.TextureCoords = make([]float32, 2 * unary_size_full)
 
   i = 0
   j = 0
   k = 0
+  l = 0
 
-  radius_n = normalizeObjectRadius(radius)
+  radius_n = normalizeObjectRadius(object.Radius)
 
   nb_vertices = 0.0
   res_longitude = float32(OBJECT_TEXTURE_THETA_MAX) / float32(OBJECT_TEXTURE_STEP_LONGITUDE) + 1.0;
+
+  // Normal is -1 if sun, which is the light source, to avoid any self-shadow effect
+  if object.Radiate == true {
+    normal_direction = -1.0
+  } else {
+    normal_direction = 1.0
+  }
 
   // Map sphere data
   for latitude = -90; latitude <= OBJECT_TEXTURE_PHI_MAX; latitude += OBJECT_TEXTURE_STEP_LATITUDE {
@@ -83,35 +100,47 @@ func generateSphere(name string, radius float32) (Sphere) {
       longitude_r_f = float64(MATH_DEG_TO_RAD) * float64(longitude)
       latitude_r_f = float64(MATH_DEG_TO_RAD) * float64(latitude)
 
+      // Process vertex positions
+      vertex_position_x = float32(math.Sin(longitude_r_f) * math.Cos(latitude_r_f))
+      vertex_position_y = float32(math.Sin(latitude_r_f))
+      vertex_position_z = float32(math.Cos(latitude_r_f) * math.Cos(longitude_r_f))
+
       // Bind sphere vertices
-      sphere.Vertices[i] = radius_n * float32(math.Sin(longitude_r_f) * math.Cos(latitude_r_f))
-      sphere.Vertices[i + 1] = radius_n * float32(math.Sin(latitude_r_f))
-      sphere.Vertices[i + 2] = radius_n * float32(math.Cos(latitude_r_f) * math.Cos(longitude_r_f))
+      sphere.Vertices[i] = radius_n * vertex_position_x
+      sphere.Vertices[i + 1] = radius_n * vertex_position_y
+      sphere.Vertices[i + 2] = radius_n * vertex_position_z
 
       i += 3
+
+      // Bind sphere vertice normals
+      sphere.VerticeNormals[j] = normal_direction * vertex_position_x
+      sphere.VerticeNormals[j + 1] = normal_direction * vertex_position_y
+      sphere.VerticeNormals[j + 2] = normal_direction * vertex_position_z
+
+      j += 3
 
       // Bind sphere indices
       if (longitude != OBJECT_TEXTURE_THETA_MAX) {
         if (latitude < OBJECT_TEXTURE_PHI_MAX) {
-          sphere.Indices[j] = int32(nb_vertices)
-          sphere.Indices[j + 1] = int32(nb_vertices + 1.0)
-          sphere.Indices[j + 2] = int32(nb_vertices + 1.0 + res_longitude)
+          sphere.Indices[k] = int32(nb_vertices)
+          sphere.Indices[k + 1] = int32(nb_vertices + 1.0)
+          sphere.Indices[k + 2] = int32(nb_vertices + 1.0 + res_longitude)
 
-          sphere.Indices[j + 3] = int32(nb_vertices)
-          sphere.Indices[j + 4] = int32(nb_vertices + 1.0 + res_longitude)
-          sphere.Indices[j + 5] = int32(nb_vertices + res_longitude)
+          sphere.Indices[k + 3] = int32(nb_vertices)
+          sphere.Indices[k + 4] = int32(nb_vertices + 1.0 + res_longitude)
+          sphere.Indices[k + 5] = int32(nb_vertices + res_longitude)
 
-          j += 6
+          k += 6
         }
       }
 
       nb_vertices += 1.0
 
       // Bind sphere texture coordinates
-      sphere.TextureCoords[k] = float32(longitude) / float32(OBJECT_TEXTURE_THETA_MAX)
-      sphere.TextureCoords[k + 1] = float32(90 + latitude) / float32(90 + OBJECT_TEXTURE_PHI_MAX)
+      sphere.TextureCoords[l] = float32(longitude) / float32(OBJECT_TEXTURE_THETA_MAX)
+      sphere.TextureCoords[l + 1] = float32(90 + latitude) / float32(90 + OBJECT_TEXTURE_PHI_MAX)
 
-      k += 2
+      l += 2
     }
   }
 

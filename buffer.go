@@ -34,15 +34,16 @@ import (
 )
 
 type Buffers struct {
-  Sphere              Sphere
-  Texture             Texture
+  Sphere                  Sphere
+  Texture                 Texture
 
-  AngleRotation       float32
-  AngleRevolution     float32
+  AngleRotation           float32
+  AngleRevolution         float32
 
-  VBOSphereVertices   uint32
-  VBOSphereTexture    uint32
-  VBOSphereIndices    uint32
+  VBOSphereVertices       uint32
+  VBOSphereVerticeNormals uint32
+  VBOSphereTexture        uint32
+  VBOSphereIndices        uint32
 }
 
 func (buffers *Buffers) addToAngleRotation(angle float32) {
@@ -63,11 +64,11 @@ func createAllBuffers(objects *[]Object, program uint32, vao uint32) {
   // Object buffers
   for o := range *objects {
     // Create the object buffers
-    createBuffers((*objects)[o], program, vao)
+    createBuffers(&(*objects)[o], program, vao)
   }
 }
 
-func createBuffers(object Object, program uint32, vao uint32) {
+func createBuffers(object *Object, program uint32, vao uint32) {
   var (
     err error
   )
@@ -79,7 +80,7 @@ func createBuffers(object Object, program uint32, vao uint32) {
   buffers.AngleRevolution = 0.0
 
   // Generate sphere
-  buffers.Sphere = generateSphere(object.Name, object.Radius)
+  buffers.Sphere = generateSphere(object)
 
   // Load texture
   buffers.Texture, err = loadTexture(object.Name)
@@ -87,9 +88,6 @@ func createBuffers(object Object, program uint32, vao uint32) {
   if err != nil {
     log.Fatalln(err)
   }
-
-  // Create the texture storage
-  //gl.Uniform1i(buffers.TextureUniform, 0)
 
   // Color storage
   gl.BindFragDataLocation(program, 0, gl.Str("objectColor\x00"))
@@ -104,6 +102,11 @@ func createBuffers(object Object, program uint32, vao uint32) {
   gl.BufferData(gl.ARRAY_BUFFER, len(buffers.Sphere.Vertices)*4, gl.Ptr(buffers.Sphere.Vertices), gl.STATIC_DRAW)
   gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
+  gl.GenBuffers(1, &buffers.VBOSphereVerticeNormals)
+  gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVerticeNormals)
+  gl.BufferData(gl.ARRAY_BUFFER, len(buffers.Sphere.VerticeNormals)*4, gl.Ptr(buffers.Sphere.VerticeNormals), gl.STATIC_DRAW)
+  gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+
   gl.GenBuffers(1, &buffers.VBOSphereTexture)
   gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereTexture)
   gl.BufferData(gl.ARRAY_BUFFER, len(buffers.Sphere.TextureCoords)*4, gl.Ptr(buffers.Sphere.TextureCoords), gl.STATIC_DRAW)
@@ -115,8 +118,8 @@ func createBuffers(object Object, program uint32, vao uint32) {
   gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
 
   // Go deeper (if any child)
-  for o := range object.Objects {
-    createBuffers(object.Objects[o], program, vao)
+  for o := range (*object).Objects {
+    createBuffers(&((*object).Objects[o]), program, vao)
   }
 
   // Store buffers

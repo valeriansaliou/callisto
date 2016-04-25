@@ -28,20 +28,21 @@
 package main
 
 import (
-  "github.com/go-gl/mathgl/mgl32"
+  "github.com/go-gl/gl/v4.1-core/gl"
 )
 
 type LightData struct {
-  Light        mgl32.Mat4
-  LightUniform int32
+  PointLightingLocationUniform int32
+  PointLightingColorUniform    int32
+
+  IsLightSourceUniform         int32
 }
 
 var LIGHT LightData
 
-func createLight(program uint32) {
-  // TODO
-}
+func setLightUniforms(program uint32) {
+  LIGHT.PointLightingLocationUniform = gl.GetUniformLocation(program, gl.Str("pointLightingLocationUniform\x00"))
+  LIGHT.PointLightingColorUniform = gl.GetUniformLocation(program, gl.Str("pointLightingColorUniform\x00"))
 
-func bindLight() {
-  // TODO
+  LIGHT.IsLightSourceUniform = gl.GetUniformLocation(program, gl.Str("isLightSourceUniform\x00"))
 }

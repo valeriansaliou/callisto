@@ -39,6 +39,7 @@ var (
   MATRIX_STACK    *list.List
 
   MODEL_UNIFORM   int32
+  NORMAL_UNIFORM  int32
   TEXTURE_UNIFORM int32
 )
 
@@ -86,5 +87,6 @@ func popMatrix() {
 
 func setMatrixUniforms(program uint32) {
   MODEL_UNIFORM = gl.GetUniformLocation(program, gl.Str("modelUniform\x00"))
+  NORMAL_UNIFORM = gl.GetUniformLocation(program, gl.Str("normalUniform\x00"))
   TEXTURE_UNIFORM = gl.GetUniformLocation(program, gl.Str("textureUniform\x00"))
 }

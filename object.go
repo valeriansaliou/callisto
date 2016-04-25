@@ -45,6 +45,7 @@ type Object struct {
   Revolution  float32
   Rotation    float32
   Distance    float32
+  Radiate     bool
 
   Objects     []Object
 }
@@ -104,8 +105,12 @@ func renderObjects(objects *[]Object, program uint32) {
       CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.HomogRotate3D((*objects)[o].Inclination / 90.0, mgl32.Vec3{0, 0, 1}))
     }
 
-    // Apply model
+    // Process normal to model matrix
+    normal_matrix := mgl32.Mat4Normal(CURRENT_MATRIX)
+
+    // Apply model + normal
     gl.UniformMatrix4fv(MODEL_UNIFORM, 1, false, &CURRENT_MATRIX[0])
+    gl.UniformMatrix3fv(NORMAL_UNIFORM, 1, false, &normal_matrix[0])
 
     // Render vertices
     gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVertices)
@@ -115,10 +120,20 @@ func renderObjects(objects *[]Object, program uint32) {
     gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereTexture)
     gl.VertexAttribPointer(SHADER_VERTEX_TEXTURE_COORDS, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
+    // Render vertice lightings
+    gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVerticeNormals)
+    gl.VertexAttribPointer(SHADER_VERTEX_NORMAL_ATTRIBUTES, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
+
+    // Light source? (eg: Sun)
+    if (*objects)[o].Radiate == true {
+      gl.Uniform1i(LIGHT.IsLightSourceUniform, 1)
+
+      gl.Uniform3f(LIGHT.PointLightingLocationUniform, 0, 0, 0);
+      gl.Uniform3f(LIGHT.PointLightingColorUniform, 1, 1, 1);
+    }
+
     // Render indices
     gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.VBOSphereIndices)
-
-    setMatrixUniforms(program)
 
     // Draw elements
     gl.DrawElements(gl.TRIANGLES, int32(len(buffers.Sphere.Indices) * 2), gl.UNSIGNED_INT, gl.PtrOffset(0))

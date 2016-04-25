@@ -32,8 +32,9 @@ import (
 )
 
 var (
-  SHADER_VERTEX_ATTRIBUTES     uint32
-  SHADER_VERTEX_TEXTURE_COORDS uint32
+  SHADER_VERTEX_ATTRIBUTES        uint32
+  SHADER_VERTEX_NORMAL_ATTRIBUTES uint32
+  SHADER_VERTEX_TEXTURE_COORDS    uint32
 )
 
 var SHADER_VERTEX = `
@@ -42,16 +43,38 @@ var SHADER_VERTEX = `
 uniform mat4 projectionUniform;
 uniform mat4 cameraUniform;
 uniform mat4 modelUniform;
+uniform mat3 normalUniform;
+
+uniform vec3 pointLightingLocationUniform;
+uniform vec3 pointLightingColorUniform;
+
+uniform int isLightSourceUniform;
 
 in vec3 vertexAttributes;
+in vec3 vertexNormalAttributes;
 in vec2 vertexTextureCoords;
 
 out vec3 N;
 out vec2 shaderTextureCoords;
+out vec3 vertexLighting;
 
 void main() {
-  gl_Position = projectionUniform * cameraUniform * modelUniform * vec4(vertexAttributes, 1);
+  vec4 modelViewPosition = modelUniform * vec4(vertexAttributes, 1);
+  gl_Position = projectionUniform * cameraUniform * modelViewPosition;
   shaderTextureCoords = vertexTextureCoords;
+
+  // Process lighting
+  if (isLightSourceUniform == 1) {
+    // Light emitter
+    vec3 lightDirection = normalize(pointLightingLocationUniform - modelViewPosition.xyz);
+
+    vec3 transformedNormal = normalUniform * vertexNormalAttributes;
+    float directionalLighting = max(dot(transformedNormal, lightDirection), 0.0);
+    vertexLighting = pointLightingColorUniform * directionalLighting;
+  } else {
+    // Light receiver
+    vertexLighting = vec3(1.0, 1.0, 1.0);
+  }
 }
 ` + "\x00"
 
@@ -61,11 +84,15 @@ var SHADER_FRAGMENT = `
 uniform sampler2D textureUniform;
 
 in vec2 shaderTextureCoords;
+in vec3 vertexLighting;
 
 out vec4 objectColor;
 
 void main() {
-  objectColor = texture(textureUniform, shaderTextureCoords);
+  vec4 objectColorTexture = texture(textureUniform, shaderTextureCoords);
+
+  // Apply lighting to pixel
+  objectColor = vec4(objectColorTexture.rgb * vertexLighting, objectColorTexture.a);
 }
 ` + "\x00"
 
@@ -74,6 +101,13 @@ func initializeShaders(program uint32) {
   SHADER_VERTEX_ATTRIBUTES = uint32(gl.GetAttribLocation(program, gl.Str("vertexAttributes\x00")))
   gl.EnableVertexAttribArray(SHADER_VERTEX_ATTRIBUTES)
 
+  SHADER_VERTEX_NORMAL_ATTRIBUTES = uint32(gl.GetAttribLocation(program, gl.Str("vertexNormalAttributes\x00")))
+  gl.EnableVertexAttribArray(SHADER_VERTEX_NORMAL_ATTRIBUTES)
+
   SHADER_VERTEX_TEXTURE_COORDS = uint32(gl.GetAttribLocation(program, gl.Str("vertexTextureCoords\x00")))
   gl.EnableVertexAttribArray(SHADER_VERTEX_TEXTURE_COORDS)
+
+  // Bind misc. shaders uniforms
+  setLightUniforms(program)
+  setMatrixUniforms(program)
 }

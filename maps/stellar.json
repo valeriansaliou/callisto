@@ -6,6 +6,7 @@
     "revolution"  : 0,
     "rotation"    : 25.38,
     "distance"    : 0,
+    "radiate"     : true,
 
     "objects"     : [
       {
@@ -15,6 +16,7 @@
         "revolution"  : 0.2408467,
         "rotation"    : 58.646225,
         "distance"    : 57909175,
+        "radiate"     : false,
 
         "objects"     : []
       },
@@ -26,6 +28,7 @@
         "revolution"  : 0.61519726,
         "rotation"    : -243.0187,
         "distance"    : 108208930,
+        "radiate"     : false,
 
         "objects"     : []
       },
@@ -37,6 +40,7 @@
         "revolution"  : 1.0000174,
         "rotation"    : 0.99726968,
         "distance"    : 149597890,
+        "radiate"     : false,
 
         "objects"     : [
           {
@@ -46,6 +50,7 @@
             "revolution"  : 27.32158,
             "rotation"    : 27.321582,
             "distance"    : 384399,
+            "radiate"     : false,
 
             "objects"     : []
           }
@@ -59,6 +64,7 @@
         "revolution"  : 1.8808476,
         "rotation"    : 1.02595675,
         "distance"    : 227936640,
+        "radiate"     : false,
 
         "objects"     : [
           {
@@ -68,6 +74,7 @@
             "revolution"  : 0.0008742465753,
             "rotation"    : 1.02595675,
             "distance"    : 9517.58,
+            "radiate"     : false,
 
             "objects"     : []
           },
@@ -79,6 +86,7 @@
             "revolution"  : 0.00345890411,
             "rotation"    : 1.26244,
             "distance"    : 23460,
+            "radiate"     : false,
 
             "objects"     : []
           }
@@ -92,6 +100,7 @@
         "revolution"  : 4.599,
         "rotation"    : 0.3781,
         "distance"    : 413700000,
+        "radiate"     : false,
 
         "objects"     : []
       },
@@ -103,6 +112,7 @@
         "revolution"  : 11.862615,
         "rotation"    : 0.41354,
         "distance"    : 778412010,
+        "radiate"     : false,
 
         "objects"     : [
           {
@@ -112,6 +122,7 @@
             "revolution"  : 0.004851598174,
             "rotation"    : 1.769,
             "distance"    : 421700,
+            "radiate"     : false,
 
             "objects"     : []
           },
@@ -123,6 +134,7 @@
             "revolution"  : 0.009703196347,
             "rotation"    : 3.551,
             "distance"    : 670900,
+            "radiate"     : false,
 
             "objects"     : []
           },
@@ -134,6 +146,7 @@
             "revolution"  : 0.0008167297945,
             "rotation"    : 7.154553,
             "distance"    : 1070000,
+            "radiate"     : false,
 
             "objects"     : []
           },
@@ -145,6 +158,7 @@
             "revolution"  : 0.001905139269,
             "rotation"    : 16.68902,
             "distance"    : 1883000,
+            "radiate"     : false,
 
             "objects"     : []
           }
@@ -158,6 +172,7 @@
         "revolution"  : 29.447498,
         "rotation"    : 0.44401,
         "distance"    : 1426725400,
+        "radiate"     : false,
 
         "objects"     : [
           {
@@ -167,6 +182,7 @@
             "revolution"  : 0.001820253425,
             "rotation"    : 15.94542,
             "distance"    : 1221850,
+            "radiate"     : false,
 
             "objects"     : []
           },
@@ -178,6 +194,7 @@
             "revolution"  : 0.0001564175799,
             "rotation"    : 1.370218,
             "distance"    : 238020,
+            "radiate"     : false,
 
             "objects"     : []
           },
@@ -189,6 +206,7 @@
             "revolution"  : 0.009055956621,
             "rotation"    : 79.33018,
             "distance"    : 3561300,
+            "radiate"     : false,
 
             "objects"     : []
           },
@@ -200,6 +218,7 @@
             "revolution"  : 0,
             "rotation"    : 0,
             "distance"    : 0,
+            "radiate"     : false,
 
             "objects"     : []
           }
@@ -213,6 +232,7 @@
         "revolution"  : 84.016846,
         "rotation"    : -0.71833,
         "distance"    : 2870972200,
+        "radiate"     : false,
 
         "objects"     : [
           {
@@ -222,6 +242,7 @@
             "revolution"  : 0.0001613560502,
             "rotation"    : 1.413479,
             "distance"    : 129780,
+            "radiate"     : false,
 
             "objects"     : []
           }
@@ -235,6 +256,7 @@
         "revolution"  : 164.79132,
         "rotation"    : 0.67125,
         "distance"    : 4498252900,
+        "radiate"     : false,
 
         "objects"     : [
           {
@@ -244,6 +266,7 @@
             "revolution"  : -0.0006708732877,
             "rotation"    : -5.87685,
             "distance"    : 354800,
+            "radiate"     : false,
 
             "objects"     : []
           }
@@ -257,6 +280,7 @@
         "revolution"  : 247.92065,
         "rotation"    : -6.38723,
         "distance"    : 5906380000,
+        "radiate"     : false,
 
         "objects"     : []
       },
@@ -268,6 +292,7 @@
         "revolution"  : 285.4,
         "rotation"    : 0.167,
         "distance"    : 6484000000,
+        "radiate"     : false,
 
         "objects"     : []
       },
@@ -279,6 +304,7 @@
         "revolution"  : 309.9,
         "rotation"    : 0.2,
         "distance"    : 6850000000,
+        "radiate"     : false,
 
         "objects"     : []
       },
@@ -290,6 +316,7 @@
         "revolution"  : 557,
         "rotation"    : 0.2,
         "distance"    : 10210000000,
+        "radiate"     : false,
 
         "objects"     : []
       }

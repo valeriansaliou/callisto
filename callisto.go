@@ -143,9 +143,7 @@ func main() {
     bindCamera()
 
     // Render skybox
-    gl.DepthMask(false)
     renderObjects(voidbox, program)
-    gl.DepthMask(true)
 
     // Render all stellar objects in the map
     renderObjects(stellar, program)
