@@ -39,16 +39,16 @@ type CameraData struct {
 
 var CAMERA CameraData
 
-func (camera_data *CameraData) moveEyeX(increment float32) {
-  camera_data.Camera[0] += increment
+func (camera_data *CameraData) moveEyeX(position float32) {
+  camera_data.Camera[0] = position
 }
 
-func (camera_data *CameraData) moveEyeY(increment float32) {
-  camera_data.Camera[1] += increment
+func (camera_data *CameraData) moveEyeY(position float32) {
+  camera_data.Camera[1] = position
 }
 
-func (camera_data *CameraData) moveEyeZ(increment float32) {
-  camera_data.Camera[2] += increment
+func (camera_data *CameraData) moveEyeZ(position float32) {
+  camera_data.Camera[2] = position
 }
 
 func (camera_data *CameraData) moveCenterX(increment float32) {
@@ -87,21 +87,23 @@ func createCamera(program uint32) {
 func updateCamera() {
   key_state := getEventKeyState()
 
-  if key_state.Up == true {
-    getCamera().moveEyeX(CAMERA_MOVE_CELERITY_FORWARD)
+  // Camera position: Move
+  if key_state.MoveUp == true {
+    getCamera().moveCenterX(CAMERA_MOVE_CELERITY_FORWARD)
+  }
+  if key_state.MoveDown == true {
+    getCamera().moveCenterX(CAMERA_MOVE_CELERITY_BACKWARD)
+  }
+  if key_state.MoveLeft == true {
+    getCamera().moveCenterY(CAMERA_MOVE_CELERITY_FORWARD)
+  }
+  if key_state.MoveRight == true {
+    getCamera().moveCenterY(CAMERA_MOVE_CELERITY_BACKWARD)
   }
 
-  if key_state.Down == true {
-    getCamera().moveEyeX(CAMERA_MOVE_CELERITY_BACKWARD)
-  }
-
-  if key_state.Left == true {
-    getCamera().moveEyeY(CAMERA_MOVE_CELERITY_FORWARD)
-  }
-
-  if key_state.Right == true {
-    getCamera().moveEyeY(CAMERA_MOVE_CELERITY_BACKWARD)
-  }
+  // Camera position: Watch
+  getCamera().moveEyeX(key_state.WatchX)
+  getCamera().moveEyeY(key_state.WatchY)
 }
 
 func bindCamera() {

@@ -77,6 +77,7 @@ func main() {
 
   window.MakeContextCurrent()
   window.SetKeyCallback(handleKey)
+  window.SetCursorPosCallback(handleMouseCursor)
 
   // Initialize OpenGL
   gl.Init()

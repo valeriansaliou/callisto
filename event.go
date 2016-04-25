@@ -32,13 +32,16 @@ import (
 )
 
 type EventKeyState struct {
-  Up    bool
-  Down  bool
-  Right bool
-  Left  bool
+  MoveUp    bool
+  MoveDown  bool
+  MoveRight bool
+  MoveLeft  bool
+
+  WatchX    float32
+  WatchY    float32
 }
 
-var EVENT_KEY_STATE = EventKeyState{false, false, false, false}
+var EVENT_KEY_STATE = EventKeyState{false, false, false, false, float32(WINDOW_WIDTH) / 2.0, float32(WINDOW_HEIGHT) / 2.0}
 
 func getEventKeyState() (*EventKeyState) {
   return &EVENT_KEY_STATE
@@ -56,19 +59,24 @@ func handleKey(window *glfw.Window, k glfw.Key, s int, action glfw.Action, mods 
 
   // Camera controls
   if k == glfw.KeyUp {
-    EVENT_KEY_STATE.Down = false
-    EVENT_KEY_STATE.Up = flipBool(EVENT_KEY_STATE.Up)
+    EVENT_KEY_STATE.MoveDown = false
+    EVENT_KEY_STATE.MoveUp = flipBool(EVENT_KEY_STATE.MoveUp)
   }
   if k == glfw.KeyDown {
-    EVENT_KEY_STATE.Up = false
-    EVENT_KEY_STATE.Down = flipBool(EVENT_KEY_STATE.Down)
+    EVENT_KEY_STATE.MoveUp = false
+    EVENT_KEY_STATE.MoveDown = flipBool(EVENT_KEY_STATE.MoveDown)
   }
   if k == glfw.KeyLeft {
-    EVENT_KEY_STATE.Right = false
-    EVENT_KEY_STATE.Left = flipBool(EVENT_KEY_STATE.Left)
+    EVENT_KEY_STATE.MoveRight = false
+    EVENT_KEY_STATE.MoveLeft = flipBool(EVENT_KEY_STATE.MoveLeft)
   }
   if k == glfw.KeyRight {
-    EVENT_KEY_STATE.Left = false
-    EVENT_KEY_STATE.Right = flipBool(EVENT_KEY_STATE.Right)
+    EVENT_KEY_STATE.MoveLeft = false
+    EVENT_KEY_STATE.MoveRight = flipBool(EVENT_KEY_STATE.MoveRight)
   }
+}
+
+func handleMouseCursor(window *glfw.Window, position_x float64, position_y float64) {
+  EVENT_KEY_STATE.WatchX = float32(position_x) * CAMERA_WATCH_REDUCER
+  EVENT_KEY_STATE.WatchY = float32(position_y) * CAMERA_WATCH_REDUCER
 }
