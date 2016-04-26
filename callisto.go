@@ -86,6 +86,7 @@ func main() {
 
   if CONTROLS_ENABLE_MOUSE == true {
     window.SetCursorPosCallback(handleMouseCursor)
+    window.SetScrollCallback(handleMouseScroll)
   }
 
   // Initialize OpenGL
