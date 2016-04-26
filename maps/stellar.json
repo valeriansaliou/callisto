@@ -160,8 +160,8 @@
           {
             "name"        : "saturn-rings",
             "type"        : "circle-filled",
-            "radius"      : 420000,
-            "inclination" : 90.0,
+            "radius"      : 240000,
+            "inclination" : 30.0,
             "revolution"  : 0.0,
             "rotation"    : 0.0,
             "distance"    : 110964,

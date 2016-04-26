@@ -34,43 +34,55 @@ import (
 type Circle ObjectElement
 
 func generateCircleFilledFromObject(object *Object) (Circle) {
-  return generateCircleFilled(object.Distance, object.Radius, object.Radiate)
+  return generateCircle(object.Distance, object.Radius, object.Radiate)
 }
 
 func generateCircleFromObject(object *Object) (Circle) {
-  return generateCircle(object.Radius, object.Radiate)
+  return generateCircle(object.Radius, 0.0, object.Radiate)
 }
 
-func generateCircleFilled(radius float32, thickness float32, radiate bool) (Circle) {
+func generateCircle(radius float32, thickness float32, radiate bool) (Circle) {
   var (
-    circle           Circle
+    circle                   Circle
 
-    i                int
-    j                int
-    k                int
-    l                int
+    i                        int
+    j                        int
+    k                        int
+    l                        int
 
-    normal_direction float32
+    accumulator_main_size    int
+    accumulator_indices_size int
+    normal_direction         float32
 
-    radius_inside_n  float32
-    radius_outside_n float32
-    nb_vertices      int32
+    radius_inside_n          float32
+    radius_outside_n         float32
+    nb_vertices              int32
 
-    angle            float64
-    angle_max        int
+    angle                    float64
+    angle_max                int
   )
 
   angle_max = 360
 
-  circle.Vertices = make([]float32, 3 * angle_max * 2)
-  circle.VerticeNormals = make([]float32, 3 * angle_max * 2)
-  circle.Indices = make([]int32, 3 * (angle_max + 1) * 2)
-  circle.TextureCoords = make([]float32, 2 * angle_max * 2)
+  if thickness > 0 {
+    accumulator_main_size = 2
+    accumulator_indices_size = 6
+  } else {
+    accumulator_main_size = 1
+    accumulator_indices_size = 2
+  }
+
+  circle.Vertices = make([]float32, 3 * angle_max * accumulator_main_size)
+  circle.VerticeNormals = make([]float32, 3 * angle_max * accumulator_main_size)
+  circle.Indices = make([]int32, angle_max * accumulator_indices_size)
+  circle.TextureCoords = make([]float32, 2 * angle_max * accumulator_main_size)
 
   i = 0
   j = 0
   k = 0
   l = 0
+
+  nb_vertices = 0.0
 
   radius_inside_n = normalizeObjectSize(radius)
   radius_outside_n = normalizeObjectSize(radius + thickness)
@@ -84,62 +96,22 @@ func generateCircleFilled(radius float32, thickness float32, radiate bool) (Circ
 
   for angle = 0.0; angle < float64(angle_max); angle++ {
     // Generate inner circle object
-    generateCircleObject(&circle, radius_inside_n, angle, normal_direction, &nb_vertices, &i, &j, &k, &l)
+    generateCircleObject(&circle, radius_inside_n, thickness, angle, angle_max, normal_direction, nb_vertices, 0, &i, &j, &k, &l)
 
-    // Generate outer circle object? (if not last)
-    generateCircleObject(&circle, radius_outside_n, angle, normal_direction, &nb_vertices, &i, &j, &k, &l)
+    if thickness > 0.0 {
+      // Generate outer circle object? (if not last)
+      generateCircleObject(&circle, radius_outside_n, thickness, angle, angle_max, normal_direction, nb_vertices, 1, &i, &j, &k, &l)
+
+      nb_vertices += 1.0
+    }
+
+    nb_vertices += 1.0
   }
 
   return circle
 }
 
-func generateCircle(radius float32, radiate bool) (Circle) {
-  var (
-    circle           Circle
-
-    i                int
-    j                int
-    k                int
-    l                int
-
-    normal_direction float32
-
-    radius_n         float32
-    nb_vertices      int32
-
-    angle            float64
-    angle_max        int
-  )
-
-  angle_max = 360
-
-  circle.Vertices = make([]float32, 3 * angle_max * 2)
-  circle.VerticeNormals = make([]float32, 3 * angle_max * 2)
-  circle.Indices = make([]int32, 3 * (angle_max + 1) * 2)
-  circle.TextureCoords = make([]float32, 2 * angle_max * 2)
-
-  i = 0
-  j = 0
-  k = 0
-  l = 0
-
-  radius_n = normalizeObjectSize(radius)
-
-  // Normal is -1 if sun, which is the light source, to avoid any self-shadow effect
-  if radiate == true {
-    normal_direction = -1.0
-  } else {
-    normal_direction = 1.0
-  }
-
-  for angle = 0.0; angle < float64(angle_max); angle++ {
-    generateCircleObject(&circle, radius_n, angle, normal_direction, &nb_vertices, &i, &j, &k, &l)
-  }
-
-  return circle
-}
-
-func generateCircleObject(circle *Circle, radius_n float32, angle float64, normal_direction float32, nb_vertices *int32, i *int, j *int, k *int, l *int) {
+func generateCircleObject(circle *Circle, radius_n float32, thickness float32, angle float64, angle_max int, normal_direction float32, nb_vertices int32, pass_index int32, i *int, j *int, k *int, l *int) {
   var (
     vertex_position_x  float32
     vertex_position_y  float32
@@ -166,13 +138,18 @@ func generateCircleObject(circle *Circle, radius_n float32, angle float64, norma
   *j += 3
 
   // Bind circle indices
-  circle.Indices[*k] = *nb_vertices
-  circle.Indices[*k + 1] = *nb_vertices + 1
-  circle.Indices[*k + 2] = *nb_vertices + 2
+  if thickness > 0.0 {
+    circle.Indices[*k] = (nb_vertices % (int32(angle_max * 2) - 1)) + 1
+    circle.Indices[*k + 1] = ((nb_vertices + 1 + pass_index) % (int32(angle_max * 2) - 1)) + 1
+    circle.Indices[*k + 2] = ((nb_vertices + 3) % (int32(angle_max * 2) - 1)) + 1
 
-  *k += 3
+    *k += 3
+  } else {
+    circle.Indices[*k] = ((nb_vertices) % (int32(angle_max) - 1)) + 1
+    circle.Indices[*k + 1] = ((nb_vertices + 1) % (int32(angle_max) - 1)) + 1
 
-  *nb_vertices += 1.0
+    *k += 2
+  }
 
   // Bind circle texture coordinates
   circle.TextureCoords[*l] = 0.0
