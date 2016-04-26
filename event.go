@@ -41,12 +41,9 @@ type EventKeyState struct {
 
   WatchX    float32
   WatchY    float32
-
-  ScrollX   float32
-  ScrollY   float32
 }
 
-var EVENT_KEY_STATE = EventKeyState{false, false, false, false, false, 0.0, 0.0, 0.0, 0.0}
+var EVENT_KEY_STATE = EventKeyState{false, false, false, false, false, 0.0, 0.0}
 
 func getEventKeyState() (*EventKeyState) {
   return &EVENT_KEY_STATE
@@ -132,15 +129,6 @@ func handleMouseCursor(window *glfw.Window, position_x float64, position_y float
 }
 
 func handleMouseScroll(window *glfw.Window, offset_x float64, offset_y float64) {
-  // Bind new scroll offset
-  if offset_x >= 0 && offset_x <= float64(WINDOW_WIDTH) {
-    EVENT_KEY_STATE.ScrollX = float32(offset_x) * (1.0 / float32(WINDOW_WIDTH)) - 0.5
-  }
-
-  if offset_y >= 0 && offset_y <= float64(WINDOW_HEIGHT) {
-    EVENT_KEY_STATE.ScrollY = float32(offset_y) * (1.0 / float32(WINDOW_HEIGHT)) - 0.5
-  }
-
   // Update scene simulation speed
   updateSpeedFactor(offset_y)
 }
