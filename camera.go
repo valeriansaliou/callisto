@@ -142,7 +142,12 @@ func consumeInertia(inertia *float64) (float64) {
 
 func processEventCameraEye() {
   var (
-    celerity float64
+    celerity     float64
+    rotation_x   float64
+    rotation_y   float64
+
+    inertia_drag float64
+    inertia_turn float64
   )
 
   key_state := getEventKeyState()
@@ -158,9 +163,11 @@ func processEventCameraEye() {
     celerity /= math.Sqrt(2.0)
   }
 
-  // Process camera move position (keyboard)
-  target_x := float64(CAMERA.getTargetX())
+  // Acquire rotation around axis
+  rotation_x = float64(CAMERA.getTargetX())
+  rotation_y = float64(CAMERA.getTargetY())
 
+  // Process camera move position (keyboard)
   if key_state.MoveUp == true {
     produceInertia(&CAMERA.InertiaDrag, CAMERA_INERTIA_PRODUCE_FORWARD, celerity)
   }
@@ -175,8 +182,12 @@ func processEventCameraEye() {
   }
 
   // Apply new position with inertia
-  CAMERA.moveEyeZ(float32(consumeInertia(&CAMERA.InertiaDrag) * math.Cos(target_x)))
-  CAMERA.moveEyeX(float32(consumeInertia(&CAMERA.InertiaTurn)))
+  inertia_drag = consumeInertia(&CAMERA.InertiaDrag)
+  inertia_turn = consumeInertia(&CAMERA.InertiaTurn)
+
+  CAMERA.moveEyeX(float32(inertia_drag * -1.0 * math.Sin(rotation_y) + inertia_turn * math.Cos(rotation_y)))
+  CAMERA.moveEyeZ(float32(inertia_drag * math.Cos(rotation_y) + inertia_turn * math.Sin(rotation_y)))
+  CAMERA.moveEyeY(float32(inertia_drag * math.Sin(rotation_x)))
 
   // Translation: walk
   CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.Translate3D(CAMERA.getEyeX(), CAMERA.getEyeY(), CAMERA.getEyeZ()))
@@ -185,11 +196,8 @@ func processEventCameraEye() {
 func processEventCameraTarget() {
   key_state := getEventKeyState()
 
-  rot_x := -1.0 * key_state.WatchY * float32(math.Pi) * 2.0
-  rot_y := key_state.WatchX * float32(math.Pi) * 2.0
-
-  CAMERA.updateTargetX(rot_x)
-  CAMERA.updateTargetY(rot_y)
+  CAMERA.updateTargetX(key_state.WatchY * float32(math.Pi))
+  CAMERA.updateTargetY(key_state.WatchX * float32(math.Pi))
 
   // Rotation: view
   CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(CAMERA.getTargetX(), mgl32.Vec3{1, 0, 0}))
@@ -199,13 +207,13 @@ func processEventCameraTarget() {
 
 func updateCamera() {
   // Update overall camera position (flip camera)
-  CAMERA.Camera = mgl32.Mat4{1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0}
-
-  // Process new eye position in scene
-  processEventCameraEye()
+  CAMERA.Camera = mgl32.Ident4()
 
   // Process new eye watch target in scene
   processEventCameraTarget()
+
+  // Process new eye position in scene
+  processEventCameraEye()
 }
 
 func resetCamera() {

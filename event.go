@@ -46,7 +46,7 @@ type EventKeyState struct {
   ScrollY   float32
 }
 
-var EVENT_KEY_STATE = EventKeyState{false, false, false, false, false, float32(WINDOW_WIDTH) / 2.0, float32(WINDOW_HEIGHT) / 2.0, 0, 0}
+var EVENT_KEY_STATE = EventKeyState{false, false, false, false, false, 0.0, 0.0, 0.0, 0.0}
 
 func getEventKeyState() (*EventKeyState) {
   return &EVENT_KEY_STATE
