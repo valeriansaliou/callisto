@@ -40,6 +40,9 @@ type CameraData struct {
 
   PositionEye    mgl32.Vec3
   PositionTarget mgl32.Vec3
+
+  InertiaDrag    float64
+  InertiaTurn    float64
 }
 
 var CAMERA CameraData
@@ -107,44 +110,73 @@ func getCamera() (*CameraData) {
 func createCamera(program uint32) {
   CAMERA.CameraUniform = gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
 
+  // Default inertia (none)
+  CAMERA.InertiaDrag = 0.0
+  CAMERA.InertiaTurn = 0.0
+
   // Default camera position
   CAMERA.defaultEye()
   CAMERA.defaultTarget()
 }
 
+func produceInertia(inertia *float64, increment float64, celerity float64) {
+  *inertia += increment * celerity
+
+  // Cap inertia to maximum value
+  if *inertia > celerity {
+    *inertia = celerity
+  } else if *inertia < -1.0 * celerity {
+    *inertia = -1.0 * celerity
+  }
+}
+
+func consumeInertia(inertia *float64) (float64) {
+  if *inertia > 0 {
+    *inertia += CAMERA_INERTIA_CONSUME_FORWARD
+  } else if *inertia < 0 {
+    *inertia += CAMERA_INERTIA_CONSUME_BACKWARD
+  }
+
+  return *inertia
+}
+
 func processEventCameraEye() {
   var (
-    speed float64
+    celerity float64
   )
 
   key_state := getEventKeyState()
 
   // Decrease speed if diagonal move
   if key_state.MoveTurbo == true {
-    speed = CAMERA_MOVE_CELERITY_TURBO
+    celerity = CAMERA_MOVE_CELERITY_TURBO
   } else {
-    speed = CAMERA_MOVE_CELERITY_CRUISE
+    celerity = CAMERA_MOVE_CELERITY_CRUISE
   }
 
   if (key_state.MoveUp == true || key_state.MoveDown == true) && (key_state.MoveLeft == true || key_state.MoveRight == true) {
-    speed /= math.Sqrt(2.0)
+    celerity /= math.Sqrt(2.0)
   }
 
   // Process camera move position (keyboard)
   target_x := float64(CAMERA.getTargetX())
 
   if key_state.MoveUp == true {
-    CAMERA.moveEyeZ(float32(1.0 * speed * math.Cos(target_x)))
+    produceInertia(&CAMERA.InertiaDrag, CAMERA_INERTIA_PRODUCE_FORWARD, celerity)
   }
   if key_state.MoveDown == true {
-    CAMERA.moveEyeZ(float32(-1.0 * speed * math.Cos(target_x)))
+    produceInertia(&CAMERA.InertiaDrag, CAMERA_INERTIA_PRODUCE_BACKWARD, celerity)
   }
   if key_state.MoveLeft == true {
-    CAMERA.moveEyeX(float32(1.0 * speed))
+    produceInertia(&CAMERA.InertiaTurn, CAMERA_INERTIA_PRODUCE_FORWARD, celerity)
   }
   if key_state.MoveRight == true {
-    CAMERA.moveEyeX(float32(-1.0 * speed))
+    produceInertia(&CAMERA.InertiaTurn, CAMERA_INERTIA_PRODUCE_BACKWARD, celerity)
   }
+
+  // Apply new position with inertia
+  CAMERA.moveEyeZ(float32(consumeInertia(&CAMERA.InertiaDrag) * math.Cos(target_x)))
+  CAMERA.moveEyeX(float32(consumeInertia(&CAMERA.InertiaTurn)))
 
   // Translation: walk
   CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.Translate3D(CAMERA.getEyeX(), CAMERA.getEyeY(), CAMERA.getEyeZ()))
