@@ -4,7 +4,7 @@
     "radius"      : 9999999999999999999,
     "inclination" : 0,
     "revolution"  : 0,
-    "rotation"    : -100.0,
+    "rotation"    : -500.0,
     "distance"    : 0,
     "radiate"     : false,
     "cosmic"      : true,
