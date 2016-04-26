@@ -201,7 +201,7 @@ func processEventCameraTarget() {
   key_state := getEventKeyState()
 
   camera.updateTargetX(key_state.WatchY * float32(math.Pi))
-  camera.updateTargetY(key_state.WatchX * float32(math.Pi))
+  camera.updateTargetY(key_state.WatchX * float32(math.Pi) * 2)
 
   // Rotation: view
   camera.Camera = camera.Camera.Mul4(mgl32.HomogRotate3D(camera.getTargetX(), mgl32.Vec3{1, 0, 0}))

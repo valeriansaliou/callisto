@@ -31,6 +31,7 @@ import (
   "fmt"
   "image"
   _ "image/jpeg"
+  _ "image/png"
   "image/draw"
   "os"
 
@@ -48,8 +49,14 @@ func loadTexture(name string) (Texture, error) {
 
   imgFile, err := os.Open(filePath)
   if err != nil {
-    return texture, fmt.Errorf("texture %q not found on disk: %v", filePath, err)
+    // Open default texture (default object color)
+    imgFile, err = os.Open("assets/default.png")
+
+    if err != nil {
+      panic("Failed opening fallback texture file")
+    }
   }
+
   img, _, err := image.Decode(imgFile)
   if err != nil {
     return texture, err

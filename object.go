@@ -39,16 +39,25 @@ import (
 
 type Object struct {
   Name        string
+  Type        string
 
   Radius      float32
   Inclination float32
   Revolution  float32
   Rotation    float32
   Distance    float32
+  Center      bool
   Radiate     bool
   Cosmic      bool
 
   Objects     []Object
+}
+
+type ObjectElement struct {
+  Vertices       []float32
+  VerticeNormals []float32
+  Indices        []int32
+  TextureCoords  []float32
 }
 
 func loadObjects(map_name string) (*[]Object) {
@@ -98,8 +107,8 @@ func renderObjects(objects *[]Object, program uint32) {
       *current_matrix_shared = (*current_matrix_shared).Mul4(mgl32.HomogRotate3D(buffers.AngleRevolution, mgl32.Vec3{0, 1, 0}))
     }
 
-    if (*objects)[o].Distance > 0 {
-      *current_matrix_shared = (*current_matrix_shared).Mul4(mgl32.Translate3D(normalizeObjectDistance((*objects)[o].Distance), 0.0, 0.0))
+    if (*objects)[o].Distance > 0 && (*objects)[o].Center != true {
+      *current_matrix_shared = (*current_matrix_shared).Mul4(mgl32.Translate3D(normalizeObjectSize((*objects)[o].Distance), 0.0, 0.0))
     }
 
     setMatrix(current_matrix_shared)
@@ -128,15 +137,15 @@ func renderObjects(objects *[]Object, program uint32) {
     gl.UniformMatrix3fv(matrix_uniforms.Normal, 1, false, &normal_matrix[0])
 
     // Render vertices
-    gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVertices)
+    gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOElementVertices)
     gl.VertexAttribPointer(shader.VertexAttributes, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
     // Render textures
-    gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereTexture)
+    gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOElementTexture)
     gl.VertexAttribPointer(shader.VertexTextureCoords, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
     // Render vertice lightings
-    gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVerticeNormals)
+    gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOElementVerticeNormals)
     gl.VertexAttribPointer(shader.NormalAttributes, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
     // Light emitter? (eg: Sun)
@@ -156,10 +165,10 @@ func renderObjects(objects *[]Object, program uint32) {
     }
 
     // Render indices
-    gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.VBOSphereIndices)
+    gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.VBOElementIndices)
 
     // Draw elements
-    gl.DrawElements(gl.TRIANGLES, int32(len(buffers.Sphere.Indices) * 2), gl.UNSIGNED_INT, gl.PtrOffset(0))
+    gl.DrawElements(getObjectDrawMode(&(*objects)[o]), int32(len(buffers.Element.Indices) * 2), gl.UNSIGNED_INT, gl.PtrOffset(0))
 
     // Reset buffers
     gl.BindBuffer(gl.ARRAY_BUFFER, 0)
@@ -176,10 +185,14 @@ func renderObjects(objects *[]Object, program uint32) {
   }
 }
 
-func normalizeObjectRadius(radius float32) (float32) {
-  return float32(math.Cbrt(float64(radius)) * OBJECT_FACTOR_RADIUS)
+func normalizeObjectSize(size float32) (float32) {
+  return float32(math.Sqrt(float64(size)) * OBJECT_FACTOR_SIZE)
 }
 
-func normalizeObjectDistance(distance float32) (float32) {
-  return float32(math.Sqrt(float64(distance)) * OBJECT_FACTOR_DISTANCE)
+func getObjectDrawMode(object *Object) (uint32) {
+  if object.Type == "circle" {
+    return gl.LINES
+  }
+
+  return gl.TRIANGLES
 }

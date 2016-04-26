@@ -1,13 +1,14 @@
 [
   {
     "name"        : "voidbox",
+    "type"        : "sphere",
     "radius"      : 9999999999999999999,
     "inclination" : 0,
     "revolution"  : 0,
-    "rotation"    : -2000.0,
+    "rotation"    : -4000.0,
     "distance"    : 0,
-    "radiate"     : false,
     "cosmic"      : true,
+    "center"      : true,
 
     "objects"     : []
   }

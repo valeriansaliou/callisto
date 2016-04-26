@@ -34,16 +34,16 @@ import (
 )
 
 type Buffers struct {
-  Sphere                  Sphere
-  Texture                 Texture
+  Element                  ObjectElement
+  Texture                  Texture
 
-  AngleRotation           float32
-  AngleRevolution         float32
+  AngleRotation            float32
+  AngleRevolution          float32
 
-  VBOSphereVertices       uint32
-  VBOSphereVerticeNormals uint32
-  VBOSphereTexture        uint32
-  VBOSphereIndices        uint32
+  VBOElementVertices       uint32
+  VBOElementVerticeNormals uint32
+  VBOElementTexture        uint32
+  VBOElementIndices        uint32
 }
 
 var __BUFFERS map[string]*Buffers = make(map[string]*Buffers)
@@ -83,8 +83,20 @@ func createBuffers(object *Object, program uint32, vao uint32) {
   buffers.AngleRotation = 0.0
   buffers.AngleRevolution = 0.0
 
-  // Generate sphere
-  buffers.Sphere = generateSphere(object)
+  // Generate object
+  switch object.Type {
+    case "sphere":
+      buffers.Element = ObjectElement(generateSphereFromObject(object))
+
+    case "circle":
+      buffers.Element = ObjectElement(generateCircleFromObject(object))
+
+    case "circle-filled":
+      buffers.Element = ObjectElement(generateCircleFilledFromObject(object))
+
+    default:
+      panic("Object type not supported")
+  }
 
   // Load texture
   buffers.Texture, err = loadTexture(object.Name)
@@ -101,24 +113,24 @@ func createBuffers(object *Object, program uint32, vao uint32) {
 
   // Create the VBO (Vertex Buffer Object)
   // Notice: this passes buffer data to the GPU (cache to GPU for I/O performance)
-  gl.GenBuffers(1, &buffers.VBOSphereVertices)
-  gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVertices)
-  gl.BufferData(gl.ARRAY_BUFFER, len(buffers.Sphere.Vertices)*4, gl.Ptr(buffers.Sphere.Vertices), gl.STATIC_DRAW)
+  gl.GenBuffers(1, &buffers.VBOElementVertices)
+  gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOElementVertices)
+  gl.BufferData(gl.ARRAY_BUFFER, len(buffers.Element.Vertices)*4, gl.Ptr(buffers.Element.Vertices), gl.STATIC_DRAW)
   gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
-  gl.GenBuffers(1, &buffers.VBOSphereVerticeNormals)
-  gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVerticeNormals)
-  gl.BufferData(gl.ARRAY_BUFFER, len(buffers.Sphere.VerticeNormals)*4, gl.Ptr(buffers.Sphere.VerticeNormals), gl.STATIC_DRAW)
+  gl.GenBuffers(1, &buffers.VBOElementVerticeNormals)
+  gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOElementVerticeNormals)
+  gl.BufferData(gl.ARRAY_BUFFER, len(buffers.Element.VerticeNormals)*4, gl.Ptr(buffers.Element.VerticeNormals), gl.STATIC_DRAW)
   gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
-  gl.GenBuffers(1, &buffers.VBOSphereTexture)
-  gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereTexture)
-  gl.BufferData(gl.ARRAY_BUFFER, len(buffers.Sphere.TextureCoords)*4, gl.Ptr(buffers.Sphere.TextureCoords), gl.STATIC_DRAW)
+  gl.GenBuffers(1, &buffers.VBOElementTexture)
+  gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOElementTexture)
+  gl.BufferData(gl.ARRAY_BUFFER, len(buffers.Element.TextureCoords)*4, gl.Ptr(buffers.Element.TextureCoords), gl.STATIC_DRAW)
   gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
-  gl.GenBuffers(1, &buffers.VBOSphereIndices)
-  gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.VBOSphereIndices)
-  gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(buffers.Sphere.Indices)*4, gl.Ptr(buffers.Sphere.Indices), gl.STATIC_DRAW)
+  gl.GenBuffers(1, &buffers.VBOElementIndices)
+  gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.VBOElementIndices)
+  gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(buffers.Element.Indices)*4, gl.Ptr(buffers.Element.Indices), gl.STATIC_DRAW)
   gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
 
   // Go deeper (if any child)

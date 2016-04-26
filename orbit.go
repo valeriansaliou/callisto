@@ -28,66 +28,17 @@
 package main
 
 import (
-  "math"
-  "github.com/go-gl/mathgl/mgl32"
+  "fmt"
 )
 
-// Math
-const (
-  MATH_DEG_TO_RAD float64 = math.Pi / 180
-)
+func createOrbitTraces(objects *[]Object, program uint32, vao uint32) {
+  for o := range *objects {
+    // Append an orbit trace object for this object
+    trace_object := Object{fmt.Sprintf("orbit-traces-%s", (*objects)[o].Name), "circle", (*objects)[o].Distance, 0.0, 0.0, 0.0, 0.0, true, false, true, []Object{}}
 
-// Time
-const (
-  TIME_DAY_TO_MILLISECONDS int = 24 * 60 * 60 * 1000
-  TIME_YEAR_TO_MILLISECONDS int = 365 * 24 * 60 * 60 * 1000
-)
+    *objects = append(*objects, trace_object)
 
-// Window
-const (
-  WINDOW_WIDTH int = 1200
-  WINDOW_HEIGHT int = 800
-
-  WINDOW_TITLE string = "Callisto - Solar System Simulator"
-)
-
-// Controls
-const (
-  CONTROLS_ENABLE_KEY bool = true
-  CONTROLS_ENABLE_MOUSE bool = true
-)
-
-// Projection
-var (
-  PROJECTION_FIELD_NEAR float32 = 0.1
-  PROJECTION_FIELD_FAR float32 = 9999999999999999999.0
-)
-
-// Camera
-var (
-  CAMERA_DEFAULT_EYE mgl32.Vec3 = mgl32.Vec3{0, 0, -1000}
-  CAMERA_DEFAULT_TARGET mgl32.Vec3 = mgl32.Vec3{0, 0, 0}
-
-  CAMERA_MOVE_CELERITY_CRUISE float64 = 5.0
-  CAMERA_MOVE_CELERITY_TURBO float64 = 20.0
-
-  CAMERA_INERTIA_PRODUCE_FORWARD float64 = 0.05
-  CAMERA_INERTIA_PRODUCE_BACKWARD float64 = -0.05
-  CAMERA_INERTIA_CONSUME_FORWARD float64 = -0.04
-  CAMERA_INERTIA_CONSUME_BACKWARD float64 = 0.04
-)
-
-// Object
-const (
-  OBJECT_TEXTURE_PHI_MAX int = 90
-  OBJECT_TEXTURE_THETA_MAX int = 360
-  OBJECT_TEXTURE_STEP_LATITUDE int = 3
-  OBJECT_TEXTURE_STEP_LONGITUDE int = 6
-
-  OBJECT_ROTATION_FULL_ANGLE float64 = 2.0 * math.Pi
-  OBJECT_REVOLUTION_FULL_ANGLE float64 = 2.0 * math.Pi
-
-  OBJECT_FACTOR_SIZE float64 = 0.25
-  OBJECT_FACTOR_SPEED_SCENE float64 = 60 * 60 * 1000 * 10
-  OBJECT_FACTOR_SPEED_MAXIMUM float64 = 200.0
-)
+    // Append orbit traces for child objects
+    createOrbitTraces(&((*objects)[o]).Objects, program, vao)
+  }
+}

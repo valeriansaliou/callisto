@@ -31,14 +31,13 @@ import (
   "math"
 )
 
-type Sphere struct {
-  Vertices       []float32
-  VerticeNormals []float32
-  Indices        []int32
-  TextureCoords  []float32
+type Sphere ObjectElement
+
+func generateSphereFromObject(object *Object) (Sphere) {
+  return generateSphere(object.Radius, object.Radiate)
 }
 
-func generateSphere(object *Object) (Sphere) {
+func generateSphere(radius float32, radiate bool) (Sphere) {
   var (
     sphere            Sphere
 
@@ -81,13 +80,13 @@ func generateSphere(object *Object) (Sphere) {
   k = 0
   l = 0
 
-  radius_n = normalizeObjectRadius(object.Radius)
+  radius_n = normalizeObjectSize(radius)
 
   nb_vertices = 0.0
   res_longitude = float32(OBJECT_TEXTURE_THETA_MAX) / float32(OBJECT_TEXTURE_STEP_LONGITUDE) + 1.0;
 
   // Normal is -1 if sun, which is the light source, to avoid any self-shadow effect
-  if object.Radiate == true {
+  if radiate == true {
     normal_direction = -1.0
   } else {
     normal_direction = 1.0
@@ -120,18 +119,16 @@ func generateSphere(object *Object) (Sphere) {
       j += 3
 
       // Bind sphere indices
-      if (longitude != OBJECT_TEXTURE_THETA_MAX) {
-        if (latitude < OBJECT_TEXTURE_PHI_MAX) {
-          sphere.Indices[k] = int32(nb_vertices)
-          sphere.Indices[k + 1] = int32(nb_vertices + 1.0)
-          sphere.Indices[k + 2] = int32(nb_vertices + 1.0 + res_longitude)
+      if longitude != OBJECT_TEXTURE_THETA_MAX && latitude < OBJECT_TEXTURE_PHI_MAX {
+        sphere.Indices[k] = int32(nb_vertices)
+        sphere.Indices[k + 1] = int32(nb_vertices + 1.0)
+        sphere.Indices[k + 2] = int32(nb_vertices + 1.0 + res_longitude)
 
-          sphere.Indices[k + 3] = int32(nb_vertices)
-          sphere.Indices[k + 4] = int32(nb_vertices + 1.0 + res_longitude)
-          sphere.Indices[k + 5] = int32(nb_vertices + res_longitude)
+        sphere.Indices[k + 3] = int32(nb_vertices)
+        sphere.Indices[k + 4] = int32(nb_vertices + 1.0 + res_longitude)
+        sphere.Indices[k + 5] = int32(nb_vertices + res_longitude)
 
-          k += 6
-        }
+        k += 6
       }
 
       nb_vertices += 1.0

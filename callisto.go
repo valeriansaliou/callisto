@@ -112,6 +112,9 @@ func main() {
   voidbox := loadObjects("voidbox")
   stellar := loadObjects("stellar")
 
+  // Apply orbit traces
+  createOrbitTraces(stellar, program, vao)
+
   // Create all object buffers
   createAllBuffers(voidbox, program, vao)
   createAllBuffers(stellar, program, vao)
@@ -144,7 +147,9 @@ func main() {
     bindCamera()
 
     // Render skybox
+    gl.Disable(gl.DEPTH_TEST)
     renderObjects(voidbox, program)
+    gl.Enable(gl.DEPTH_TEST)
 
     // Render all stellar objects in the map
     renderObjects(stellar, program)

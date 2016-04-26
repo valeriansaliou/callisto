@@ -1,351 +1,297 @@
 [
   {
     "name"        : "sun",
+    "type"        : "sphere",
     "radius"      : 696300,
     "inclination" : 0,
     "revolution"  : 0,
     "rotation"    : 25.38,
     "distance"    : 0,
     "radiate"     : true,
-    "cosmic"      : false,
+    "center"      : true,
 
     "objects"     : [
       {
         "name"        : "mercury",
+        "type"        : "sphere",
         "radius"      : 2439.64,
         "inclination" : 7.00,
         "revolution"  : 0.2408467,
         "rotation"    : 58.646225,
-        "distance"    : 57909175,
-        "radiate"     : false,
-        "cosmic"      : false,
-
-        "objects"     : []
+        "distance"    : 57909175
       },
 
       {
         "name"        : "venus",
+        "type"        : "sphere",
         "radius"      : 6051.59,
         "inclination" : 3.39,
         "revolution"  : 0.61519726,
         "rotation"    : -243.0187,
-        "distance"    : 108208930,
-        "radiate"     : false,
-        "cosmic"      : false,
-
-        "objects"     : []
+        "distance"    : 108208930
       },
 
       {
         "name"        : "earth",
+        "type"        : "sphere",
         "radius"      : 6378.1,
         "inclination" : 0,
         "revolution"  : 1.0000174,
         "rotation"    : 0.99726968,
         "distance"    : 149597890,
-        "radiate"     : false,
-        "cosmic"      : false,
 
         "objects"     : [
           {
             "name"        : "moon",
+            "type"        : "sphere",
             "radius"      : 1737.1,
             "inclination" : 24.5,
             "revolution"  : 27.32158,
             "rotation"    : 27.321582,
-            "distance"    : 384399,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 384399
           }
         ]
       },
 
       {
         "name"        : "mars",
+        "type"        : "sphere",
         "radius"      : 3397.00,
         "inclination" : 1.85,
         "revolution"  : 1.8808476,
         "rotation"    : 1.02595675,
         "distance"    : 227936640,
-        "radiate"     : false,
-        "cosmic"      : false,
 
         "objects"     : [
           {
             "name"        : "phobos",
+            "type"        : "sphere",
             "radius"      : 11.2667,
             "inclination" : 26.04,
             "revolution"  : 0.0008742465753,
             "rotation"    : 1.02595675,
-            "distance"    : 9517.58,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 9517.58
           },
 
           {
             "name"        : "deimos",
+            "type"        : "sphere",
             "radius"      : 6.2,
             "inclination" : 27.58,
             "revolution"  : 0.00345890411,
             "rotation"    : 1.26244,
-            "distance"    : 23460,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 23460
           }
         ]
       },
 
       {
         "name"        : "ceres",
+        "type"        : "sphere",
         "radius"      : 473,
         "inclination" : 10.587,
         "revolution"  : 4.599,
         "rotation"    : 0.3781,
-        "distance"    : 413700000,
-        "radiate"     : false,
-        "cosmic"      : false,
-
-        "objects"     : []
+        "distance"    : 413700000
       },
 
       {
         "name"        : "jupiter",
+        "type"        : "sphere",
         "radius"      : 69911,
         "inclination" : 1.31,
         "revolution"  : 11.862615,
         "rotation"    : 0.41354,
         "distance"    : 778412010,
-        "radiate"     : false,
-        "cosmic"      : false,
 
         "objects"     : [
           {
             "name"        : "io",
+            "type"        : "sphere",
             "radius"      : 1815,
             "inclination" : 2.213,
             "revolution"  : 0.004851598174,
             "rotation"    : 1.769,
-            "distance"    : 421700,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 421700
           },
 
           {
             "name"        : "europa",
+            "type"        : "sphere",
             "radius"      : 1560.8,
             "inclination" : 1.791,
             "revolution"  : 0.009703196347,
             "rotation"    : 3.551,
-            "distance"    : 670900,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 670900
           },
 
           {
             "name"        : "ganymede",
+            "type"        : "sphere",
             "radius"      : 2631,
             "inclination" : 0.195,
             "revolution"  : 0.0008167297945,
             "rotation"    : 7.154553,
-            "distance"    : 1070000,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 1070000
           },
 
           {
             "name"        : "callisto",
+            "type"        : "sphere",
             "radius"      : 2400,
             "inclination" : 0.281,
             "revolution"  : 0.001905139269,
             "rotation"    : 16.68902,
-            "distance"    : 1883000,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 1883000
           }
         ]
       },
 
       {
         "name"        : "saturn",
+        "type"        : "sphere",
         "radius"      : 58232,
         "inclination" : 2.48,
         "revolution"  : 29.447498,
         "rotation"    : 0.44401,
         "distance"    : 1426725400,
-        "radiate"     : false,
-        "cosmic"      : false,
 
         "objects"     : [
           {
+            "name"        : "saturn-rings",
+            "type"        : "circle-filled",
+            "radius"      : 420000,
+            "inclination" : 90.0,
+            "revolution"  : 0.0,
+            "rotation"    : 0.0,
+            "distance"    : 110964,
+            "center"      : true
+          },
+
+          {
             "name"        : "titan",
+            "type"        : "sphere",
             "radius"      : 2575,
             "inclination" : 0.33,
             "revolution"  : 0.001820253425,
             "rotation"    : 15.94542,
-            "distance"    : 1221850,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 1221850
           },
 
           {
             "name"        : "enceladus",
+            "type"        : "sphere",
             "radius"      : 250,
             "inclination" : 0.02,
             "revolution"  : 0.0001564175799,
             "rotation"    : 1.370218,
-            "distance"    : 238020,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 238020
           },
 
           {
             "name"        : "iapetus",
+            "type"        : "sphere",
             "radius"      : 730,
             "inclination" : 14.72,
             "revolution"  : 0.009055956621,
             "rotation"    : 79.33018,
-            "distance"    : 3561300,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 3561300
           },
 
           {
             "name"        : "mimas",
+            "type"        : "sphere",
             "radius"      : 0,
             "inclination" : 0,
             "revolution"  : 0,
             "rotation"    : 0,
-            "distance"    : 0,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 0
           }
         ]
       },
 
       {
         "name"        : "uranus",
+        "type"        : "sphere",
         "radius"      : 8557.25,
         "inclination" : 0.76,
         "revolution"  : 84.016846,
         "rotation"    : -0.71833,
         "distance"    : 2870972200,
-        "radiate"     : false,
-        "cosmic"      : false,
 
         "objects"     : [
           {
             "name"        : "miranda",
+            "type"        : "sphere",
             "radius"      : 235.8,
             "inclination" : 4.22,
             "revolution"  : 0.0001613560502,
             "rotation"    : 1.413479,
-            "distance"    : 129780,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 129780
           }
         ]
       },
 
       {
         "name"        : "neptune",
+        "type"        : "sphere",
         "radius"      : 8766.36,
         "inclination" : 1.77,
         "revolution"  : 164.79132,
         "rotation"    : 0.67125,
         "distance"    : 4498252900,
-        "radiate"     : false,
-        "cosmic"      : false,
 
         "objects"     : [
           {
             "name"        : "triton",
+            "type"        : "sphere",
             "radius"      : 1350,
             "inclination" : 157.35,
             "revolution"  : -0.0006708732877,
             "rotation"    : -5.87685,
-            "distance"    : 354800,
-            "radiate"     : false,
-            "cosmic"      : false,
-
-            "objects"     : []
+            "distance"    : 354800
           }
         ]
       },
 
       {
         "name"        : "pluto",
+        "type"        : "sphere",
         "radius"      : 1186,
         "inclination" : 17.14175,
         "revolution"  : 247.92065,
         "rotation"    : -6.38723,
-        "distance"    : 5906380000,
-        "radiate"     : false,
-        "cosmic"      : false,
-
-        "objects"     : []
+        "distance"    : 5906380000
       },
 
       {
         "name"        : "haumea",
+        "type"        : "sphere",
         "radius"      : 650,
         "inclination" : 28.19,
         "revolution"  : 285.4,
         "rotation"    : 0.167,
-        "distance"    : 6484000000,
-        "radiate"     : false,
-        "cosmic"      : false,
-
-        "objects"     : []
+        "distance"    : 6484000000
       },
 
       {
         "name"        : "makemake",
+        "type"        : "sphere",
         "radius"      : 715,
         "inclination" : 28.96,
         "revolution"  : 309.9,
         "rotation"    : 0.2,
-        "distance"    : 6850000000,
-        "radiate"     : false,
-        "cosmic"      : false,
-
-        "objects"     : []
+        "distance"    : 6850000000
       },
 
       {
         "name"        : "eris",
+        "type"        : "sphere",
         "radius"      : 1163,
         "inclination" : 44.187,
         "revolution"  : 557,
         "rotation"    : 0.2,
-        "distance"    : 10210000000,
-        "radiate"     : false,
-        "cosmic"      : false,
-
-        "objects"     : []
+        "distance"    : 10210000000
       }
     ]
   }
