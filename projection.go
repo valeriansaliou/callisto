@@ -37,13 +37,21 @@ type ProjectionData struct {
   ProjectionUniform int32
 }
 
-var PROJECTION ProjectionData
+var __PROJECTION ProjectionData
+
+func getProjection() (*ProjectionData) {
+  return &__PROJECTION
+}
 
 func createProjection(program uint32) {
-  PROJECTION.Projection = mgl32.Perspective(mgl32.DegToRad(45.0), float32(WINDOW_WIDTH) / float32(WINDOW_HEIGHT), PROJECTION_FIELD_NEAR, PROJECTION_FIELD_FAR)
-  PROJECTION.ProjectionUniform = gl.GetUniformLocation(program, gl.Str("projectionUniform\x00"))
+  projection := getProjection()
+
+  projection.Projection = mgl32.Perspective(mgl32.DegToRad(45.0), float32(WINDOW_WIDTH) / float32(WINDOW_HEIGHT), PROJECTION_FIELD_NEAR, PROJECTION_FIELD_FAR)
+  projection.ProjectionUniform = gl.GetUniformLocation(program, gl.Str("projectionUniform\x00"))
 }
 
 func bindProjection() {
-  gl.UniformMatrix4fv(PROJECTION.ProjectionUniform, 1, false, &PROJECTION.Projection[0])
+  projection := getProjection()
+
+  gl.UniformMatrix4fv(projection.ProjectionUniform, 1, false, &(projection.Projection[0]))
 }

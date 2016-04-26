@@ -39,12 +39,18 @@ type LightData struct {
   IsLightReceiverUniform       int32
 }
 
-var LIGHT LightData
+var __LIGHT LightData
+
+func getLight() (*LightData) {
+  return &__LIGHT
+}
 
 func setLightUniforms(program uint32) {
-  LIGHT.PointLightingLocationUniform = gl.GetUniformLocation(program, gl.Str("pointLightingLocationUniform\x00"))
-  LIGHT.PointLightingColorUniform = gl.GetUniformLocation(program, gl.Str("pointLightingColorUniform\x00"))
+  light := getLight()
 
-  LIGHT.IsLightEmitterUniform = gl.GetUniformLocation(program, gl.Str("isLightEmitterUniform\x00"))
-  LIGHT.IsLightReceiverUniform = gl.GetUniformLocation(program, gl.Str("isLightReceiverUniform\x00"))
+  light.PointLightingLocationUniform = gl.GetUniformLocation(program, gl.Str("pointLightingLocationUniform\x00"))
+  light.PointLightingColorUniform = gl.GetUniformLocation(program, gl.Str("pointLightingColorUniform\x00"))
+
+  light.IsLightEmitterUniform = gl.GetUniformLocation(program, gl.Str("isLightEmitterUniform\x00"))
+  light.IsLightReceiverUniform = gl.GetUniformLocation(program, gl.Str("isLightReceiverUniform\x00"))
 }

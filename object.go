@@ -73,6 +73,12 @@ func loadObjects(map_name string) (*[]Object) {
 }
 
 func renderObjects(objects *[]Object, program uint32) {
+  // Acquire shader
+  shader := getShader()
+  light := getLight()
+  matrix_uniforms := getMatrixUniforms()
+
+  // Iterate on current-level objects
   for o := range *objects {
     buffers := getBuffers((*objects)[o].Name)
 
@@ -86,59 +92,67 @@ func renderObjects(objects *[]Object, program uint32) {
     buffers.addToAngleRevolution(revolutionAngleSinceLast(&(*objects)[o]))
 
     // Apply model transforms
+    current_matrix_shared := getMatrix()
+
     if (*objects)[o].Revolution != 0 {
-      CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.HomogRotate3D(buffers.AngleRevolution, mgl32.Vec3{0, 1, 0}))
+      *current_matrix_shared = (*current_matrix_shared).Mul4(mgl32.HomogRotate3D(buffers.AngleRevolution, mgl32.Vec3{0, 1, 0}))
     }
 
     if (*objects)[o].Distance > 0 {
-      CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.Translate3D(normalizeObjectDistance((*objects)[o].Distance), 0.0, 0.0))
+      *current_matrix_shared = (*current_matrix_shared).Mul4(mgl32.Translate3D(normalizeObjectDistance((*objects)[o].Distance), 0.0, 0.0))
     }
+
+    setMatrix(current_matrix_shared)
 
     // Toggle to unary context
     pushMatrix()
 
     // Apply object angles
+    current_matrix_self := getMatrix()
+
     if (*objects)[o].Rotation != 0 {
-      CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.HomogRotate3D(buffers.AngleRotation, mgl32.Vec3{0, 1, 0}))
+      *current_matrix_self = (*current_matrix_self).Mul4(mgl32.HomogRotate3D(buffers.AngleRotation, mgl32.Vec3{0, 1, 0}))
     }
 
     if (*objects)[o].Inclination > 0 {
-      CURRENT_MATRIX = CURRENT_MATRIX.Mul4(mgl32.HomogRotate3D((*objects)[o].Inclination / 90.0, mgl32.Vec3{0, 0, 1}))
+      *current_matrix_self = (*current_matrix_self).Mul4(mgl32.HomogRotate3D((*objects)[o].Inclination / 90.0, mgl32.Vec3{0, 0, 1}))
     }
 
+    setMatrix(current_matrix_shared)
+
     // Process normal to model matrix
-    normal_matrix := mgl32.Mat4Normal(CURRENT_MATRIX)
+    normal_matrix := mgl32.Mat4Normal(*current_matrix_self)
 
     // Apply model + normal
-    gl.UniformMatrix4fv(MODEL_UNIFORM, 1, false, &CURRENT_MATRIX[0])
-    gl.UniformMatrix3fv(NORMAL_UNIFORM, 1, false, &normal_matrix[0])
+    gl.UniformMatrix4fv(matrix_uniforms.Model, 1, false, &((*current_matrix_self)[0]))
+    gl.UniformMatrix3fv(matrix_uniforms.Normal, 1, false, &normal_matrix[0])
 
     // Render vertices
     gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVertices)
-    gl.VertexAttribPointer(SHADER_VERTEX_ATTRIBUTES, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
+    gl.VertexAttribPointer(shader.VertexAttributes, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
     // Render textures
     gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereTexture)
-    gl.VertexAttribPointer(SHADER_VERTEX_TEXTURE_COORDS, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
+    gl.VertexAttribPointer(shader.VertexTextureCoords, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
     // Render vertice lightings
     gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOSphereVerticeNormals)
-    gl.VertexAttribPointer(SHADER_VERTEX_NORMAL_ATTRIBUTES, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
+    gl.VertexAttribPointer(shader.NormalAttributes, 3, gl.FLOAT, false, 0, gl.PtrOffset(0))
 
     // Light emitter? (eg: Sun)
     if (*objects)[o].Radiate == true {
-      gl.Uniform1i(LIGHT.IsLightEmitterUniform, 1)
+      gl.Uniform1i(light.IsLightEmitterUniform, 1)
 
-      gl.Uniform3f(LIGHT.PointLightingLocationUniform, 0, 0, 0);
-      gl.Uniform3f(LIGHT.PointLightingColorUniform, 1, 1, 1);
+      gl.Uniform3f(light.PointLightingLocationUniform, 0, 0, 0);
+      gl.Uniform3f(light.PointLightingColorUniform, 1, 1, 1);
     }
 
     // Light receiver? (eg: planet, moon)
     if (*objects)[o].Cosmic == true {
       // It is a far-away cosmic object, dont light it from emitter
-      gl.Uniform1i(LIGHT.IsLightReceiverUniform, 0)
+      gl.Uniform1i(light.IsLightReceiverUniform, 0)
     } else {
-      gl.Uniform1i(LIGHT.IsLightReceiverUniform, 1)
+      gl.Uniform1i(light.IsLightReceiverUniform, 1)
     }
 
     // Render indices

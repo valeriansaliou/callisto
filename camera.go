@@ -45,7 +45,7 @@ type CameraData struct {
   InertiaTurn    float64
 }
 
-var CAMERA CameraData
+var __CAMERA CameraData
 
 func (camera_data *CameraData) getEyeX() (position float32) {
   return camera_data.PositionEye[0]
@@ -104,19 +104,21 @@ func (camera_data *CameraData) defaultTarget() {
 }
 
 func getCamera() (*CameraData) {
-  return &CAMERA
+  return &__CAMERA
 }
 
 func createCamera(program uint32) {
-  CAMERA.CameraUniform = gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
+  camera := getCamera()
+
+  camera.CameraUniform = gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
 
   // Default inertia (none)
-  CAMERA.InertiaDrag = 0.0
-  CAMERA.InertiaTurn = 0.0
+  camera.InertiaDrag = 0.0
+  camera.InertiaTurn = 0.0
 
   // Default camera position
-  CAMERA.defaultEye()
-  CAMERA.defaultTarget()
+  camera.defaultEye()
+  camera.defaultTarget()
 }
 
 func produceInertia(inertia *float64, increment float64, celerity float64) {
@@ -150,6 +152,7 @@ func processEventCameraEye() {
     inertia_turn float64
   )
 
+  camera := getCamera()
   key_state := getEventKeyState()
 
   // Decrease speed if diagonal move
@@ -164,50 +167,51 @@ func processEventCameraEye() {
   }
 
   // Acquire rotation around axis
-  rotation_x = float64(CAMERA.getTargetX())
-  rotation_y = float64(CAMERA.getTargetY())
+  rotation_x = float64(camera.getTargetX())
+  rotation_y = float64(camera.getTargetY())
 
   // Process camera move position (keyboard)
   if key_state.MoveUp == true {
-    produceInertia(&CAMERA.InertiaDrag, CAMERA_INERTIA_PRODUCE_FORWARD, celerity)
+    produceInertia(&(camera.InertiaDrag), CAMERA_INERTIA_PRODUCE_FORWARD, celerity)
   }
   if key_state.MoveDown == true {
-    produceInertia(&CAMERA.InertiaDrag, CAMERA_INERTIA_PRODUCE_BACKWARD, celerity)
+    produceInertia(&(camera.InertiaDrag), CAMERA_INERTIA_PRODUCE_BACKWARD, celerity)
   }
   if key_state.MoveLeft == true {
-    produceInertia(&CAMERA.InertiaTurn, CAMERA_INERTIA_PRODUCE_FORWARD, celerity)
+    produceInertia(&(camera.InertiaTurn), CAMERA_INERTIA_PRODUCE_FORWARD, celerity)
   }
   if key_state.MoveRight == true {
-    produceInertia(&CAMERA.InertiaTurn, CAMERA_INERTIA_PRODUCE_BACKWARD, celerity)
+    produceInertia(&(camera.InertiaTurn), CAMERA_INERTIA_PRODUCE_BACKWARD, celerity)
   }
 
   // Apply new position with inertia
-  inertia_drag = consumeInertia(&CAMERA.InertiaDrag)
-  inertia_turn = consumeInertia(&CAMERA.InertiaTurn)
+  inertia_drag = consumeInertia(&(camera.InertiaDrag))
+  inertia_turn = consumeInertia(&(camera.InertiaTurn))
 
-  CAMERA.moveEyeX(float32(inertia_drag * -1.0 * math.Sin(rotation_y) + inertia_turn * math.Cos(rotation_y)))
-  CAMERA.moveEyeZ(float32(inertia_drag * math.Cos(rotation_y) + inertia_turn * math.Sin(rotation_y)))
-  CAMERA.moveEyeY(float32(inertia_drag * math.Sin(rotation_x)))
+  camera.moveEyeX(float32(inertia_drag * -1.0 * math.Sin(rotation_y) + inertia_turn * math.Cos(rotation_y)))
+  camera.moveEyeZ(float32(inertia_drag * math.Cos(rotation_y) + inertia_turn * math.Sin(rotation_y)))
+  camera.moveEyeY(float32(inertia_drag * math.Sin(rotation_x)))
 
   // Translation: walk
-  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.Translate3D(CAMERA.getEyeX(), CAMERA.getEyeY(), CAMERA.getEyeZ()))
+  camera.Camera = camera.Camera.Mul4(mgl32.Translate3D(camera.getEyeX(), camera.getEyeY(), camera.getEyeZ()))
 }
 
 func processEventCameraTarget() {
+  camera := getCamera()
   key_state := getEventKeyState()
 
-  CAMERA.updateTargetX(key_state.WatchY * float32(math.Pi))
-  CAMERA.updateTargetY(key_state.WatchX * float32(math.Pi))
+  camera.updateTargetX(key_state.WatchY * float32(math.Pi))
+  camera.updateTargetY(key_state.WatchX * float32(math.Pi))
 
   // Rotation: view
-  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(CAMERA.getTargetX(), mgl32.Vec3{1, 0, 0}))
-  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(CAMERA.getTargetY(), mgl32.Vec3{0, 1, 0}))
-  CAMERA.Camera = CAMERA.Camera.Mul4(mgl32.HomogRotate3D(CAMERA.getTargetZ(), mgl32.Vec3{0, 0, 1}))
+  camera.Camera = camera.Camera.Mul4(mgl32.HomogRotate3D(camera.getTargetX(), mgl32.Vec3{1, 0, 0}))
+  camera.Camera = camera.Camera.Mul4(mgl32.HomogRotate3D(camera.getTargetY(), mgl32.Vec3{0, 1, 0}))
+  camera.Camera = camera.Camera.Mul4(mgl32.HomogRotate3D(camera.getTargetZ(), mgl32.Vec3{0, 0, 1}))
 }
 
 func updateCamera() {
   // Update overall camera position (flip camera)
-  CAMERA.Camera = mgl32.Ident4()
+  getCamera().Camera = mgl32.Ident4()
 
   // Process new eye watch target in scene
   processEventCameraTarget()
@@ -217,10 +221,14 @@ func updateCamera() {
 }
 
 func resetCamera() {
-  CAMERA.defaultEye()
-  CAMERA.defaultTarget()
+  camera := getCamera()
+
+  camera.defaultEye()
+  camera.defaultTarget()
 }
 
 func bindCamera() {
-  gl.UniformMatrix4fv(CAMERA.CameraUniform, 1, false, &CAMERA.Camera[0])
+  camera := getCamera()
+
+  gl.UniformMatrix4fv(camera.CameraUniform, 1, false, &(camera.Camera[0]))
 }

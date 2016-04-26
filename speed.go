@@ -34,10 +34,10 @@ type Speed struct {
   Factor       float64
 }
 
-var SPEED Speed = Speed{0.0, 0.0, 1.0}
+var __SPEED Speed = Speed{0.0, 0.0, 1.0}
 
 func getSpeed() (*Speed) {
-  return &SPEED
+  return &__SPEED
 }
 
 func updateSpeedFactor(factor_offset float64) {
@@ -58,16 +58,16 @@ func updateElaspedTime(nowTime float64) {
 
 func revolutionAngleSinceLast(object *Object) float32 {
   // revolution_time from years to milliseconds
-  // SPEED.TimeElapsed in milliseconds
-  //  -> angle = (SPEED.TimeElapsed / revolution_time) * OBJECT_REVOLUTION_FULL_ANGLE
+  // speed.TimeElapsed in milliseconds
+  //  -> angle = (speed.TimeElapsed / revolution_time) * OBJECT_REVOLUTION_FULL_ANGLE
 
   return float32(OBJECT_FACTOR_SPEED_SCENE * getSpeed().Factor * getSpeed().TimeElapsed) / ((*object).Revolution * float32(TIME_YEAR_TO_MILLISECONDS)) * float32(OBJECT_REVOLUTION_FULL_ANGLE)
 }
 
 func rotationAngleSinceLast(object *Object) float32 {
   // rotation_time from days to milliseconds
-  // SPEED.TimeElapsed in milliseconds
-  //  -> angle = (SPEED.TimeElapsed / rotation_time) * OBJECT_ROTATION_FULL_ANGLE
+  // speed.TimeElapsed in milliseconds
+  //  -> angle = (speed.TimeElapsed / rotation_time) * OBJECT_ROTATION_FULL_ANGLE
 
   return float32(OBJECT_FACTOR_SPEED_SCENE * getSpeed().Factor * getSpeed().TimeElapsed) / ((*object).Rotation * float32(TIME_DAY_TO_MILLISECONDS)) * float32(OBJECT_ROTATION_FULL_ANGLE)
 }

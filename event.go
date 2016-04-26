@@ -43,13 +43,15 @@ type EventKeyState struct {
   WatchY    float32
 }
 
-var EVENT_KEY_STATE = EventKeyState{false, false, false, false, false, 0.0, 0.0}
+var __EVENT_KEY_STATE = EventKeyState{false, false, false, false, false, 0.0, 0.0}
 
 func getEventKeyState() (*EventKeyState) {
-  return &EVENT_KEY_STATE
+  return &__EVENT_KEY_STATE
 }
 
 func handleKey(window *glfw.Window, k glfw.Key, s int, action glfw.Action, mods glfw.ModifierKey) {
+  key_state := getEventKeyState()
+
   // Main controls
   if k == glfw.KeyEscape {
     if action == glfw.Press {
@@ -70,61 +72,63 @@ func handleKey(window *glfw.Window, k glfw.Key, s int, action glfw.Action, mods 
   if k == glfw.KeySpace {
     // Press or release?
     if action == glfw.Press {
-      EVENT_KEY_STATE.MoveTurbo = true
+      key_state.MoveTurbo = true
     } else if action == glfw.Release {
-      EVENT_KEY_STATE.MoveTurbo = false
+      key_state.MoveTurbo = false
     }
   }
 
   if k == glfw.KeyUp {
     // Press or release?
     if action == glfw.Press {
-      EVENT_KEY_STATE.MoveDown = false
-      EVENT_KEY_STATE.MoveUp = true
+      key_state.MoveDown = false
+      key_state.MoveUp = true
     } else if action == glfw.Release {
-      EVENT_KEY_STATE.MoveUp = false
+      key_state.MoveUp = false
     }
   }
 
   if k == glfw.KeyDown {
     // Press or release?
     if action == glfw.Press {
-      EVENT_KEY_STATE.MoveUp = false
-      EVENT_KEY_STATE.MoveDown = true
+      key_state.MoveUp = false
+      key_state.MoveDown = true
     } else if action == glfw.Release {
-      EVENT_KEY_STATE.MoveDown = false
+      key_state.MoveDown = false
     }
   }
 
   if k == glfw.KeyLeft {
     // Press or release?
     if action == glfw.Press {
-      EVENT_KEY_STATE.MoveRight = false
-      EVENT_KEY_STATE.MoveLeft = true
+      key_state.MoveRight = false
+      key_state.MoveLeft = true
     } else if action == glfw.Release {
-      EVENT_KEY_STATE.MoveLeft = false
+      key_state.MoveLeft = false
     }
   }
 
   if k == glfw.KeyRight {
     // Press or release?
     if action == glfw.Press {
-      EVENT_KEY_STATE.MoveLeft = false
-      EVENT_KEY_STATE.MoveRight = true
+      key_state.MoveLeft = false
+      key_state.MoveRight = true
     } else if action == glfw.Release {
-      EVENT_KEY_STATE.MoveRight = false
+      key_state.MoveRight = false
     }
   }
 }
 
 func handleMouseCursor(window *glfw.Window, position_x float64, position_y float64) {
+  key_state := getEventKeyState()
+
   // Bind new watch position
   if position_x >= 0 && position_x <= float64(WINDOW_WIDTH) {
-    EVENT_KEY_STATE.WatchX = float32(position_x) * (1.0 / float32(WINDOW_WIDTH)) - 0.5
+    key_state.WatchX = float32(position_x) * (1.0 / float32(WINDOW_WIDTH)) - 0.5
   }
 
   if position_y >= 0 && position_y <= float64(WINDOW_HEIGHT) {
-    EVENT_KEY_STATE.WatchY = float32(position_y) * (1.0 / float32(WINDOW_HEIGHT)) - 0.5
+    key_state.WatchY = float32(position_y) * (1.0 / float32(WINDOW_HEIGHT)) - 0.5
   }
 }
 

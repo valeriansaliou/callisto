@@ -46,6 +46,8 @@ type Buffers struct {
   VBOSphereIndices        uint32
 }
 
+var __BUFFERS map[string]*Buffers = make(map[string]*Buffers)
+
 func (buffers *Buffers) addToAngleRotation(angle float32) {
   buffers.AngleRotation += angle
 }
@@ -54,10 +56,12 @@ func (buffers *Buffers) addToAngleRevolution(angle float32) {
   buffers.AngleRevolution += angle
 }
 
-var BUFFERS map[string]*Buffers = make(map[string]*Buffers)
-
 func getBuffers(name string) (*Buffers) {
-  return BUFFERS[name]
+  return __BUFFERS[name]
+}
+
+func setBuffers(name string, buffers *Buffers) {
+  __BUFFERS[name] = buffers
 }
 
 func createAllBuffers(objects *[]Object, program uint32, vao uint32) {
@@ -124,5 +128,5 @@ func createBuffers(object *Object, program uint32, vao uint32) {
 
   // Store buffers
   // Notice: if a lower level buffer is set w/ the same name, the higher-level object will always override it
-  BUFFERS[object.Name] = buffers
+  setBuffers(object.Name, buffers)
 }

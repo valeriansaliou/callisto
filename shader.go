@@ -31,11 +31,13 @@ import (
   "github.com/go-gl/gl/v4.1-core/gl"
 )
 
-var (
-  SHADER_VERTEX_ATTRIBUTES        uint32
-  SHADER_VERTEX_NORMAL_ATTRIBUTES uint32
-  SHADER_VERTEX_TEXTURE_COORDS    uint32
-)
+type ShaderData struct {
+  VertexAttributes    uint32
+  NormalAttributes    uint32
+  VertexTextureCoords uint32
+}
+
+var __SHADER ShaderData
 
 var SHADER_VERTEX = `
 #version 330
@@ -102,16 +104,22 @@ void main() {
 }
 ` + "\x00"
 
+func getShader() (*ShaderData) {
+  return &__SHADER
+}
+
 func initializeShaders(program uint32) {
+  shader := getShader()
+
   // Bind buffer to shaders attributes
-  SHADER_VERTEX_ATTRIBUTES = uint32(gl.GetAttribLocation(program, gl.Str("vertexAttributes\x00")))
-  gl.EnableVertexAttribArray(SHADER_VERTEX_ATTRIBUTES)
+  shader.VertexAttributes = uint32(gl.GetAttribLocation(program, gl.Str("vertexAttributes\x00")))
+  gl.EnableVertexAttribArray(shader.VertexAttributes)
 
-  SHADER_VERTEX_NORMAL_ATTRIBUTES = uint32(gl.GetAttribLocation(program, gl.Str("vertexNormalAttributes\x00")))
-  gl.EnableVertexAttribArray(SHADER_VERTEX_NORMAL_ATTRIBUTES)
+  shader.NormalAttributes = uint32(gl.GetAttribLocation(program, gl.Str("vertexNormalAttributes\x00")))
+  gl.EnableVertexAttribArray(shader.NormalAttributes)
 
-  SHADER_VERTEX_TEXTURE_COORDS = uint32(gl.GetAttribLocation(program, gl.Str("vertexTextureCoords\x00")))
-  gl.EnableVertexAttribArray(SHADER_VERTEX_TEXTURE_COORDS)
+  shader.VertexTextureCoords = uint32(gl.GetAttribLocation(program, gl.Str("vertexTextureCoords\x00")))
+  gl.EnableVertexAttribArray(shader.VertexTextureCoords)
 
   // Bind misc. shaders uniforms
   setLightUniforms(program)
