@@ -83,16 +83,16 @@ func (camera_data *CameraData) moveEyeZ(increment float32) {
   camera_data.PositionEye[2] += increment
 }
 
-func (camera_data *CameraData) updateTargetX(position float32) {
-  camera_data.PositionTarget[0] = position
+func (camera_data *CameraData) moveTargetX(increment float32) {
+  camera_data.PositionTarget[0] += increment
 }
 
-func (camera_data *CameraData) updateTargetY(position float32) {
-  camera_data.PositionTarget[1] = position
+func (camera_data *CameraData) moveTargetY(increment float32) {
+  camera_data.PositionTarget[1] += increment
 }
 
-func (camera_data *CameraData) updateTargetZ(position float32) {
-  camera_data.PositionTarget[2] = position
+func (camera_data *CameraData) moveTargetZ(increment float32) {
+  camera_data.PositionTarget[2] += increment
 }
 
 func (camera_data *CameraData) defaultEye() {
@@ -200,8 +200,8 @@ func processEventCameraTarget() {
   camera := getCamera()
   key_state := getEventKeyState()
 
-  camera.updateTargetX(key_state.WatchY * float32(math.Pi))
-  camera.updateTargetY(key_state.WatchX * float32(math.Pi) * 2)
+  camera.moveTargetX(key_state.WatchY * float32(math.Pi) * CAMERA_TARGET_AMORTIZE_FACTOR)
+  camera.moveTargetY(key_state.WatchX * float32(math.Pi) * 2 * CAMERA_TARGET_AMORTIZE_FACTOR)
 
   // Rotation: view
   camera.Camera = camera.Camera.Mul4(mgl32.HomogRotate3D(camera.getTargetX(), mgl32.Vec3{1, 0, 0}))
