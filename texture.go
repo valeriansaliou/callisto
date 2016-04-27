@@ -45,9 +45,12 @@ type Texture struct {
 func loadTexture(name string) (Texture, error) {
   var texture = Texture{}
 
-  filePath := fmt.Sprintf("assets/%s.jpg", name)
-
-  imgFile, err := os.Open(filePath)
+  // Try JPG version of texture (most used)
+  imgFile, err := os.Open(fmt.Sprintf("assets/%s.jpg", name))
+  if err != nil {
+    // JPG not found, try PNG version of texture (less used)
+    imgFile, err = os.Open(fmt.Sprintf("assets/%s.png", name))
+  }
   if err != nil {
     // Open default texture (default object color)
     imgFile, err = os.Open("assets/default.png")

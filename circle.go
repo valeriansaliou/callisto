@@ -152,8 +152,8 @@ func generateCircleObject(circle *Circle, radius_n float32, thickness float32, a
   }
 
   // Bind circle texture coordinates
-  circle.TextureCoords[*l] = 0.0
-  circle.TextureCoords[*l + 1] = 0.0
+  circle.TextureCoords[*l] = float32(angle / float64(angle_max))
+  circle.TextureCoords[*l + 1] = float32(angle / float64(angle_max))
 
   *l += 2
 }
