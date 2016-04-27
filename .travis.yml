@@ -1,0 +1,7 @@
+language: go
+go:
+  - '1.6'
+before_install:
+  - go get -u github.com/golang/lint/golint
+script:
+  - golint *.go
