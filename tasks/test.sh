@@ -6,8 +6,11 @@ BASE_DIR="$ABSPATH/../"
 rc=0
 
 pushd "$BASE_DIR" > /dev/null
-  if [[ ! -z $(golint *.go) ]]
+  lint_output=$(golint *.go)
+
+  if [[ ! -z $lint_output ]]
   then
+    echo "$lint_output"
     rc=1
   fi
 popd > /dev/null
