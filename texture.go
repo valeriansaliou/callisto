@@ -39,6 +39,7 @@ import (
   "github.com/disintegration/imaging"
 )
 
+// Texture  Maps a texture reference to GPU internals
 type Texture struct {
   Ref uint32
 }

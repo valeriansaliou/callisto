@@ -31,6 +31,7 @@ import (
   "math"
 )
 
+// Speed  Maps current scene speed
 type Speed struct {
   TimePrevious float64
   TimeElapsed  float64
@@ -39,24 +40,25 @@ type Speed struct {
   Framerate    float64
 }
 
-var __SPEED Speed = Speed{0.0, 0.0, 1.0, SPEED_FRAMERATE_DEFAULT}
+// InstanceSpeed  Stores current scene speed
+var InstanceSpeed = Speed{0.0, 0.0, 1.0, ConfigSpeedFramerateDefault}
 
 func (speed *Speed) setFramerate(framerate int) {
   speed.Framerate = float64(framerate)
 }
 
 func getSpeed() (*Speed) {
-  return &__SPEED
+  return &InstanceSpeed
 }
 
-func updateSpeedFactor(factor_offset float64) {
-  getSpeed().Factor += factor_offset
+func updateSpeedFactor(factorOffset float64) {
+  getSpeed().Factor += factorOffset
 
   // Cap down to zero? (prevents negative or very-high speeds)
   if getSpeed().Factor < 0 {
     getSpeed().Factor = 0
-  } else if getSpeed().Factor > OBJECT_FACTOR_SPEED_MAXIMUM {
-    getSpeed().Factor = OBJECT_FACTOR_SPEED_MAXIMUM
+  } else if getSpeed().Factor > ConfigObjectFactorSpeedMaximum {
+    getSpeed().Factor = ConfigObjectFactorSpeedMaximum
   }
 }
 
@@ -67,35 +69,35 @@ func updateElaspedTime(nowTime float64) {
   speed.TimePrevious = nowTime
 }
 
-func shouldUpdateScene(current_time float64) (bool) {
+func shouldUpdateScene(currentTime float64) (bool) {
   speed := getSpeed()
 
-  return current_time - speed.TimePrevious >= 1.0 / speed.Framerate
+  return currentTime - speed.TimePrevious >= 1.0 / speed.Framerate
 }
 
-func angleSince(angle_time float32, factor float64, elapsed float64) float32 {
-  // angle_time in milliseconds
+func angleSince(angleTime float32, factor float64, elapsed float64) float32 {
+  // angleTime in milliseconds
   // elapsed in milliseconds
-  //  -> angle = (elapsed / angle_time) * OBJECT_FULL_ANGLE
+  //  -> angle = (elapsed / angleTime) * ConfigObjectFullAngle
   // Important: cap angle value (circle from 0 to 360 w/ modulus)
 
-  if angle_time == 0 {
+  if angleTime == 0 {
     return 0.0
   }
 
-  return float32(math.Mod(((OBJECT_FACTOR_SPEED_SCENE * factor * elapsed) / float64(angle_time)) * OBJECT_FULL_ANGLE, OBJECT_FULL_ANGLE))
+  return float32(math.Mod(((ConfigObjectFactorSpeedScene * factor * elapsed) / float64(angleTime)) * ConfigObjectFullAngle, ConfigObjectFullAngle))
 }
 
 func revolutionAngleSince(object *Object, factor float64, elapsed float64) float32 {
   // revolution_time from years to milliseconds
 
-  return angleSince((*object).Revolution * float32(TIME_YEAR_TO_MILLISECONDS), factor, elapsed * float64(TIME_SECOND_TO_MILLISECONDS))
+  return angleSince((*object).Revolution * float32(ConfigTimeYearToMilliseconds), factor, elapsed * float64(ConfigTimeSecondToMilliseconds))
 }
 
 func rotationAngleSince(object *Object, factor float64, elapsed float64) float32 {
   // revolution_time from years to milliseconds
 
-  return angleSince((*object).Rotation * float32(TIME_DAY_TO_MILLISECONDS), factor, elapsed * float64(TIME_SECOND_TO_MILLISECONDS))
+  return angleSince((*object).Rotation * float32(ConfigTimeDayToMilliseconds), factor, elapsed * float64(ConfigTimeSecondToMilliseconds))
 }
 
 func revolutionAngleSinceLast(object *Object) float32 {
@@ -107,15 +109,15 @@ func rotationAngleSinceLast(object *Object) float32 {
 }
 
 func revolutionAngleSinceStart(object *Object) float32 {
-  return revolutionAngleSince(object, 1.0, float64(TIME_START_FROM_MILLISECONDS))
+  return revolutionAngleSince(object, 1.0, float64(ConfigTimeStartFromMilliseconds))
 }
 
 func rotationAngleSinceStart(object *Object) float32 {
-  return rotationAngleSince(object, 1.0, float64(TIME_START_FROM_MILLISECONDS))
+  return rotationAngleSince(object, 1.0, float64(ConfigTimeStartFromMilliseconds))
 }
 
 func normalizedTimeFactor() float32 {
-  f := TIME_NORMALIZE_FACTOR * float32(getSpeed().TimeElapsed)
+  f := ConfigTimeNormalizeFactor * float32(getSpeed().TimeElapsed)
 
   return f
 }

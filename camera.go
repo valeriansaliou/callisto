@@ -34,6 +34,7 @@ import (
   "github.com/go-gl/mathgl/mgl32"
 )
 
+// CameraData  Maps camera state
 type CameraData struct {
   Camera         mgl32.Mat4
   CameraUniform  int32
@@ -45,7 +46,8 @@ type CameraData struct {
   InertiaTurn    float64
 }
 
-var __CAMERA CameraData
+// InstanceCamera  Stores camera state
+var InstanceCamera CameraData
 
 func (camera_data *CameraData) getEyeX() (position float32) {
   return camera_data.PositionEye[0]
@@ -96,11 +98,11 @@ func (camera_data *CameraData) moveTargetZ(increment float32) {
 }
 
 func (camera_data *CameraData) defaultEye() {
-  camera_data.PositionEye = CAMERA_DEFAULT_EYE
+  camera_data.PositionEye = ConfigCameraDefaultEye
 }
 
 func (camera_data *CameraData) defaultTarget() {
-  camera_data.PositionTarget = CAMERA_DEFAULT_TARGET
+  camera_data.PositionTarget = ConfigCameraDefaultTarget
 }
 
 func (camera_data *CameraData) defaultInertia() {
@@ -109,7 +111,7 @@ func (camera_data *CameraData) defaultInertia() {
 }
 
 func getCamera() (*CameraData) {
-  return &__CAMERA
+  return &InstanceCamera
 }
 
 func createCamera(program uint32) {
@@ -138,9 +140,9 @@ func produceInertia(inertia *float64, increment float64, celerity float64) {
 
 func consumeInertia(inertia *float64) (float64) {
   if *inertia > 0 {
-    *inertia += CAMERA_INERTIA_CONSUME_FORWARD
+    *inertia += ConfigCameraInertiaConsumeForward
   } else if *inertia < 0 {
-    *inertia += CAMERA_INERTIA_CONSUME_BACKWARD
+    *inertia += ConfigCameraInertiaConsumeBackward
   }
 
   return *inertia
@@ -148,54 +150,54 @@ func consumeInertia(inertia *float64) (float64) {
 
 func processEventCameraEye() {
   var (
-    celerity     float64
-    rotation_x   float64
-    rotation_y   float64
+    celerity    float64
+    rotationX   float64
+    rotationY   float64
 
-    inertia_drag float64
-    inertia_turn float64
+    inertiaDrag float64
+    inertiaTurn float64
   )
 
   camera := getCamera()
-  key_state := getEventKeyState()
-  time_factor := normalizedTimeFactor()
+  keyState := getEventKeyState()
+  timeFactor := normalizedTimeFactor()
 
   // Decrease speed if diagonal move
-  if key_state.MoveTurbo == true {
-    celerity = CAMERA_MOVE_CELERITY_TURBO
+  if keyState.MoveTurbo == true {
+    celerity = ConfigCameraMoveCelerityTurbo
   } else {
-    celerity = CAMERA_MOVE_CELERITY_CRUISE
+    celerity = ConfigCameraMoveCelerityCruise
   }
 
-  if (key_state.MoveUp == true || key_state.MoveDown == true) && (key_state.MoveLeft == true || key_state.MoveRight == true) {
+  if (keyState.MoveUp == true || keyState.MoveDown == true) && (keyState.MoveLeft == true || keyState.MoveRight == true) {
     celerity /= math.Sqrt(2.0)
   }
 
   // Acquire rotation around axis
-  rotation_x = float64(camera.getTargetX())
-  rotation_y = float64(camera.getTargetY())
+  rotationX = float64(camera.getTargetX())
+  rotationY = float64(camera.getTargetY())
 
   // Process camera move position (keyboard)
-  if key_state.MoveUp == true {
-    produceInertia(&(camera.InertiaDrag), CAMERA_INERTIA_PRODUCE_FORWARD, celerity)
+  if keyState.MoveUp == true {
+    produceInertia(&(camera.InertiaDrag), ConfigCameraInertiaProduceForward, celerity)
   }
-  if key_state.MoveDown == true {
-    produceInertia(&(camera.InertiaDrag), CAMERA_INERTIA_PRODUCE_BACKWARD, celerity)
+  if keyState.MoveDown == true {
+    produceInertia(&(camera.InertiaDrag), ConfigCameraInertiaProduceBackward, celerity)
   }
-  if key_state.MoveLeft == true {
-    produceInertia(&(camera.InertiaTurn), CAMERA_INERTIA_PRODUCE_FORWARD, celerity)
+  if keyState.MoveLeft == true {
+    produceInertia(&(camera.InertiaTurn), ConfigCameraInertiaProduceForward, celerity)
   }
-  if key_state.MoveRight == true {
-    produceInertia(&(camera.InertiaTurn), CAMERA_INERTIA_PRODUCE_BACKWARD, celerity)
+  if keyState.MoveRight == true {
+    produceInertia(&(camera.InertiaTurn), ConfigCameraInertiaProduceBackward, celerity)
   }
 
   // Apply new position with inertia
-  inertia_drag = consumeInertia(&(camera.InertiaDrag))
-  inertia_turn = consumeInertia(&(camera.InertiaTurn))
+  inertiaDrag = consumeInertia(&(camera.InertiaDrag))
+  inertiaTurn = consumeInertia(&(camera.InertiaTurn))
 
-  camera.moveEyeX(time_factor * float32(inertia_drag * -1.0 * math.Sin(rotation_y) + inertia_turn * math.Cos(rotation_y)))
-  camera.moveEyeZ(time_factor * float32(inertia_drag * math.Cos(rotation_y) + inertia_turn * math.Sin(rotation_y)))
-  camera.moveEyeY(time_factor * float32(inertia_drag * math.Sin(rotation_x)))
+  camera.moveEyeX(timeFactor * float32(inertiaDrag * -1.0 * math.Sin(rotationY) + inertiaTurn * math.Cos(rotationY)))
+  camera.moveEyeZ(timeFactor * float32(inertiaDrag * math.Cos(rotationY) + inertiaTurn * math.Sin(rotationY)))
+  camera.moveEyeY(timeFactor * float32(inertiaDrag * math.Sin(rotationX)))
 
   // Translation: walk
   camera.Camera = camera.Camera.Mul4(mgl32.Translate3D(camera.getEyeX(), camera.getEyeY(), camera.getEyeZ()))
@@ -203,11 +205,11 @@ func processEventCameraEye() {
 
 func processEventCameraTarget() {
   camera := getCamera()
-  key_state := getEventKeyState()
-  time_factor := normalizedTimeFactor()
+  keyState := getEventKeyState()
+  timeFactor := normalizedTimeFactor()
 
-  camera.moveTargetX(time_factor * key_state.WatchY * float32(math.Pi) * CAMERA_TARGET_AMORTIZE_FACTOR)
-  camera.moveTargetY(time_factor * key_state.WatchX * float32(math.Pi) * 2 * CAMERA_TARGET_AMORTIZE_FACTOR)
+  camera.moveTargetX(timeFactor * keyState.WatchY * float32(math.Pi) * ConfigCameraTargetAmortizeFactor)
+  camera.moveTargetY(timeFactor * keyState.WatchX * float32(math.Pi) * 2 * ConfigCameraTargetAmortizeFactor)
 
   // Rotation: view
   camera.Camera = camera.Camera.Mul4(mgl32.HomogRotate3D(camera.getTargetX(), mgl32.Vec3{1, 0, 0}))

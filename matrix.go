@@ -34,53 +34,58 @@ import (
   "github.com/go-gl/mathgl/mgl32"
 )
 
+// MatrixStack  Maps the stack of rendering matrixes
 type MatrixStack struct {
   Current *mgl32.Mat4
   Stack   *list.List
 }
 
+// MatrixUniforms  Maps uniform matrixes
 type MatrixUniforms struct {
   Model   int32
   Normal  int32
   Texture int32
 }
 
-var __MATRIX_STACK MatrixStack
-var __MATRIX_UNIFORMS MatrixUniforms
+// InstanceMatrixStack  Stores the stack of rendering matrixes
+var InstanceMatrixStack MatrixStack
+
+// InstanceMatrixUniforms  Stores uniform matrixes
+var InstanceMatrixUniforms MatrixUniforms
 
 func initializeMatrix() {
-  identity_matrix := mgl32.Ident4()
+  identityMatrix := mgl32.Ident4()
 
   setMatrixStack(list.New())
-  setMatrix(&identity_matrix)
+  setMatrix(&identityMatrix)
 }
 
 func getMatrix() (*mgl32.Mat4) {
-  return __MATRIX_STACK.Current
+  return InstanceMatrixStack.Current
 }
 
 func setMatrix(matrix *mgl32.Mat4) {
-  __MATRIX_STACK.Current = matrix
+  InstanceMatrixStack.Current = matrix
 }
 
 func getMatrixStack() (*list.List) {
-  return __MATRIX_STACK.Stack
+  return InstanceMatrixStack.Stack
 }
 
-func setMatrixStack(matrix_stack *list.List) {
-  __MATRIX_STACK.Stack = matrix_stack
+func setMatrixStack(matrixStack *list.List) {
+  InstanceMatrixStack.Stack = matrixStack
 }
 
 func pushMatrix() {
   // Stack current matrix
-  current_matrix := *getMatrix()
+  currentMatrix := *getMatrix()
 
-  getMatrixStack().PushBack(current_matrix)
+  getMatrixStack().PushBack(currentMatrix)
 
   // Generate new current matrix
-  new_matrix := mgl32.Ident4().Mul4(current_matrix)
+  newMatrix := mgl32.Ident4().Mul4(currentMatrix)
 
-  setMatrix(&new_matrix)
+  setMatrix(&newMatrix)
 }
 
 func popMatrix() {
@@ -88,27 +93,27 @@ func popMatrix() {
     panic("Cannot pop: matrix stack is empty")
   }
 
-  last_element_list := getMatrixStack().Back()
+  lastElementList := getMatrixStack().Back()
 
-  if previous_matrix, ok := (last_element_list.Value).(mgl32.Mat4); ok {
+  if previousMatrix, ok := (lastElementList.Value).(mgl32.Mat4); ok {
     // Assign now-popped element
-    setMatrix(&previous_matrix)
+    setMatrix(&previousMatrix)
 
     // Remove this element from the stack
-    getMatrixStack().Remove(last_element_list)
+    getMatrixStack().Remove(lastElementList)
   } else {
     panic("Cannot pop: error")
   }
 }
 
 func getMatrixUniforms() (*MatrixUniforms) {
-  return &__MATRIX_UNIFORMS
+  return &InstanceMatrixUniforms
 }
 
 func setMatrixUniforms(program uint32) {
-  matrix_uniforms := getMatrixUniforms()
+  matrixUniforms := getMatrixUniforms()
 
-  matrix_uniforms.Model = gl.GetUniformLocation(program, gl.Str("modelUniform\x00"))
-  matrix_uniforms.Normal = gl.GetUniformLocation(program, gl.Str("normalUniform\x00"))
-  matrix_uniforms.Texture = gl.GetUniformLocation(program, gl.Str("textureUniform\x00"))
+  matrixUniforms.Model = gl.GetUniformLocation(program, gl.Str("modelUniform\x00"))
+  matrixUniforms.Normal = gl.GetUniformLocation(program, gl.Str("normalUniform\x00"))
+  matrixUniforms.Texture = gl.GetUniformLocation(program, gl.Str("textureUniform\x00"))
 }

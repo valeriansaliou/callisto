@@ -53,10 +53,10 @@ func init() {
 
 func main() {
   var (
-    err          error
-    window       *glfw.Window
-    vao          uint32
-    current_time float64
+    err         error
+    window      *glfw.Window
+    vao         uint32
+    currentTime float64
   )
 
   // Create window
@@ -76,7 +76,7 @@ func main() {
 
   initializeWindow(monitor)
 
-  window, err = glfw.CreateWindow(getWindowData().Width, getWindowData().Height, WINDOW_TITLE, nil, nil)
+  window, err = glfw.CreateWindow(getWindowData().Width, getWindowData().Height, ConfigWindowTitle, nil, nil)
   if err != nil {
     panic(err)
   }
@@ -89,7 +89,7 @@ func main() {
 
   window.Destroy()
 
-  window, err = glfw.CreateWindow(getWindowData().Width, getWindowData().Height, WINDOW_TITLE, monitor, nil)
+  window, err = glfw.CreateWindow(getWindowData().Width, getWindowData().Height, ConfigWindowTitle, monitor, nil)
   if err != nil {
     panic(err)
   }
@@ -108,7 +108,7 @@ func main() {
   gl.Init()
 
   // Configure the shaders program
-  program, err := newProgram(SHADER_VERTEX, SHADER_FRAGMENT)
+  program, err := newProgram(ShaderVertex, ShaderFragment)
   if err != nil {
     panic(err)
   }
@@ -145,13 +145,13 @@ func main() {
 
   // Render loop
   for !window.ShouldClose() {
-    current_time = glfw.GetTime()
+    currentTime = glfw.GetTime()
 
-    if shouldUpdateScene(current_time) == true {
+    if shouldUpdateScene(currentTime) == true {
       gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
       // Global routines
-      updateElaspedTime(current_time)
+      updateElaspedTime(currentTime)
       gl.UseProgram(program)
 
       // Initialize stack matrix

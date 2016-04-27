@@ -31,6 +31,7 @@ import (
   "github.com/go-gl/gl/v4.1-core/gl"
 )
 
+// LightData  Maps light data
 type LightData struct {
   PointLightingLocationUniform int32
   PointLightingColorUniform    int32
@@ -39,10 +40,11 @@ type LightData struct {
   IsLightReceiverUniform       int32
 }
 
-var __LIGHT LightData
+// InstanceLight  Stores light data
+var InstanceLight LightData
 
 func getLight() (*LightData) {
-  return &__LIGHT
+  return &InstanceLight
 }
 
 func setLightUniforms(program uint32) {

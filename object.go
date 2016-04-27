@@ -37,6 +37,7 @@ import (
   "github.com/go-gl/mathgl/mgl32"
 )
 
+// Object  Maps a generic object
 type Object struct {
   Name        string
   Type        string    // {sphere|circle|circle-filled}
@@ -54,6 +55,7 @@ type Object struct {
   Objects     []Object
 }
 
+// ObjectElement  Maps a generic object internal elements (drawing attributes)
 type ObjectElement struct {
   Vertices       []float32
   VerticeNormals []float32
@@ -61,11 +63,11 @@ type ObjectElement struct {
   TextureCoords  []float32
 }
 
-func loadObjects(map_name string) (*[]Object) {
-  var objects_map []Object
+func loadObjects(mapName string) (*[]Object) {
+  var objectsMap []Object
 
   // Load objects map
-  filePath := fmt.Sprintf("maps/%s.json", map_name)
+  filePath := fmt.Sprintf("maps/%s.json", mapName)
 
   file, err := ioutil.ReadFile(filePath)
   if err != nil {
@@ -73,20 +75,20 @@ func loadObjects(map_name string) (*[]Object) {
   }
 
   // Transform JSON map into Go map
-  err = json.Unmarshal(file, &objects_map)
+  err = json.Unmarshal(file, &objectsMap)
 
   if err != nil {
     panic(err)
   }
 
-  return &objects_map
+  return &objectsMap
 }
 
 func renderObjects(objects *[]Object, program uint32) {
   // Acquire shader
   shader := getShader()
   light := getLight()
-  matrix_uniforms := getMatrixUniforms()
+  matrixUniforms := getMatrixUniforms()
 
   // Iterate on current-level objects
   for o := range *objects {
@@ -104,44 +106,44 @@ func renderObjects(objects *[]Object, program uint32) {
     buffers.addToAngleRevolution(revolutionAngleSinceLast(object))
 
     // Apply model transforms
-    current_matrix_shared := getMatrix()
+    currentMatrixShared := getMatrix()
 
     if object.Tilt != 0 {
-      *current_matrix_shared = (*current_matrix_shared).Mul4(mgl32.HomogRotate3D(buffers.AngleTilt, mgl32.Vec3{1, 0, 0}))
+      *currentMatrixShared = (*currentMatrixShared).Mul4(mgl32.HomogRotate3D(buffers.AngleTilt, mgl32.Vec3{1, 0, 0}))
     }
 
     if object.Revolution != 0 {
-      *current_matrix_shared = (*current_matrix_shared).Mul4(mgl32.HomogRotate3D(buffers.AngleRevolution, mgl32.Vec3{0, 1, 0}))
+      *currentMatrixShared = (*currentMatrixShared).Mul4(mgl32.HomogRotate3D(buffers.AngleRevolution, mgl32.Vec3{0, 1, 0}))
     }
 
     if object.Distance > 0 && object.Center != true {
-      *current_matrix_shared = (*current_matrix_shared).Mul4(mgl32.Translate3D(normalizeObjectSize(object.Distance), 0.0, 0.0))
+      *currentMatrixShared = (*currentMatrixShared).Mul4(mgl32.Translate3D(normalizeObjectSize(object.Distance), 0.0, 0.0))
     }
 
-    setMatrix(current_matrix_shared)
+    setMatrix(currentMatrixShared)
 
     // Toggle to unary context
     pushMatrix()
 
     // Apply object angles
-    current_matrix_self := getMatrix()
+    currentMatrixSelf := getMatrix()
 
     if object.Inclination > 0 {
-      *current_matrix_self = (*current_matrix_self).Mul4(mgl32.HomogRotate3D(object.Inclination / 90.0, mgl32.Vec3{0, 0, 1}))
+      *currentMatrixSelf = (*currentMatrixSelf).Mul4(mgl32.HomogRotate3D(object.Inclination / 90.0, mgl32.Vec3{0, 0, 1}))
     }
 
     if object.Rotation != 0 {
-      *current_matrix_self = (*current_matrix_self).Mul4(mgl32.HomogRotate3D(buffers.AngleRotation, mgl32.Vec3{0, 1, 0}))
+      *currentMatrixSelf = (*currentMatrixSelf).Mul4(mgl32.HomogRotate3D(buffers.AngleRotation, mgl32.Vec3{0, 1, 0}))
     }
 
-    setMatrix(current_matrix_shared)
+    setMatrix(currentMatrixShared)
 
     // Process normal to model matrix
-    normal_matrix := mgl32.Mat4Normal(*current_matrix_self)
+    normalMatrix := mgl32.Mat4Normal(*currentMatrixSelf)
 
     // Apply model + normal
-    gl.UniformMatrix4fv(matrix_uniforms.Model, 1, false, &((*current_matrix_self)[0]))
-    gl.UniformMatrix3fv(matrix_uniforms.Normal, 1, false, &normal_matrix[0])
+    gl.UniformMatrix4fv(matrixUniforms.Model, 1, false, &((*currentMatrixSelf)[0]))
+    gl.UniformMatrix3fv(matrixUniforms.Normal, 1, false, &normalMatrix[0])
 
     // Render vertices
     gl.BindBuffer(gl.ARRAY_BUFFER, buffers.VBOElementVertices)
@@ -193,7 +195,7 @@ func renderObjects(objects *[]Object, program uint32) {
 }
 
 func normalizeObjectSize(size float32) (float32) {
-  return float32(math.Sqrt(float64(size)) * OBJECT_FACTOR_SIZE)
+  return float32(math.Sqrt(float64(size)) * ConfigObjectFactorSize)
 }
 
 func getObjectDrawMode(object *Object) (uint32) {

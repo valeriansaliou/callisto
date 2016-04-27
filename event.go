@@ -31,6 +31,7 @@ import (
   "github.com/go-gl/glfw/v3.1/glfw"
 )
 
+// EventKeyState  Maps input key states
 type EventKeyState struct {
   MoveTurbo bool
 
@@ -43,14 +44,15 @@ type EventKeyState struct {
   WatchY    float32
 }
 
-var __EVENT_KEY_STATE = EventKeyState{false, false, false, false, false, 0.0, 0.0}
+// InstanceEventKeyState  Stores input key states
+var InstanceEventKeyState = EventKeyState{false, false, false, false, false, 0.0, 0.0}
 
 func getEventKeyState() (*EventKeyState) {
-  return &__EVENT_KEY_STATE
+  return &InstanceEventKeyState
 }
 
 func handleKey(window *glfw.Window, k glfw.Key, s int, action glfw.Action, mods glfw.ModifierKey) {
-  key_state := getEventKeyState()
+  keyState := getEventKeyState()
 
   // Main controls
   if k == glfw.KeyEscape {
@@ -72,75 +74,75 @@ func handleKey(window *glfw.Window, k glfw.Key, s int, action glfw.Action, mods 
   if k == glfw.KeySpace {
     // Press or release?
     if action == glfw.Press {
-      key_state.MoveTurbo = true
+      keyState.MoveTurbo = true
     } else if action == glfw.Release {
-      key_state.MoveTurbo = false
+      keyState.MoveTurbo = false
     }
   }
 
   if k == glfw.KeyUp {
     // Press or release?
     if action == glfw.Press {
-      key_state.MoveDown = false
-      key_state.MoveUp = true
+      keyState.MoveDown = false
+      keyState.MoveUp = true
     } else if action == glfw.Release {
-      key_state.MoveUp = false
+      keyState.MoveUp = false
     }
   }
 
   if k == glfw.KeyDown {
     // Press or release?
     if action == glfw.Press {
-      key_state.MoveUp = false
-      key_state.MoveDown = true
+      keyState.MoveUp = false
+      keyState.MoveDown = true
     } else if action == glfw.Release {
-      key_state.MoveDown = false
+      keyState.MoveDown = false
     }
   }
 
   if k == glfw.KeyLeft {
     // Press or release?
     if action == glfw.Press {
-      key_state.MoveRight = false
-      key_state.MoveLeft = true
+      keyState.MoveRight = false
+      keyState.MoveLeft = true
     } else if action == glfw.Release {
-      key_state.MoveLeft = false
+      keyState.MoveLeft = false
     }
   }
 
   if k == glfw.KeyRight {
     // Press or release?
     if action == glfw.Press {
-      key_state.MoveLeft = false
-      key_state.MoveRight = true
+      keyState.MoveLeft = false
+      keyState.MoveRight = true
     } else if action == glfw.Release {
-      key_state.MoveRight = false
+      keyState.MoveRight = false
     }
   }
 }
 
-func handleMouseCursor(window *glfw.Window, position_x float64, position_y float64) {
-  key_state := getEventKeyState()
-  window_data := getWindowData()
+func handleMouseCursor(window *glfw.Window, positionX float64, positionY float64) {
+  keyState := getEventKeyState()
+  windowData := getWindowData()
 
   // Bind new watch position
-  if position_x >= 0 && position_x <= float64(window_data.Width) {
-    key_state.WatchX = float32(position_x) * (1.0 / float32(window_data.Width)) - 0.5
+  if positionX >= 0 && positionX <= float64(windowData.Width) {
+    keyState.WatchX = float32(positionX) * (1.0 / float32(windowData.Width)) - 0.5
   }
 
-  if position_y >= 0 && position_y <= float64(window_data.Height) {
-    key_state.WatchY = float32(position_y) * (1.0 / float32(window_data.Height)) - 0.5
+  if positionY >= 0 && positionY <= float64(windowData.Height) {
+    keyState.WatchY = float32(positionY) * (1.0 / float32(windowData.Height)) - 0.5
   }
 }
 
-func handleMouseScroll(window *glfw.Window, offset_x float64, offset_y float64) {
+func handleMouseScroll(window *glfw.Window, offsetX float64, offsetY float64) {
   // Update scene simulation speed
-  updateSpeedFactor(offset_y)
+  updateSpeedFactor(offsetY)
 }
 
 func resetMouseCursor() {
-  key_state := getEventKeyState()
+  keyState := getEventKeyState()
 
-  key_state.WatchX = 0.0
-  key_state.WatchY = 0.0
+  keyState.WatchX = 0.0
+  keyState.WatchY = 0.0
 }

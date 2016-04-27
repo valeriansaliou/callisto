@@ -34,9 +34,9 @@ import (
 func createOrbitTraces(objects *[]Object, program uint32, vao uint32) {
   for o := range *objects {
     // Append an orbit trace object for this object
-    trace_object := Object{fmt.Sprintf("orbit-traces-%s", (*objects)[o].Name), "circle", (*objects)[o].Distance, 0.0, (*objects)[o].Tilt, 0.0, 0.0, 0.0, true, false, true, []Object{}}
+    traceObject := Object{fmt.Sprintf("orbit-traces-%s", (*objects)[o].Name), "circle", (*objects)[o].Distance, 0.0, (*objects)[o].Tilt, 0.0, 0.0, 0.0, true, false, true, []Object{}}
 
-    *objects = append(*objects, trace_object)
+    *objects = append(*objects, traceObject)
 
     // Append orbit traces for child objects
     createOrbitTraces(&((*objects)[o]).Objects, program, vao)

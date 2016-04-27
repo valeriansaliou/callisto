@@ -34,63 +34,63 @@ import (
 
 // Math
 const (
-  MATH_DEG_TO_RAD float64 = math.Pi / 180
+  ConfigMathDegreeToRadian float64 = math.Pi / 180
 )
 
 // Time
 const (
-  TIME_SECOND_TO_MILLISECONDS int = 1000
-  TIME_HOUR_TO_MILLISECONDS int = 60 * 60 * TIME_SECOND_TO_MILLISECONDS
-  TIME_DAY_TO_MILLISECONDS int = 24 * TIME_HOUR_TO_MILLISECONDS
-  TIME_YEAR_TO_MILLISECONDS int = 365 * TIME_DAY_TO_MILLISECONDS
+  ConfigTimeSecondToMilliseconds int = 1000
+  ConfigTimeHourToMilliseconds int = 60 * 60 * ConfigTimeSecondToMilliseconds
+  ConfigTimeDayToMilliseconds int = 24 * ConfigTimeHourToMilliseconds
+  ConfigTimeYearToMilliseconds int = 365 * ConfigTimeDayToMilliseconds
 
-  TIME_START_FROM_MILLISECONDS int = TIME_YEAR_TO_MILLISECONDS
+  ConfigTimeStartFromMilliseconds int = ConfigTimeYearToMilliseconds
 
-  TIME_NORMALIZE_FACTOR float32 = 64.0
+  ConfigTimeNormalizeFactor float32 = 64.0
 )
 
 // Window
 const (
-  WINDOW_TITLE string = "Callisto - Solar System Simulator"
+  ConfigWindowTitle string = "Callisto - Solar System Simulator"
 )
 
 // Speed
 const (
-  SPEED_FRAMERATE_DEFAULT float64 = 60
+  ConfigSpeedFramerateDefault float64 = 60
 )
 
 // Projection
 var (
-  PROJECTION_FIELD_NEAR float32 = 0.1
-  PROJECTION_FIELD_FAR float32 = 9999999999999999999.0
+  ConfigProjectionFieldNear float32 = 0.1
+  ConfigProjectionFieldFar float32 = 9999999999999999999.0
 )
 
 // Camera
 var (
-  CAMERA_DEFAULT_EYE mgl32.Vec3 = mgl32.Vec3{1600, -1800, -5657}
-  CAMERA_DEFAULT_TARGET mgl32.Vec3 = mgl32.Vec3{0.255, 0.650, 0.000}
+  ConfigCameraDefaultEye = mgl32.Vec3{1600, -1800, -5657}
+  ConfigCameraDefaultTarget = mgl32.Vec3{0.255, 0.650, 0.000}
 
-  CAMERA_MOVE_CELERITY_CRUISE float64 = 5.0
-  CAMERA_MOVE_CELERITY_TURBO float64 = 50.0
+  ConfigCameraMoveCelerityCruise = 5.0
+  ConfigCameraMoveCelerityTurbo = 50.0
 
-  CAMERA_INERTIA_PRODUCE_FORWARD float64 = 0.05
-  CAMERA_INERTIA_PRODUCE_BACKWARD float64 = -0.05
-  CAMERA_INERTIA_CONSUME_FORWARD float64 = -0.04
-  CAMERA_INERTIA_CONSUME_BACKWARD float64 = 0.04
+  ConfigCameraInertiaProduceForward = 0.05
+  ConfigCameraInertiaProduceBackward = -0.05
+  ConfigCameraInertiaConsumeForward = -0.04
+  ConfigCameraInertiaConsumeBackward = 0.04
 
-  CAMERA_TARGET_AMORTIZE_FACTOR float32 = 0.005
+  ConfigCameraTargetAmortizeFactor float32 = 0.005
 )
 
 // Object
 const (
-  OBJECT_TEXTURE_PHI_MAX int = 90
-  OBJECT_TEXTURE_THETA_MAX int = 360
-  OBJECT_TEXTURE_STEP_LATITUDE int = 3
-  OBJECT_TEXTURE_STEP_LONGITUDE int = 6
+  ConfigObjectTexturePhiMax int = 90
+  ConfigObjectTextureThetaMax int = 360
+  ConfigObjectTextureStepLatitude int = 3
+  ConfigObjectTextureStepLongitude int = 6
 
-  OBJECT_FULL_ANGLE float64 = 4.0 * math.Pi
+  ConfigObjectFullAngle float64 = 4.0 * math.Pi
 
-  OBJECT_FACTOR_SIZE float64 = 0.25
-  OBJECT_FACTOR_SPEED_SCENE float64 = float64(TIME_HOUR_TO_MILLISECONDS) / 100.0
-  OBJECT_FACTOR_SPEED_MAXIMUM float64 = 200.0
+  ConfigObjectFactorSize float64 = 0.25
+  ConfigObjectFactorSpeedScene float64 = float64(ConfigTimeHourToMilliseconds) / 100.0
+  ConfigObjectFactorSpeedMaximum float64 = 200.0
 )

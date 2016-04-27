@@ -31,6 +31,7 @@ import (
   "math"
 )
 
+// Circle  Maps a circle object
 type Circle ObjectElement
 
 func generateCircleFilledFromObject(object *Object) (Circle) {
@@ -43,116 +44,116 @@ func generateCircleFromObject(object *Object) (Circle) {
 
 func generateCircle(radius float32, thickness float32, radiate bool) (Circle) {
   var (
-    circle                   Circle
+    circle                 Circle
 
-    i                        int
-    j                        int
-    k                        int
-    l                        int
+    i                      int
+    j                      int
+    k                      int
+    l                      int
 
-    accumulator_main_size    int
-    accumulator_indices_size int
-    normal_direction         float32
+    accumulatorMainSize    int
+    accumulatorIndicesSize int
+    normalDirection        float32
 
-    radius_inside_n          float32
-    radius_outside_n         float32
-    nb_vertices              int32
+    radiusInsideN          float32
+    radiusOutsideN         float32
+    nbVertices             int32
 
-    angle                    float64
-    angle_max                int
+    angle                  float64
+    angleMax               int
   )
 
-  angle_max = 360
+  angleMax = 360
 
   if thickness > 0 {
-    accumulator_main_size = 2
-    accumulator_indices_size = 6
+    accumulatorMainSize = 2
+    accumulatorIndicesSize = 6
   } else {
-    accumulator_main_size = 1
-    accumulator_indices_size = 2
+    accumulatorMainSize = 1
+    accumulatorIndicesSize = 2
   }
 
-  circle.Vertices = make([]float32, 3 * (angle_max + 1) * accumulator_main_size)
-  circle.VerticeNormals = make([]float32, 3 * (angle_max + 1) * accumulator_main_size)
-  circle.Indices = make([]int32, (angle_max + 1) * accumulator_indices_size)
-  circle.TextureCoords = make([]float32, 2 * (angle_max + 1) * accumulator_main_size)
+  circle.Vertices = make([]float32, 3 * (angleMax + 1) * accumulatorMainSize)
+  circle.VerticeNormals = make([]float32, 3 * (angleMax + 1) * accumulatorMainSize)
+  circle.Indices = make([]int32, (angleMax + 1) * accumulatorIndicesSize)
+  circle.TextureCoords = make([]float32, 2 * (angleMax + 1) * accumulatorMainSize)
 
   i = 0
   j = 0
   k = 0
   l = 0
 
-  nb_vertices = 0.0
+  nbVertices = 0.0
 
-  radius_inside_n = normalizeObjectSize(radius)
-  radius_outside_n = normalizeObjectSize(radius + thickness)
+  radiusInsideN = normalizeObjectSize(radius)
+  radiusOutsideN = normalizeObjectSize(radius + thickness)
 
   // Normal is -1 if sun, which is the light source, to avoid any self-shadow effect
   if radiate == true {
-    normal_direction = -1.0
+    normalDirection = -1.0
   } else {
-    normal_direction = 1.0
+    normalDirection = 1.0
   }
 
-  for angle = 0.0; angle <= float64(angle_max); angle++ {
+  for angle = 0.0; angle <= float64(angleMax); angle++ {
     // Generate inner circle object
-    generateCircleObject(&circle, radius_inside_n, thickness, angle, angle_max, normal_direction, nb_vertices, 0, &i, &j, &k, &l)
+    generateCircleObject(&circle, radiusInsideN, thickness, angle, angleMax, normalDirection, nbVertices, 0, &i, &j, &k, &l)
 
     if thickness > 0.0 {
       // Generate outer circle object? (if not last)
-      generateCircleObject(&circle, radius_outside_n, thickness, angle, angle_max, normal_direction, nb_vertices, 1, &i, &j, &k, &l)
+      generateCircleObject(&circle, radiusOutsideN, thickness, angle, angleMax, normalDirection, nbVertices, 1, &i, &j, &k, &l)
 
-      nb_vertices += 1.0
+      nbVertices += 1.0
     }
 
-    nb_vertices += 1.0
+    nbVertices += 1.0
   }
 
   return circle
 }
 
-func generateCircleObject(circle *Circle, radius_n float32, thickness float32, angle float64, angle_max int, normal_direction float32, nb_vertices int32, pass_index int32, i *int, j *int, k *int, l *int) {
+func generateCircleObject(circle *Circle, radiusN float32, thickness float32, angle float64, angleMax int, normalDirection float32, nbVertices int32, passIndex int32, i *int, j *int, k *int, l *int) {
   var (
-    vertex_position_x  float32
-    vertex_position_y  float32
-    vertex_position_z  float32
+    vertexPositionX float32
+    vertexPositionY float32
+    vertexPositionZ float32
   )
 
   // Generate inside circle vertices
-  vertex_position_x = float32(math.Cos(MATH_DEG_TO_RAD * angle))
-  vertex_position_y = 0.0
-  vertex_position_z = float32(math.Sin(MATH_DEG_TO_RAD * angle))
+  vertexPositionX = float32(math.Cos(ConfigMathDegreeToRadian * angle))
+  vertexPositionY = 0.0
+  vertexPositionZ = float32(math.Sin(ConfigMathDegreeToRadian * angle))
 
   // Bind inside circle vertices
-  circle.Vertices[*i] = radius_n * vertex_position_x
-  circle.Vertices[*i + 1] = radius_n * vertex_position_y
-  circle.Vertices[*i + 2] = radius_n * vertex_position_z
+  circle.Vertices[*i] = radiusN * vertexPositionX
+  circle.Vertices[*i + 1] = radiusN * vertexPositionY
+  circle.Vertices[*i + 2] = radiusN * vertexPositionZ
 
   *i += 3
 
   // Bind circle vertice normals
-  circle.VerticeNormals[*j] = normal_direction * vertex_position_x
-  circle.VerticeNormals[*j + 1] = normal_direction * vertex_position_y
-  circle.VerticeNormals[*j + 2] = normal_direction * vertex_position_z
+  circle.VerticeNormals[*j] = normalDirection * vertexPositionX
+  circle.VerticeNormals[*j + 1] = normalDirection * vertexPositionY
+  circle.VerticeNormals[*j + 2] = normalDirection * vertexPositionZ
 
   *j += 3
 
   // Bind circle indices
   if thickness > 0.0 {
-    circle.Indices[*k] = (nb_vertices % (int32(angle_max * 2))) + 1
-    circle.Indices[*k + 1] = ((nb_vertices + 1 + pass_index) % (int32(angle_max * 2))) + 1
-    circle.Indices[*k + 2] = ((nb_vertices + 3) % (int32(angle_max * 2))) + 1
+    circle.Indices[*k] = (nbVertices % (int32(angleMax * 2))) + 1
+    circle.Indices[*k + 1] = ((nbVertices + 1 + passIndex) % (int32(angleMax * 2))) + 1
+    circle.Indices[*k + 2] = ((nbVertices + 3) % (int32(angleMax * 2))) + 1
 
     *k += 3
   } else {
-    circle.Indices[*k] = ((nb_vertices) % int32(angle_max)) + 1
-    circle.Indices[*k + 1] = ((nb_vertices + 1) % int32(angle_max)) + 1
+    circle.Indices[*k] = ((nbVertices) % int32(angleMax)) + 1
+    circle.Indices[*k + 1] = ((nbVertices + 1) % int32(angleMax)) + 1
 
     *k += 2
   }
 
   // Bind circle texture coordinates
-  circle.TextureCoords[*l] = float32(pass_index)
+  circle.TextureCoords[*l] = float32(passIndex)
   circle.TextureCoords[*l + 1] = 0.0
 
   *l += 2

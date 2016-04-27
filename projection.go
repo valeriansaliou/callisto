@@ -32,22 +32,24 @@ import (
   "github.com/go-gl/mathgl/mgl32"
 )
 
+// ProjectionData  Maps data on scene projection
 type ProjectionData struct {
   Projection        mgl32.Mat4
   ProjectionUniform int32
 }
 
-var __PROJECTION ProjectionData
+// InstanceProjection  Stores data on scene projection
+var InstanceProjection ProjectionData
 
 func getProjection() (*ProjectionData) {
-  return &__PROJECTION
+  return &InstanceProjection
 }
 
 func createProjection(program uint32) {
   projection := getProjection()
   window := getWindowData()
 
-  projection.Projection = mgl32.Perspective(mgl32.DegToRad(45.0), float32(window.Width) / float32(window.Height), PROJECTION_FIELD_NEAR, PROJECTION_FIELD_FAR)
+  projection.Projection = mgl32.Perspective(mgl32.DegToRad(45.0), float32(window.Width) / float32(window.Height), ConfigProjectionFieldNear, ConfigProjectionFieldFar)
   projection.ProjectionUniform = gl.GetUniformLocation(program, gl.Str("projectionUniform\x00"))
 }
 

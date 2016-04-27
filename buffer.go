@@ -33,6 +33,7 @@ import (
   "github.com/go-gl/gl/v4.1-core/gl"
 )
 
+// Buffers  Maps buffered object data (built once, accessed at every render)
 type Buffers struct {
   Element                  ObjectElement
   Texture                  Texture
@@ -47,7 +48,8 @@ type Buffers struct {
   VBOElementIndices        uint32
 }
 
-var __BUFFERS map[string]*Buffers = make(map[string]*Buffers)
+// InstanceBuffers  Stores buffered object data (built once, accessed at every render)
+var InstanceBuffers = make(map[string]*Buffers)
 
 func (buffers *Buffers) addToAngleRotation(angle float32) {
   buffers.AngleRotation += angle
@@ -58,11 +60,11 @@ func (buffers *Buffers) addToAngleRevolution(angle float32) {
 }
 
 func getBuffers(name string) (*Buffers) {
-  return __BUFFERS[name]
+  return InstanceBuffers[name]
 }
 
 func setBuffers(name string, buffers *Buffers) {
-  __BUFFERS[name] = buffers
+  InstanceBuffers[name] = buffers
 }
 
 func createAllBuffers(objects *[]Object, program uint32, vao uint32) {
@@ -83,7 +85,7 @@ func createBuffers(object *Object, program uint32, vao uint32) {
   // Zero angle
   buffers.AngleRotation = rotationAngleSinceStart(object)
   buffers.AngleRevolution = revolutionAngleSinceStart(object)
-  buffers.AngleTilt = object.Tilt * float32(MATH_DEG_TO_RAD)
+  buffers.AngleTilt = object.Tilt * float32(ConfigMathDegreeToRadian)
 
   // Generate object
   switch object.Type {

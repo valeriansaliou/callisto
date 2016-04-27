@@ -31,39 +31,41 @@ import (
   "github.com/go-gl/glfw/v3.1/glfw"
 )
 
+// WindowData  Maps data on current window
 type WindowData struct {
   Width  int
   Height int
 }
 
-var __WINDOW_DATA WindowData
+// InstanceWindowData  Stores data on current window
+var InstanceWindowData WindowData
 
 func getWindowData() (*WindowData) {
-  return &__WINDOW_DATA
+  return &InstanceWindowData
 }
 
 func initializeWindow(monitor *glfw.Monitor) {
-  window_data := getWindowData()
-  video_mode := monitor.GetVideoMode()
+  windowData := getWindowData()
+  videoMode := monitor.GetVideoMode()
 
   // Initialize window size
-  window_data.Width = video_mode.Width
-  window_data.Height = video_mode.Height
+  windowData.Width = videoMode.Width
+  windowData.Height = videoMode.Height
 
   // Lock window framerate to monitor framerate
-  getSpeed().setFramerate(video_mode.RefreshRate)
+  getSpeed().setFramerate(videoMode.RefreshRate)
 }
 
 func adjustWindow(window *glfw.Window) {
-  framebuffer_width, framebuffer_height := window.GetFramebufferSize()
+  framebufferWidth, framebufferHeight := window.GetFramebufferSize()
 
-  handleAdjustWindow(window, framebuffer_width, framebuffer_height)
+  handleAdjustWindow(window, framebufferWidth, framebufferHeight)
 }
 
 func handleAdjustWindow(window *glfw.Window, width int, height int) {
-  window_data := getWindowData()
+  windowData := getWindowData()
 
   // Adjust window size
-  window_data.Width = width
-  window_data.Height = height
+  windowData.Width = width
+  windowData.Height = height
 }

@@ -31,15 +31,18 @@ import (
   "github.com/go-gl/gl/v4.1-core/gl"
 )
 
+// ShaderData  Maps shader data
 type ShaderData struct {
   VertexAttributes    uint32
   NormalAttributes    uint32
   VertexTextureCoords uint32
 }
 
-var __SHADER ShaderData
+// InstanceShader  Stores shader data
+var InstanceShader ShaderData
 
-var SHADER_VERTEX = `
+// ShaderVertex  Defines code for vertex shader
+var ShaderVertex = `
 #version 330
 
 uniform mat4 projectionUniform;
@@ -80,7 +83,8 @@ void main() {
 }
 ` + "\x00"
 
-var SHADER_FRAGMENT = `
+// ShaderFragment  Defines code for fragment shader
+var ShaderFragment = `
 #version 330
 
 uniform sampler2D textureUniform;
@@ -105,7 +109,7 @@ void main() {
 ` + "\x00"
 
 func getShader() (*ShaderData) {
-  return &__SHADER
+  return &InstanceShader
 }
 
 func initializeShaders(program uint32) {
