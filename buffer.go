@@ -39,6 +39,7 @@ type Buffers struct {
 
   AngleRotation            float32
   AngleRevolution          float32
+  AngleTilt                float32
 
   VBOElementVertices       uint32
   VBOElementVerticeNormals uint32
@@ -82,6 +83,7 @@ func createBuffers(object *Object, program uint32, vao uint32) {
   // Zero angle
   buffers.AngleRotation = 0.0
   buffers.AngleRevolution = 0.0
+  buffers.AngleTilt = object.Tilt * float32(MATH_DEG_TO_RAD)
 
   // Generate object
   switch object.Type {
