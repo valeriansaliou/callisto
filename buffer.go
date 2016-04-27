@@ -81,8 +81,8 @@ func createBuffers(object *Object, program uint32, vao uint32) {
   buffers := &Buffers{}
 
   // Zero angle
-  buffers.AngleRotation = 0.0
-  buffers.AngleRevolution = 0.0
+  buffers.AngleRotation = rotationAngleSinceStart(object)
+  buffers.AngleRevolution = revolutionAngleSinceStart(object)
   buffers.AngleTilt = object.Tilt * float32(MATH_DEG_TO_RAD)
 
   // Generate object

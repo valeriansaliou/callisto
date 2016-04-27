@@ -27,6 +27,10 @@
 
 package main
 
+import (
+  "math"
+)
+
 type Speed struct {
   TimePrevious float64
   TimeElapsed  float64
@@ -52,22 +56,49 @@ func updateSpeedFactor(factor_offset float64) {
 }
 
 func updateElaspedTime(nowTime float64) {
-  getSpeed().TimeElapsed = nowTime - getSpeed().TimePrevious
-  getSpeed().TimePrevious = nowTime
+  speed := getSpeed()
+
+  speed.TimeElapsed = nowTime - speed.TimePrevious
+  speed.TimePrevious = nowTime
+}
+
+func angleSince(angle_time float32, factor float64, elapsed float64) float32 {
+  // angle_time in milliseconds
+  // elapsed in milliseconds
+  //  -> angle = (elapsed / angle_time) * OBJECT_FULL_ANGLE
+  // Important: cap angle value (circle from 0 to 360 w/ modulus)
+
+  if angle_time == 0 {
+    return 0.0
+  }
+
+  return float32(math.Mod(((OBJECT_FACTOR_SPEED_SCENE * factor * elapsed) / float64(angle_time)) * OBJECT_FULL_ANGLE, OBJECT_FULL_ANGLE))
+}
+
+func revolutionAngleSince(object *Object, factor float64, elapsed float64) float32 {
+  // revolution_time from years to milliseconds
+
+  return angleSince((*object).Revolution * float32(TIME_YEAR_TO_MILLISECONDS), factor, elapsed * float64(TIME_SECOND_TO_MILLISECONDS))
+}
+
+func rotationAngleSince(object *Object, factor float64, elapsed float64) float32 {
+  // revolution_time from years to milliseconds
+
+  return angleSince((*object).Rotation * float32(TIME_DAY_TO_MILLISECONDS), factor, elapsed * float64(TIME_SECOND_TO_MILLISECONDS))
 }
 
 func revolutionAngleSinceLast(object *Object) float32 {
-  // revolution_time from years to milliseconds
-  // speed.TimeElapsed in milliseconds
-  //  -> angle = (speed.TimeElapsed / revolution_time) * OBJECT_REVOLUTION_FULL_ANGLE
-
-  return float32(OBJECT_FACTOR_SPEED_SCENE * getSpeed().Factor * getSpeed().TimeElapsed) / ((*object).Revolution * float32(TIME_YEAR_TO_MILLISECONDS)) * float32(OBJECT_REVOLUTION_FULL_ANGLE)
+  return revolutionAngleSince(object, getSpeed().Factor, getSpeed().TimeElapsed)
 }
 
 func rotationAngleSinceLast(object *Object) float32 {
-  // rotation_time from days to milliseconds
-  // speed.TimeElapsed in milliseconds
-  //  -> angle = (speed.TimeElapsed / rotation_time) * OBJECT_ROTATION_FULL_ANGLE
+  return rotationAngleSince(object, getSpeed().Factor, getSpeed().TimeElapsed)
+}
 
-  return float32(OBJECT_FACTOR_SPEED_SCENE * getSpeed().Factor * getSpeed().TimeElapsed) / ((*object).Rotation * float32(TIME_DAY_TO_MILLISECONDS)) * float32(OBJECT_ROTATION_FULL_ANGLE)
+func revolutionAngleSinceStart(object *Object) float32 {
+  return revolutionAngleSince(object, 1.0, float64(TIME_START_FROM_MILLISECONDS))
+}
+
+func rotationAngleSinceStart(object *Object) float32 {
+  return rotationAngleSince(object, 1.0, float64(TIME_START_FROM_MILLISECONDS))
 }
