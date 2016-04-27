@@ -16,6 +16,20 @@ Yet another Solar System simulator, written by Valerian Saliou in Go.
  1. `go get github.com/valeriansaliou/callisto`
  2. `callisto`
 
+## Controls
+
+ * **Direction**
+  * `UP` `DOWN` `LEFT` `RIGHT`: move camera position
+  * `Mouse move`: move camera target
+
+ * **Camera**
+  * `R`: reset camera position
+  * `SPACE`: turbo camera move (hold key)
+  * `TAB`: toggle camera view (from flight view to stellar object view lock)
+
+ * **Simulation**
+  * `Scroll UP` `Scroll DOWN`: decrease/increase simulation speed
+
 ## Thanks
 
 This project has been achieved following the excellent step-by-step tutorial available on [https://open.gl](https://open.gl)
