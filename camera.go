@@ -210,7 +210,7 @@ func processEventCameraTarget() {
 }
 
 func updateCamera() {
-  // Update overall camera position (flip camera)
+  // Update overall camera position
   getCamera().Camera = mgl32.Ident4()
 
   // Process new eye watch target in scene
