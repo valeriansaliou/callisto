@@ -103,6 +103,11 @@ func (camera_data *CameraData) defaultTarget() {
   camera_data.PositionTarget = CAMERA_DEFAULT_TARGET
 }
 
+func (camera_data *CameraData) defaultInertia() {
+  camera_data.InertiaDrag = 0.0
+  camera_data.InertiaTurn = 0.0
+}
+
 func getCamera() (*CameraData) {
   return &__CAMERA
 }
@@ -113,8 +118,7 @@ func createCamera(program uint32) {
   camera.CameraUniform = gl.GetUniformLocation(program, gl.Str("cameraUniform\x00"))
 
   // Default inertia (none)
-  camera.InertiaDrag = 0.0
-  camera.InertiaTurn = 0.0
+  camera.defaultInertia()
 
   // Default camera position
   camera.defaultEye()
@@ -222,6 +226,12 @@ func updateCamera() {
 
 func resetCamera() {
   camera := getCamera()
+
+  // Reset camera modifiers
+  resetMouseCursor()
+
+  // Reset camera itself
+  camera.defaultInertia()
 
   camera.defaultEye()
   camera.defaultTarget()

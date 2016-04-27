@@ -126,12 +126,12 @@ func renderObjects(objects *[]Object, program uint32) {
     // Apply object angles
     current_matrix_self := getMatrix()
 
-    if object.Rotation != 0 {
-      *current_matrix_self = (*current_matrix_self).Mul4(mgl32.HomogRotate3D(buffers.AngleRotation, mgl32.Vec3{0, 1, 0}))
-    }
-
     if object.Inclination > 0 {
       *current_matrix_self = (*current_matrix_self).Mul4(mgl32.HomogRotate3D(object.Inclination / 90.0, mgl32.Vec3{0, 0, 1}))
+    }
+
+    if object.Rotation != 0 {
+      *current_matrix_self = (*current_matrix_self).Mul4(mgl32.HomogRotate3D(buffers.AngleRotation, mgl32.Vec3{0, 1, 0}))
     }
 
     setMatrix(current_matrix_shared)

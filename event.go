@@ -136,3 +136,10 @@ func handleMouseScroll(window *glfw.Window, offset_x float64, offset_y float64) 
   // Update scene simulation speed
   updateSpeedFactor(offset_y)
 }
+
+func resetMouseCursor() {
+  key_state := getEventKeyState()
+
+  key_state.WatchX = 0.0
+  key_state.WatchY = 0.0
+}
