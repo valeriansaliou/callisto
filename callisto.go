@@ -53,9 +53,10 @@ func init() {
 
 func main() {
   var (
-    err    error
-    window *glfw.Window
-    vao    uint32
+    err          error
+    window       *glfw.Window
+    vao          uint32
+    current_time float64
   )
 
   // Create window
@@ -130,31 +131,35 @@ func main() {
 
   // Render loop
   for !window.ShouldClose() {
-    gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    current_time = glfw.GetTime()
 
-    // Global routines
-    updateElaspedTime(glfw.GetTime())
-    gl.UseProgram(program)
+    if shouldUpdateScene(current_time) == true {
+      gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-    // Initialize stack matrix
-    initializeMatrix()
+      // Global routines
+      updateElaspedTime(current_time)
+      gl.UseProgram(program)
 
-    // Update context
-    updateCamera()
+      // Initialize stack matrix
+      initializeMatrix()
 
-    // Bind context
-    bindProjection()
-    bindCamera()
+      // Update context
+      updateCamera()
 
-    // Render skybox
-    gl.Disable(gl.DEPTH_TEST)
-    renderObjects(voidbox, program)
-    gl.Enable(gl.DEPTH_TEST)
+      // Bind context
+      bindProjection()
+      bindCamera()
 
-    // Render all stellar objects in the map
-    renderObjects(stellar, program)
+      // Render skybox
+      gl.Disable(gl.DEPTH_TEST)
+      renderObjects(voidbox, program)
+      gl.Enable(gl.DEPTH_TEST)
 
-    glfw.PollEvents()
-    window.SwapBuffers()
+      // Render all stellar objects in the map
+      renderObjects(stellar, program)
+
+      glfw.PollEvents()
+      window.SwapBuffers()
+    }
   }
 }

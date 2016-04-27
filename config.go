@@ -45,6 +45,8 @@ const (
   TIME_YEAR_TO_MILLISECONDS int = 365 * TIME_DAY_TO_MILLISECONDS
 
   TIME_START_FROM_MILLISECONDS int = TIME_YEAR_TO_MILLISECONDS
+
+  TIME_NORMALIZE_FACTOR float32 = 64.0
 )
 
 // Window
@@ -59,6 +61,11 @@ const (
 const (
   CONTROLS_ENABLE_KEY bool = true
   CONTROLS_ENABLE_MOUSE bool = true
+)
+
+// Speed
+const (
+  SPEED_FRAMERATE float64 = 60
 )
 
 // Projection

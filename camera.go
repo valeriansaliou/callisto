@@ -158,6 +158,7 @@ func processEventCameraEye() {
 
   camera := getCamera()
   key_state := getEventKeyState()
+  time_factor := normalizedTimeFactor()
 
   // Decrease speed if diagonal move
   if key_state.MoveTurbo == true {
@@ -192,9 +193,9 @@ func processEventCameraEye() {
   inertia_drag = consumeInertia(&(camera.InertiaDrag))
   inertia_turn = consumeInertia(&(camera.InertiaTurn))
 
-  camera.moveEyeX(float32(inertia_drag * -1.0 * math.Sin(rotation_y) + inertia_turn * math.Cos(rotation_y)))
-  camera.moveEyeZ(float32(inertia_drag * math.Cos(rotation_y) + inertia_turn * math.Sin(rotation_y)))
-  camera.moveEyeY(float32(inertia_drag * math.Sin(rotation_x)))
+  camera.moveEyeX(time_factor * float32(inertia_drag * -1.0 * math.Sin(rotation_y) + inertia_turn * math.Cos(rotation_y)))
+  camera.moveEyeZ(time_factor * float32(inertia_drag * math.Cos(rotation_y) + inertia_turn * math.Sin(rotation_y)))
+  camera.moveEyeY(time_factor * float32(inertia_drag * math.Sin(rotation_x)))
 
   // Translation: walk
   camera.Camera = camera.Camera.Mul4(mgl32.Translate3D(camera.getEyeX(), camera.getEyeY(), camera.getEyeZ()))
@@ -203,9 +204,10 @@ func processEventCameraEye() {
 func processEventCameraTarget() {
   camera := getCamera()
   key_state := getEventKeyState()
+  time_factor := normalizedTimeFactor()
 
-  camera.moveTargetX(key_state.WatchY * float32(math.Pi) * CAMERA_TARGET_AMORTIZE_FACTOR)
-  camera.moveTargetY(key_state.WatchX * float32(math.Pi) * 2 * CAMERA_TARGET_AMORTIZE_FACTOR)
+  camera.moveTargetX(time_factor * key_state.WatchY * float32(math.Pi) * CAMERA_TARGET_AMORTIZE_FACTOR)
+  camera.moveTargetY(time_factor * key_state.WatchX * float32(math.Pi) * 2 * CAMERA_TARGET_AMORTIZE_FACTOR)
 
   // Rotation: view
   camera.Camera = camera.Camera.Mul4(mgl32.HomogRotate3D(camera.getTargetX(), mgl32.Vec3{1, 0, 0}))

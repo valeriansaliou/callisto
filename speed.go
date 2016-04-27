@@ -62,6 +62,10 @@ func updateElaspedTime(nowTime float64) {
   speed.TimePrevious = nowTime
 }
 
+func shouldUpdateScene(current_time float64) (bool) {
+  return current_time - getSpeed().TimePrevious >= 1.0 / SPEED_FRAMERATE
+}
+
 func angleSince(angle_time float32, factor float64, elapsed float64) float32 {
   // angle_time in milliseconds
   // elapsed in milliseconds
@@ -101,4 +105,10 @@ func revolutionAngleSinceStart(object *Object) float32 {
 
 func rotationAngleSinceStart(object *Object) float32 {
   return rotationAngleSince(object, 1.0, float64(TIME_START_FROM_MILLISECONDS))
+}
+
+func normalizedTimeFactor() float32 {
+  f := TIME_NORMALIZE_FACTOR * float32(getSpeed().TimeElapsed)
+
+  return f
 }
