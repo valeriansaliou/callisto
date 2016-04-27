@@ -52,7 +52,7 @@ func getSpeed() (*Speed) {
 }
 
 func updateSpeedFactor(factorOffset float64) {
-  getSpeed().Factor += factorOffset
+  getSpeed().Factor += factorOffset * ConfigObjectFactorSpeedChangeFactor
 
   // Cap down to zero? (prevents negative or very-high speeds)
   if getSpeed().Factor < 0 {

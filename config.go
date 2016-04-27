@@ -40,7 +40,8 @@ const (
 // Time
 const (
   ConfigTimeSecondToMilliseconds int = 1000
-  ConfigTimeHourToMilliseconds int = 60 * 60 * ConfigTimeSecondToMilliseconds
+  ConfigTimeMinuteToMilliseconds int = 60 * ConfigTimeSecondToMilliseconds
+  ConfigTimeHourToMilliseconds int = 60 * ConfigTimeMinuteToMilliseconds
   ConfigTimeDayToMilliseconds int = 24 * ConfigTimeHourToMilliseconds
   ConfigTimeYearToMilliseconds int = 365 * ConfigTimeDayToMilliseconds
 
@@ -91,6 +92,7 @@ const (
   ConfigObjectFullAngle float64 = 4.0 * math.Pi
 
   ConfigObjectFactorSize float64 = 0.25
-  ConfigObjectFactorSpeedScene float64 = float64(ConfigTimeHourToMilliseconds) / 100.0
-  ConfigObjectFactorSpeedMaximum float64 = 200.0
+  ConfigObjectFactorSpeedScene float64 = 1.0
+  ConfigObjectFactorSpeedMaximum float64 = 200000.0
+  ConfigObjectFactorSpeedChangeFactor float64 = 100.0
 )
