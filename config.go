@@ -51,21 +51,12 @@ const (
 
 // Window
 const (
-  WINDOW_WIDTH int = 1200
-  WINDOW_HEIGHT int = 800
-
   WINDOW_TITLE string = "Callisto - Solar System Simulator"
-)
-
-// Controls
-const (
-  CONTROLS_ENABLE_KEY bool = true
-  CONTROLS_ENABLE_MOUSE bool = true
 )
 
 // Speed
 const (
-  SPEED_FRAMERATE float64 = 60
+  SPEED_FRAMERATE_DEFAULT float64 = 60
 )
 
 // Projection

@@ -71,24 +71,38 @@ func main() {
   glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
   glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
-  window, err = glfw.CreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, nil, nil)
+  // Create window
+  monitor := glfw.GetPrimaryMonitor()
+
+  initializeWindow(monitor)
+
+  window, err = glfw.CreateWindow(getWindowData().Width, getWindowData().Height, WINDOW_TITLE, nil, nil)
   if err != nil {
     panic(err)
   }
 
+  // Adjust window to full-screen mode once we got the screen DPI (Retina screens)
+  adjustWindow(window)
+
+  // Re-create window to match full screen size w/ good framebuffer size (keeps high-DPI resolution)
+  window.SetFramebufferSizeCallback(handleAdjustWindow)
+
+  window.Destroy()
+
+  window, err = glfw.CreateWindow(getWindowData().Width, getWindowData().Height, WINDOW_TITLE, monitor, nil)
+  if err != nil {
+    panic(err)
+  }
+
+  // Bind window context
   window.MakeContextCurrent()
 
   // Bind key listeners
   window.SetInputMode(glfw.CursorMode, glfw.CursorHidden);
 
-  if CONTROLS_ENABLE_KEY == true {
-    window.SetKeyCallback(handleKey)
-  }
-
-  if CONTROLS_ENABLE_MOUSE == true {
-    window.SetCursorPosCallback(handleMouseCursor)
-    window.SetScrollCallback(handleMouseScroll)
-  }
+  window.SetKeyCallback(handleKey)
+  window.SetCursorPosCallback(handleMouseCursor)
+  window.SetScrollCallback(handleMouseScroll)
 
   // Initialize OpenGL
   gl.Init()

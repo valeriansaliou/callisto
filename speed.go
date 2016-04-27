@@ -36,9 +36,14 @@ type Speed struct {
   TimeElapsed  float64
 
   Factor       float64
+  Framerate    float64
 }
 
-var __SPEED Speed = Speed{0.0, 0.0, 1.0}
+var __SPEED Speed = Speed{0.0, 0.0, 1.0, SPEED_FRAMERATE_DEFAULT}
+
+func (speed *Speed) setFramerate(framerate int) {
+  speed.Framerate = float64(framerate)
+}
 
 func getSpeed() (*Speed) {
   return &__SPEED
@@ -63,7 +68,9 @@ func updateElaspedTime(nowTime float64) {
 }
 
 func shouldUpdateScene(current_time float64) (bool) {
-  return current_time - getSpeed().TimePrevious >= 1.0 / SPEED_FRAMERATE
+  speed := getSpeed()
+
+  return current_time - speed.TimePrevious >= 1.0 / speed.Framerate
 }
 
 func angleSince(angle_time float32, factor float64, elapsed float64) float32 {

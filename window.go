@@ -28,31 +28,42 @@
 package main
 
 import (
-  "github.com/go-gl/gl/v4.1-core/gl"
-  "github.com/go-gl/mathgl/mgl32"
+  "github.com/go-gl/glfw/v3.1/glfw"
 )
 
-type ProjectionData struct {
-  Projection        mgl32.Mat4
-  ProjectionUniform int32
+type WindowData struct {
+  Width  int
+  Height int
 }
 
-var __PROJECTION ProjectionData
+var __WINDOW_DATA WindowData
 
-func getProjection() (*ProjectionData) {
-  return &__PROJECTION
+func getWindowData() (*WindowData) {
+  return &__WINDOW_DATA
 }
 
-func createProjection(program uint32) {
-  projection := getProjection()
-  window := getWindowData()
+func initializeWindow(monitor *glfw.Monitor) {
+  window_data := getWindowData()
+  video_mode := monitor.GetVideoMode()
 
-  projection.Projection = mgl32.Perspective(mgl32.DegToRad(45.0), float32(window.Width) / float32(window.Height), PROJECTION_FIELD_NEAR, PROJECTION_FIELD_FAR)
-  projection.ProjectionUniform = gl.GetUniformLocation(program, gl.Str("projectionUniform\x00"))
+  // Initialize window size
+  window_data.Width = video_mode.Width
+  window_data.Height = video_mode.Height
+
+  // Lock window framerate to monitor framerate
+  getSpeed().setFramerate(video_mode.RefreshRate)
 }
 
-func bindProjection() {
-  projection := getProjection()
+func adjustWindow(window *glfw.Window) {
+  framebuffer_width, framebuffer_height := window.GetFramebufferSize()
 
-  gl.UniformMatrix4fv(projection.ProjectionUniform, 1, false, &(projection.Projection[0]))
+  handleAdjustWindow(window, framebuffer_width, framebuffer_height)
+}
+
+func handleAdjustWindow(window *glfw.Window, width int, height int) {
+  window_data := getWindowData()
+
+  // Adjust window size
+  window_data.Width = width
+  window_data.Height = height
 }
