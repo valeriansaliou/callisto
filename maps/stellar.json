@@ -175,12 +175,12 @@
           {
             "name"        : "saturn-rings",
             "type"        : "circle-filled",
-            "radius"      : 200000,
+            "radius"      : 138232,
             "inclination" : 25.33,
             "tilt"        : 0,
             "revolution"  : 0,
-            "rotation"    : 0,
-            "distance"    : 90964,
+            "rotation"    : -8.0,
+            "distance"    : 65232,
             "center"      : true
           },
 
