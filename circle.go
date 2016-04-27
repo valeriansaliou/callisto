@@ -72,10 +72,10 @@ func generateCircle(radius float32, thickness float32, radiate bool) (Circle) {
     accumulator_indices_size = 2
   }
 
-  circle.Vertices = make([]float32, 3 * angle_max * accumulator_main_size)
-  circle.VerticeNormals = make([]float32, 3 * angle_max * accumulator_main_size)
-  circle.Indices = make([]int32, angle_max * accumulator_indices_size)
-  circle.TextureCoords = make([]float32, 2 * angle_max * accumulator_main_size)
+  circle.Vertices = make([]float32, 3 * (angle_max + 1) * accumulator_main_size)
+  circle.VerticeNormals = make([]float32, 3 * (angle_max + 1) * accumulator_main_size)
+  circle.Indices = make([]int32, (angle_max + 1) * accumulator_indices_size)
+  circle.TextureCoords = make([]float32, 2 * (angle_max + 1) * accumulator_main_size)
 
   i = 0
   j = 0
@@ -94,7 +94,7 @@ func generateCircle(radius float32, thickness float32, radiate bool) (Circle) {
     normal_direction = 1.0
   }
 
-  for angle = 0.0; angle < float64(angle_max); angle++ {
+  for angle = 0.0; angle <= float64(angle_max); angle++ {
     // Generate inner circle object
     generateCircleObject(&circle, radius_inside_n, thickness, angle, angle_max, normal_direction, nb_vertices, 0, &i, &j, &k, &l)
 
@@ -139,14 +139,14 @@ func generateCircleObject(circle *Circle, radius_n float32, thickness float32, a
 
   // Bind circle indices
   if thickness > 0.0 {
-    circle.Indices[*k] = (nb_vertices % (int32(angle_max * 2) - 1)) + 1
-    circle.Indices[*k + 1] = ((nb_vertices + 1 + pass_index) % (int32(angle_max * 2) - 1)) + 1
-    circle.Indices[*k + 2] = ((nb_vertices + 3) % (int32(angle_max * 2) - 1)) + 1
+    circle.Indices[*k] = (nb_vertices % (int32(angle_max * 2))) + 1
+    circle.Indices[*k + 1] = ((nb_vertices + 1 + pass_index) % (int32(angle_max * 2))) + 1
+    circle.Indices[*k + 2] = ((nb_vertices + 3) % (int32(angle_max * 2))) + 1
 
     *k += 3
   } else {
-    circle.Indices[*k] = ((nb_vertices) % (int32(angle_max) - 1)) + 1
-    circle.Indices[*k + 1] = ((nb_vertices + 1) % (int32(angle_max) - 1)) + 1
+    circle.Indices[*k] = ((nb_vertices) % int32(angle_max)) + 1
+    circle.Indices[*k + 1] = ((nb_vertices + 1) % int32(angle_max)) + 1
 
     *k += 2
   }
