@@ -12,7 +12,7 @@ Yet another Solar System simulator, written by Valerian Saliou in Go.
  * **Go** (install it via: `brew install golang` on MacOS w/ Homebrew)
  * **OpenGL headers** and **GLFW headers** (built-in on MacOS)
 
-Also, check that your `$GOPATH` is configured, and that you source `$GOPATH/bin` in your `$PATH`.
+Also, check that your `$GOPATH` is configured, and that `$GOPATH/bin` is sourced in your `$PATH`.
 
 ## Install & Run
 
