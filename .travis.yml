@@ -4,4 +4,4 @@ go:
 install:
   - go get -u github.com/golang/lint/golint
 script:
-  - if [[ ! -z $(golint *.go) ]] false else true fi
+  - ./tasks/test.sh
