@@ -81,17 +81,20 @@ func main() {
     panic(err)
   }
 
-  // Adjust window to full-screen mode once we got the screen DPI (Retina screens)
-  adjustWindow(window)
+  // Full-screen window?
+  if ConfigWindowFullScreen == true {
+    // Adjust window to full-screen mode once we got the screen DPI (Retina screens)
+    adjustWindow(window)
 
-  // Re-create window to match full screen size w/ good framebuffer size (keeps high-DPI resolution)
-  window.SetFramebufferSizeCallback(handleAdjustWindow)
+    // Re-create window to match full screen size w/ good framebuffer size (keeps high-DPI resolution)
+    window.SetFramebufferSizeCallback(handleAdjustWindow)
 
-  window.Destroy()
+    window.Destroy()
 
-  window, err = glfw.CreateWindow(getWindowData().Width, getWindowData().Height, ConfigWindowTitle, monitor, nil)
-  if err != nil {
-    panic(err)
+    window, err = glfw.CreateWindow(getWindowData().Width, getWindowData().Height, ConfigWindowTitle, monitor, nil)
+    if err != nil {
+      panic(err)
+    }
   }
 
   // Bind window context

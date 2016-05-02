@@ -53,6 +53,7 @@ const (
 // Window
 const (
   ConfigWindowTitle string = "Callisto - Solar System Simulator"
+  ConfigWindowFullScreen bool = false
 )
 
 // Speed
