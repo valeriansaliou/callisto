@@ -136,7 +136,7 @@ func generateSphere(radius float32, radiate bool) (Sphere) {
 
       // Bind sphere texture coordinates
       sphere.TextureCoords[l] = float32(longitude) / float32(ConfigObjectTextureThetaMax)
-      sphere.TextureCoords[l + 1] = float32(90 + latitude) / float32(90 + ConfigObjectTexturePhiMax)
+      sphere.TextureCoords[l + 1] = -1.0 * float32(90 + latitude) / float32(90 + ConfigObjectTexturePhiMax)
 
       l += 2
     }

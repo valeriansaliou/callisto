@@ -36,7 +36,6 @@ import (
   "os"
 
   "github.com/go-gl/gl/v4.1-core/gl"
-  "github.com/disintegration/imaging"
 )
 
 // Texture  Maps a texture reference to GPU internals
@@ -66,9 +65,6 @@ func loadTexture(name string) (Texture, error) {
   if err != nil {
     return texture, err
   }
-
-  // Flip image to avoid reverse textures when bound on stellar objects
-  img = imaging.FlipV(img)
 
   rgba := image.NewRGBA(img.Bounds())
   draw.Draw(rgba, rgba.Bounds(), img, image.Point{0, 0}, draw.Src)
