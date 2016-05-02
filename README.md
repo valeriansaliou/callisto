@@ -16,6 +16,16 @@ Yet another Solar System simulator, written by Valerian Saliou in Go.
 
 Also, check that your `$GOPATH` is configured, and that `$GOPATH/bin` is sourced in your `$PATH`.
 
+### MacOS
+
+Should work out of the box.
+
+### Ubuntu
+
+Install the necessary libraries:
+
+> `sudo apt-get install libglfw-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev`
+
 ## Install & Run
 
  1. `go get github.com/valeriansaliou/callisto`
