@@ -226,6 +226,50 @@
             "revolution"  : 0.002581978082,
             "rotation"    : 0.942422,
             "distance"    : 185520
+          },
+
+          {
+            "name"        : "hyperion",
+            "type"        : "sphere",
+            "radius"      : 0,
+            "inclination" : 0,
+            "tilt"        : 0,
+            "revolution"  : 0,
+            "rotation"    : 0,
+            "distance"    : 0
+          },
+
+          {
+            "name"        : "tethys",
+            "type"        : "sphere",
+            "radius"      : 0,
+            "inclination" : 0,
+            "tilt"        : 0,
+            "revolution"  : 0,
+            "rotation"    : 0,
+            "distance"    : 0
+          },
+
+          {
+            "name"        : "dione",
+            "type"        : "sphere",
+            "radius"      : 0,
+            "inclination" : 0,
+            "tilt"        : 0,
+            "revolution"  : 0,
+            "rotation"    : 0,
+            "distance"    : 0
+          },
+
+          {
+            "name"        : "rhea",
+            "type"        : "sphere",
+            "radius"      : 0,
+            "inclination" : 0,
+            "tilt"        : 0,
+            "revolution"  : 0,
+            "rotation"    : 0,
+            "distance"    : 0
           }
         ]
       },
@@ -250,6 +294,50 @@
             "revolution"  : 0.0001613560502,
             "rotation"    : 1.413479,
             "distance"    : 129780
+          },
+
+          {
+            "name"        : "ariel",
+            "type"        : "sphere",
+            "radius"      : 0,
+            "inclination" : 0,
+            "tilt"        : 0,
+            "revolution"  : 0,
+            "rotation"    : 0,
+            "distance"    : 0
+          },
+
+          {
+            "name"        : "oberon",
+            "type"        : "sphere",
+            "radius"      : 0,
+            "inclination" : 0,
+            "tilt"        : 0,
+            "revolution"  : 0,
+            "rotation"    : 0,
+            "distance"    : 0
+          },
+
+          {
+            "name"        : "umbriel",
+            "type"        : "sphere",
+            "radius"      : 0,
+            "inclination" : 0,
+            "tilt"        : 0,
+            "revolution"  : 0,
+            "rotation"    : 0,
+            "distance"    : 0
+          },
+
+          {
+            "name"        : "titania",
+            "type"        : "sphere",
+            "radius"      : 0,
+            "inclination" : 0,
+            "tilt"        : 0,
+            "revolution"  : 0,
+            "rotation"    : 0,
+            "distance"    : 0
           }
         ]
       },
@@ -286,7 +374,20 @@
         "tilt"        : 17.148,
         "revolution"  : 247.92065,
         "rotation"    : -6.38723,
-        "distance"    : 5906380000
+        "distance"    : 5906380000,
+
+        "objects"     : [
+          {
+            "name"        : "charon",
+            "type"        : "sphere",
+            "radius"      : 0,
+            "inclination" : 0,
+            "tilt"        : 0,
+            "revolution"  : 0,
+            "rotation"    : 0,
+            "distance"    : 0
+          }
+        ]
       },
 
       {
