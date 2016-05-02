@@ -143,7 +143,7 @@ func main() {
   gl.Enable(gl.DEPTH_TEST)
   gl.Enable(gl.TEXTURE_2D)
   gl.DepthFunc(gl.LESS)
-  gl.ClearColor(0.025, 0.025, 0.025, 1.0)
+  gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 
   // Render loop
   for !window.ShouldClose() {
