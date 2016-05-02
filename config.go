@@ -70,18 +70,18 @@ var (
 
 // Camera
 var (
-  ConfigCameraDefaultEye = mgl32.Vec3{1600, -1800, -5657}
+  ConfigCameraDefaultEye = mgl32.Vec3{300, -350, -800}
   ConfigCameraDefaultTarget = mgl32.Vec3{0.255, 0.650, 0.000}
 
-  ConfigCameraMoveCelerityCruise = 5.0
-  ConfigCameraMoveCelerityTurbo = 50.0
+  ConfigCameraMoveCelerityCruise = 1.0
+  ConfigCameraMoveCelerityTurbo = 10.0
 
-  ConfigCameraInertiaProduceForward = 0.05
-  ConfigCameraInertiaProduceBackward = -0.05
-  ConfigCameraInertiaConsumeForward = -0.04
-  ConfigCameraInertiaConsumeBackward = 0.04
+  ConfigCameraInertiaProduceForward = 0.0075
+  ConfigCameraInertiaProduceBackward = -0.0075
+  ConfigCameraInertiaConsumeForward = -0.005
+  ConfigCameraInertiaConsumeBackward = 0.005
 
-  ConfigCameraTargetAmortizeFactor float32 = 0.0025
+  ConfigCameraTargetAmortizeFactor float32 = 0.002
 )
 
 // Object
@@ -93,7 +93,7 @@ const (
 
   ConfigObjectFullAngle float64 = 4.0 * math.Pi
 
-  ConfigObjectFactorSize float64 = 0.25
+  ConfigObjectFactorSize float64 = 0.05
   ConfigObjectFactorSpeedScene float64 = 1.0
   ConfigObjectFactorSpeedMaximum float64 = 200000.0
   ConfigObjectFactorSpeedChangeFactor float64 = 100.0
