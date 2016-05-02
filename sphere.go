@@ -50,12 +50,12 @@ func generateSphere(radius float32, radiate bool) (Sphere) {
     normalDirection float32
 
     radiusN         float32
-    nbVertices      float32
+    nbVertices      int32
 
     unarySizeFull   int
     unarySizeShort  int
 
-    resLongitude    float32
+    resLongitude    int32
 
     longitude       int
     latitude        int
@@ -83,8 +83,8 @@ func generateSphere(radius float32, radiate bool) (Sphere) {
 
   radiusN = normalizeObjectSize(radius)
 
-  nbVertices = 0.0
-  resLongitude = float32(ConfigObjectTextureThetaMax) / float32(ConfigObjectTextureStepLongitude) + 1.0;
+  nbVertices = 0
+  resLongitude = int32(float32(ConfigObjectTextureThetaMax) / float32(ConfigObjectTextureStepLongitude) + 1.0);
 
   // Normal is -1 if sun, which is the light source, to avoid any self-shadow effect
   if radiate == true {
@@ -121,22 +121,22 @@ func generateSphere(radius float32, radiate bool) (Sphere) {
 
       // Bind sphere indices
       if longitude != ConfigObjectTextureThetaMax && latitude < ConfigObjectTexturePhiMax {
-        sphere.Indices[k] = int32(nbVertices)
-        sphere.Indices[k + 1] = int32(nbVertices + 1.0)
-        sphere.Indices[k + 2] = int32(nbVertices + 1.0 + resLongitude)
+        sphere.Indices[k] = nbVertices
+        sphere.Indices[k + 1] = nbVertices + 1
+        sphere.Indices[k + 2] = nbVertices + 1 + resLongitude
 
-        sphere.Indices[k + 3] = int32(nbVertices)
-        sphere.Indices[k + 4] = int32(nbVertices + 1.0 + resLongitude)
-        sphere.Indices[k + 5] = int32(nbVertices + resLongitude)
+        sphere.Indices[k + 3] = nbVertices
+        sphere.Indices[k + 4] = nbVertices + 1 + resLongitude
+        sphere.Indices[k + 5] = nbVertices + resLongitude
 
         k += 6
       }
 
-      nbVertices += 1.0
+      nbVertices += 1
 
       // Bind sphere texture coordinates
       sphere.TextureCoords[l] = float32(longitude) / float32(ConfigObjectTextureThetaMax)
-      sphere.TextureCoords[l + 1] = -1.0 * float32(90 + latitude) / float32(90 + ConfigObjectTexturePhiMax)
+      sphere.TextureCoords[l + 1] = -1.0 * float32(90.0 + latitude) / float32(90.0 + ConfigObjectTexturePhiMax)
 
       l += 2
     }

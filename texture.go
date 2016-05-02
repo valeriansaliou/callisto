@@ -74,16 +74,7 @@ func loadTexture(name string) (Texture, error) {
   gl.ActiveTexture(texture.Ref)
   gl.BindTexture(gl.TEXTURE_2D, texture.Ref);
 
-  gl.TexImage2D(
-    gl.TEXTURE_2D,
-    0,
-    gl.RGBA,
-    int32(rgba.Rect.Size().X),
-    int32(rgba.Rect.Size().Y),
-    0,
-    gl.RGBA,
-    gl.UNSIGNED_BYTE,
-    gl.Ptr(rgba.Pix))
+  gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, int32(rgba.Rect.Size().X), int32(rgba.Rect.Size().Y), 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(rgba.Pix))
 
   gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);

@@ -36,5 +36,6 @@ func importPathToDir(importPath string) (string, error) {
   if err != nil {
     return "", err
   }
+
   return p.Dir, nil
 }
