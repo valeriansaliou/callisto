@@ -20,11 +20,15 @@ Also, check that your `$GOPATH` is configured, and that `$GOPATH/bin` is sourced
 
 Should work out of the box.
 
-### Ubuntu
+### Linux (Ubuntu, Debian)
 
 Install the necessary libraries:
 
-> `sudo apt-get install libglfw-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev`
+`sudo apt-get install libglfw-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev`
+
+### Windows
+
+TODO
 
 ## Install & Run
 
