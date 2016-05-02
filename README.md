@@ -22,13 +22,9 @@ Should work out of the box.
 
 ### Linux (Ubuntu, Debian)
 
-Install the necessary libraries:
+Install the necessary utilities and libraries:
 
-`sudo apt-get install libglfw-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev`
-
-### Windows
-
-TODO
+`sudo apt-get install git libglfw-dev libxrandr-dev libxcursor-dev libxinerama-dev libxi-dev`
 
 ## Install & Run
 
