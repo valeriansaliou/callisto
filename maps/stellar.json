@@ -231,44 +231,44 @@
           {
             "name"        : "hyperion",
             "type"        : "sphere",
-            "radius"      : 0,
+            "radius"      : 135,
             "inclination" : 0,
-            "tilt"        : 0,
-            "revolution"  : 0,
-            "rotation"    : 0,
-            "distance"    : 0
+            "tilt"        : 0.43,
+            "revolution"  : 0.05829208219,
+            "rotation"    : 10.0,
+            "distance"    : 500
           },
 
           {
             "name"        : "tethys",
             "type"        : "sphere",
-            "radius"      : 0,
+            "radius"      : 531.1,
             "inclination" : 0,
-            "tilt"        : 0,
-            "revolution"  : 0,
-            "rotation"    : 0,
-            "distance"    : 0
+            "tilt"        : 1.12,
+            "revolution"  : 0.005172060274,
+            "rotation"    : 1.887802,
+            "distance"    : 295000
           },
 
           {
             "name"        : "dione",
             "type"        : "sphere",
-            "radius"      : 0,
+            "radius"      : 560,
             "inclination" : 0,
-            "tilt"        : 0,
-            "revolution"  : 0,
-            "rotation"    : 0,
-            "distance"    : 0
+            "tilt"        : 0.02,
+            "revolution"  : 0.00749839726,
+            "rotation"    : 2.736915,
+            "distance"    : 377400
           },
 
           {
             "name"        : "rhea",
             "type"        : "sphere",
-            "radius"      : 0,
+            "radius"      : 765,
             "inclination" : 0,
-            "tilt"        : 0,
-            "revolution"  : 0,
-            "rotation"    : 0,
+            "tilt"        : 0.35,
+            "revolution"  : 0.01237671233,
+            "rotation"    : 4.517500,
             "distance"    : 0
           }
         ]
@@ -299,45 +299,45 @@
           {
             "name"        : "ariel",
             "type"        : "sphere",
-            "radius"      : 0,
+            "radius"      : 578.9,
             "inclination" : 0,
-            "tilt"        : 0,
-            "revolution"  : 0,
-            "rotation"    : 0,
-            "distance"    : 0
+            "tilt"        : 0.31,
+            "revolution"  : 0.006905147945,
+            "rotation"    : 2.520379,
+            "distance"    : 191240
           },
 
           {
             "name"        : "oberon",
             "type"        : "sphere",
-            "radius"      : 0,
+            "radius"      : 761.4,
             "inclination" : 0,
-            "tilt"        : 0,
-            "revolution"  : 0,
-            "rotation"    : 0,
-            "distance"    : 0
+            "tilt"        : 0.10,
+            "revolution"  : 0.03688558904,
+            "rotation"    : 13.46324,
+            "distance"    : 582600
           },
 
           {
             "name"        : "umbriel",
             "type"        : "sphere",
-            "radius"      : 0,
+            "radius"      : 584.7,
             "inclination" : 0,
-            "tilt"        : 0,
-            "revolution"  : 0,
-            "rotation"    : 0,
-            "distance"    : 0
+            "tilt"        : 0.36,
+            "revolution"  : 0.01135390959,
+            "rotation"    : 4.144177,
+            "distance"    : 265970
           },
 
           {
             "name"        : "titania",
             "type"        : "sphere",
-            "radius"      : 0,
+            "radius"      : 788.9,
             "inclination" : 0,
-            "tilt"        : 0,
-            "revolution"  : 0,
-            "rotation"    : 0,
-            "distance"    : 0
+            "tilt"        : 0.14,
+            "revolution"  : 0.02385170411,
+            "rotation"    : 8.705872,
+            "distance"    : 435840
           }
         ]
       },
@@ -380,12 +380,12 @@
           {
             "name"        : "charon",
             "type"        : "sphere",
-            "radius"      : 0,
-            "inclination" : 0,
-            "tilt"        : 0,
-            "revolution"  : 0,
-            "rotation"    : 0,
-            "distance"    : 0
+            "radius"      : 586,
+            "inclination" : 0.001,
+            "tilt"        : 98.80,
+            "revolution"  : 0.01749931507,
+            "rotation"    : 6.38725,
+            "distance"    : 19640
           }
         ]
       },
