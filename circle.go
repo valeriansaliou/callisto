@@ -83,7 +83,7 @@ func generateCircle(radius float32, thickness float32, radiate bool) (Circle) {
   k = 0
   l = 0
 
-  nbVertices = 0.0
+  nbVertices = 1
 
   radiusInsideN = normalizeObjectSize(radius)
   radiusOutsideN = normalizeObjectSize(radius + thickness)
@@ -103,10 +103,10 @@ func generateCircle(radius float32, thickness float32, radiate bool) (Circle) {
       // Generate outer circle object? (if not last)
       generateCircleObject(&circle, radiusOutsideN, thickness, angle, angleMax, normalDirection, nbVertices, 1, &i, &j, &k, &l)
 
-      nbVertices += 1.0
+      nbVertices++
     }
 
-    nbVertices += 1.0
+    nbVertices++
   }
 
   return circle

@@ -59,6 +59,7 @@ const (
 // Speed
 const (
   ConfigSpeedFramerateDefault float64 = 60
+  ConfigSpeedFramerateFactor float64 = 1.5
 )
 
 // Projection

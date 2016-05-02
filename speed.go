@@ -29,6 +29,7 @@ package main
 
 import (
   "math"
+  "time"
 )
 
 // Speed  Maps current scene speed
@@ -69,10 +70,8 @@ func updateElaspedTime(nowTime float64) {
   speed.TimePrevious = nowTime
 }
 
-func shouldUpdateScene(currentTime float64) (bool) {
-  speed := getSpeed()
-
-  return currentTime - speed.TimePrevious >= 1.0 / speed.Framerate
+func deferSceneUpdate() {
+  time.Sleep(time.Second / time.Duration(getSpeed().Framerate * ConfigSpeedFramerateFactor))
 }
 
 func angleSince(angleTime float32, factor float64, elapsed float64) float32 {
