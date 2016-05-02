@@ -43,6 +43,7 @@ type Object struct {
   Type        string    // {sphere|circle|circle-filled}
 
   Radius      float32   // Kilometers
+  Compression float32   // Compression ratio at poles
   Inclination float32   // Degrees
   Tilt        float32   // Degrees
   Revolution  float32   // Yars

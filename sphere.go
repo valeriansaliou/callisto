@@ -35,10 +35,10 @@ import (
 type Sphere ObjectElement
 
 func generateSphereFromObject(object *Object) (Sphere) {
-  return generateSphere(object.Radius, object.Radiate)
+  return generateSphere(object.Radius, object.Compression, object.Radiate)
 }
 
-func generateSphere(radius float32, radiate bool) (Sphere) {
+func generateSphere(radius float32, compression float32, radiate bool) (Sphere) {
   var (
     sphere          Sphere
 
@@ -102,7 +102,7 @@ func generateSphere(radius float32, radiate bool) (Sphere) {
 
       // Process vertex positions
       vertexPositionX = float32(math.Sin(longitudeRF) * math.Cos(latitudeRF))
-      vertexPositionY = float32(math.Sin(latitudeRF))
+      vertexPositionY = float32(math.Sin(latitudeRF)) * compression
       vertexPositionZ = float32(math.Cos(latitudeRF) * math.Cos(longitudeRF))
 
       // Bind sphere vertices

@@ -3,6 +3,7 @@
     "name"        : "voidbox",
     "type"        : "sphere",
     "radius"      : 9999999999999999999,
+    "compression" : 1,
     "inclination" : 0,
     "revolution"  : 0,
     "rotation"    : -4000.0,
