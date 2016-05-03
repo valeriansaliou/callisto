@@ -150,6 +150,8 @@ func main() {
   // Configure global settings
   gl.Enable(gl.DEPTH_TEST)
   gl.Enable(gl.TEXTURE_2D)
+  gl.Enable(gl.BLEND)
+  gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
   gl.DepthFunc(gl.LESS)
   gl.ClearColor(0.0, 0.0, 0.0, 1.0)
 

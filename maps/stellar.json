@@ -311,6 +311,19 @@
 
         "objects"     : [
           {
+            "name"        : "uranus-rings",
+            "type"        : "circle-filled",
+            "radius"      : 103000,
+            "compression" : 1,
+            "inclination" : 8.00,
+            "tilt"        : 0,
+            "revolution"  : 0,
+            "rotation"    : 0,
+            "distance"    : 26840,
+            "center"      : true
+          },
+
+          {
             "name"        : "miranda",
             "type"        : "sphere",
             "radius"      : 235.8,
