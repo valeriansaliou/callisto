@@ -61,12 +61,21 @@ func handleKey(window *glfw.Window, k glfw.Key, s int, action glfw.Action, mods 
     }
   }
 
-  // Cruise control keys
+  // Camera control keys
   if k == glfw.KeyR {
     // Release?
     if action == glfw.Release {
       // Immediately reset camera
+      resetCameraObject()
       resetCamera()
+    }
+  }
+
+  if k == glfw.KeyTab {
+    // Release?
+    if action == glfw.Release {
+      // Toggle to next camera object
+      toggleNextCameraObject()
     }
   }
 

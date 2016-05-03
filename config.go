@@ -82,6 +82,8 @@ var (
   ConfigCameraInertiaConsumeBackward = 0.005
 
   ConfigCameraTargetAmortizeFactor float32 = 0.002
+
+  ConfigCameraOrbitMagnification float32 = 6
 )
 
 // Object

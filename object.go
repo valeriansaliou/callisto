@@ -89,6 +89,7 @@ func renderObjects(objects *[]Object, program uint32) {
   // Acquire shader
   shader := getShader()
   light := getLight()
+  camera := getCamera()
   matrixUniforms := getMatrixUniforms()
 
   // Iterate on current-level objects
@@ -121,6 +122,12 @@ func renderObjects(objects *[]Object, program uint32) {
       *currentMatrixShared = (*currentMatrixShared).Mul4(mgl32.Translate3D(normalizeObjectSize(object.Distance), 0.0, 0.0))
     }
 
+    // Bind matrix to camera? (orbit camera)
+    if camera.getOrbitObjectName() == object.Name {
+      camera.ObjectMatrix = *currentMatrixShared
+      camera.ObjectRadius = object.Radius
+    }
+
     setMatrix(currentMatrixShared)
 
     // Toggle to unary context
@@ -136,8 +143,6 @@ func renderObjects(objects *[]Object, program uint32) {
     if object.Rotation != 0 {
       *currentMatrixSelf = (*currentMatrixSelf).Mul4(mgl32.HomogRotate3D(buffers.AngleRotation, mgl32.Vec3{0, 1, 0}))
     }
-
-    setMatrix(currentMatrixShared)
 
     // Process normal to model matrix
     normalMatrix := mgl32.Mat4Normal(*currentMatrixSelf)
