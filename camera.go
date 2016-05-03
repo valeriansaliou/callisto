@@ -54,77 +54,77 @@ type CameraData struct {
 // InstanceCamera  Stores camera state
 var InstanceCamera CameraData
 
-func (camera_data *CameraData) getOrbitObjectName() (string) {
-  if camera_data.ObjectIndex > 0 {
-    return (*camera_data.ObjectList)[camera_data.ObjectIndex - 1]
+func (cameraData *CameraData) getOrbitObjectName() (string) {
+  if cameraData.ObjectIndex > 0 {
+    return (*cameraData.ObjectList)[cameraData.ObjectIndex - 1]
   }
 
   return ""
 }
 
-func (camera_data *CameraData) getEyeX() (position float32) {
-  return camera_data.PositionEye[0]
+func (cameraData *CameraData) getEyeX() (position float32) {
+  return cameraData.PositionEye[0]
 }
 
-func (camera_data *CameraData) getEyeY() (position float32) {
-  return camera_data.PositionEye[1]
+func (cameraData *CameraData) getEyeY() (position float32) {
+  return cameraData.PositionEye[1]
 }
 
-func (camera_data *CameraData) getEyeZ() (position float32) {
-  return camera_data.PositionEye[2]
+func (cameraData *CameraData) getEyeZ() (position float32) {
+  return cameraData.PositionEye[2]
 }
 
-func (camera_data *CameraData) getTargetX() (position float32) {
-  return camera_data.PositionTarget[0]
+func (cameraData *CameraData) getTargetX() (position float32) {
+  return cameraData.PositionTarget[0]
 }
 
-func (camera_data *CameraData) getTargetY() (position float32) {
-  return camera_data.PositionTarget[1]
+func (cameraData *CameraData) getTargetY() (position float32) {
+  return cameraData.PositionTarget[1]
 }
 
-func (camera_data *CameraData) getTargetZ() (position float32) {
-  return camera_data.PositionTarget[2]
+func (cameraData *CameraData) getTargetZ() (position float32) {
+  return cameraData.PositionTarget[2]
 }
 
-func (camera_data *CameraData) moveEyeX(increment float32) {
-  camera_data.PositionEye[0] += increment
+func (cameraData *CameraData) moveEyeX(increment float32) {
+  cameraData.PositionEye[0] += increment
 }
 
-func (camera_data *CameraData) moveEyeY(increment float32) {
-  camera_data.PositionEye[1] += increment
+func (cameraData *CameraData) moveEyeY(increment float32) {
+  cameraData.PositionEye[1] += increment
 }
 
-func (camera_data *CameraData) moveEyeZ(increment float32) {
-  camera_data.PositionEye[2] += increment
+func (cameraData *CameraData) moveEyeZ(increment float32) {
+  cameraData.PositionEye[2] += increment
 }
 
-func (camera_data *CameraData) moveTargetX(increment float32) {
-  camera_data.PositionTarget[0] += increment
+func (cameraData *CameraData) moveTargetX(increment float32) {
+  cameraData.PositionTarget[0] += increment
 }
 
-func (camera_data *CameraData) moveTargetY(increment float32) {
-  camera_data.PositionTarget[1] += increment
+func (cameraData *CameraData) moveTargetY(increment float32) {
+  cameraData.PositionTarget[1] += increment
 }
 
-func (camera_data *CameraData) moveTargetZ(increment float32) {
-  camera_data.PositionTarget[2] += increment
+func (cameraData *CameraData) moveTargetZ(increment float32) {
+  cameraData.PositionTarget[2] += increment
 }
 
-func (camera_data *CameraData) setObjectIndex(object_index int) {
-  camera_data.ObjectIndex = object_index
+func (cameraData *CameraData) setObjectIndex(objectIndex int) {
+  cameraData.ObjectIndex = objectIndex
 }
 
-func (camera_data *CameraData) defaultEye() {
-  camera_data.PositionEye = ConfigCameraDefaultEye
+func (cameraData *CameraData) defaultEye() {
+  cameraData.PositionEye = ConfigCameraDefaultEye
 }
 
-func (camera_data *CameraData) defaultTarget() {
-  camera_data.PositionTarget = ConfigCameraDefaultTarget
+func (cameraData *CameraData) defaultTarget() {
+  cameraData.PositionTarget = ConfigCameraDefaultTarget
 }
 
-func (camera_data *CameraData) defaultInertia() {
-  camera_data.InertiaDrag = 0.0
-  camera_data.InertiaTurn = 0.0
+func (cameraData *CameraData) defaultInertia() {
+  cameraData.InertiaDrag = 0.0
+  cameraData.InertiaTurn = 0.0
 }
 
 func getCamera() (*CameraData) {
@@ -301,9 +301,9 @@ func resetCameraObject() {
 
 func initializeCameraLocks(objects *[]Object) {
   // Initialize object list storage space
-  object_list := make([]string, 0)
+  var objectList []string
 
-  getCamera().ObjectList = &object_list
+  getCamera().ObjectList = &objectList
 
   // Create camera locks (in object list)
   createCameraLocks(objects)
