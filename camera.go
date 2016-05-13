@@ -257,11 +257,11 @@ func updateCamera() {
 
   // Orbit camera or free flight camera? (reverse rotation <> translation)
   if camera.ObjectIndex == 0 {
-    // Orbit camera
+    // Free flight camera
     processEventCameraTarget()
     processEventCameraEye()
   } else {
-    // Free flight camera
+    // Orbit camera
     processEventCameraEye()
     processEventCameraTarget()
   }
