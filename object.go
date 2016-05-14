@@ -89,7 +89,6 @@ func renderObjects(objects *[]Object, program uint32) {
   // Acquire shader
   shader := getShader()
   light := getLight()
-  camera := getCamera()
   matrixUniforms := getMatrixUniforms()
 
   // Iterate on current-level objects
@@ -120,12 +119,6 @@ func renderObjects(objects *[]Object, program uint32) {
 
     if object.Distance > 0 && object.Center != true {
       *currentMatrixShared = (*currentMatrixShared).Mul4(mgl32.Translate3D(normalizeObjectSize(object.Distance), 0.0, 0.0))
-    }
-
-    // Bind matrix to camera? (orbit camera)
-    if camera.getOrbitObjectName() == object.Name {
-      camera.ObjectMatrix = *currentMatrixShared
-      camera.ObjectRadius = object.Radius
     }
 
     setMatrix(currentMatrixShared)

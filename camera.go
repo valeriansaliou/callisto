@@ -44,23 +44,10 @@ type CameraData struct {
 
   InertiaDrag    float64
   InertiaTurn    float64
-
-  ObjectIndex    int
-  ObjectMatrix   mgl32.Mat4
-  ObjectRadius   float32
-  ObjectList     *[]string
 }
 
 // InstanceCamera  Stores camera state
 var InstanceCamera CameraData
-
-func (cameraData *CameraData) getOrbitObjectName() (string) {
-  if cameraData.ObjectIndex > 0 {
-    return (*cameraData.ObjectList)[cameraData.ObjectIndex - 1]
-  }
-
-  return ""
-}
 
 func (cameraData *CameraData) getEyeX() (position float32) {
   return cameraData.PositionEye[0]
@@ -108,10 +95,6 @@ func (cameraData *CameraData) moveTargetY(increment float32) {
 
 func (cameraData *CameraData) moveTargetZ(increment float32) {
   cameraData.PositionTarget[2] += increment
-}
-
-func (cameraData *CameraData) setObjectIndex(objectIndex int) {
-  cameraData.ObjectIndex = objectIndex
 }
 
 func (cameraData *CameraData) defaultEye() {
@@ -166,64 +149,55 @@ func consumeInertia(inertia *float64) (float64) {
 }
 
 func processEventCameraEye() {
+  var (
+    celerity    float64
+    rotationX   float64
+    rotationY   float64
+
+    inertiaDrag float64
+    inertiaTurn float64
+  )
+
   camera := getCamera()
+  keyState := getEventKeyState()
+  timeFactor := normalizedTimeFactor()
 
-  if camera.ObjectIndex == 0 {
-    var (
-      celerity    float64
-      rotationX   float64
-      rotationY   float64
-
-      inertiaDrag float64
-      inertiaTurn float64
-    )
-
-    // Free flight camera
-    keyState := getEventKeyState()
-    timeFactor := normalizedTimeFactor()
-
-    // Decrease speed if diagonal move
-    if keyState.MoveTurbo == true {
-      celerity = ConfigCameraMoveCelerityTurbo
-    } else {
-      celerity = ConfigCameraMoveCelerityCruise
-    }
-
-    if (keyState.MoveUp == true || keyState.MoveDown == true) && (keyState.MoveLeft == true || keyState.MoveRight == true) {
-      celerity /= math.Sqrt(2.0)
-    }
-
-    // Acquire rotation around axis
-    rotationX = float64(camera.getTargetX())
-    rotationY = float64(camera.getTargetY())
-
-    // Process camera move position (keyboard)
-    if keyState.MoveUp == true {
-      produceInertia(&(camera.InertiaDrag), ConfigCameraInertiaProduceForward, celerity)
-    }
-    if keyState.MoveDown == true {
-      produceInertia(&(camera.InertiaDrag), ConfigCameraInertiaProduceBackward, celerity)
-    }
-    if keyState.MoveLeft == true {
-      produceInertia(&(camera.InertiaTurn), ConfigCameraInertiaProduceForward, celerity)
-    }
-    if keyState.MoveRight == true {
-      produceInertia(&(camera.InertiaTurn), ConfigCameraInertiaProduceBackward, celerity)
-    }
-
-    // Apply new position with inertia
-    inertiaDrag = consumeInertia(&(camera.InertiaDrag))
-    inertiaTurn = consumeInertia(&(camera.InertiaTurn))
-
-    camera.moveEyeX(timeFactor * float32(inertiaDrag * -1.0 * math.Sin(rotationY) + inertiaTurn * math.Cos(rotationY)))
-    camera.moveEyeZ(timeFactor * float32(inertiaDrag * math.Cos(rotationY) + inertiaTurn * math.Sin(rotationY)))
-    camera.moveEyeY(timeFactor * float32(inertiaDrag * math.Sin(rotationX)))
+  // Decrease speed if diagonal move
+  if keyState.MoveTurbo == true {
+    celerity = ConfigCameraMoveCelerityTurbo
   } else {
-    // Orbit camera
-    size := normalizeObjectSize(camera.ObjectRadius)
-
-    camera.PositionEye = mgl32.Vec3{0, 0, -1 * size * ConfigCameraOrbitMagnification}
+    celerity = ConfigCameraMoveCelerityCruise
   }
+
+  if (keyState.MoveUp == true || keyState.MoveDown == true) && (keyState.MoveLeft == true || keyState.MoveRight == true) {
+    celerity /= math.Sqrt(2.0)
+  }
+
+  // Acquire rotation around axis
+  rotationX = float64(camera.getTargetX())
+  rotationY = float64(camera.getTargetY())
+
+  // Process camera move position (keyboard)
+  if keyState.MoveUp == true {
+    produceInertia(&(camera.InertiaDrag), ConfigCameraInertiaProduceForward, celerity)
+  }
+  if keyState.MoveDown == true {
+    produceInertia(&(camera.InertiaDrag), ConfigCameraInertiaProduceBackward, celerity)
+  }
+  if keyState.MoveLeft == true {
+    produceInertia(&(camera.InertiaTurn), ConfigCameraInertiaProduceForward, celerity)
+  }
+  if keyState.MoveRight == true {
+    produceInertia(&(camera.InertiaTurn), ConfigCameraInertiaProduceBackward, celerity)
+  }
+
+  // Apply new position with inertia
+  inertiaDrag = consumeInertia(&(camera.InertiaDrag))
+  inertiaTurn = consumeInertia(&(camera.InertiaTurn))
+
+  camera.moveEyeX(timeFactor * float32(inertiaDrag * -1.0 * math.Sin(rotationY) + inertiaTurn * math.Cos(rotationY)))
+  camera.moveEyeZ(timeFactor * float32(inertiaDrag * math.Cos(rotationY) + inertiaTurn * math.Sin(rotationY)))
+  camera.moveEyeY(timeFactor * float32(inertiaDrag * math.Sin(rotationX)))
 
   // Translation: walk
   camera.Camera = camera.Camera.Mul4(mgl32.Translate3D(camera.getEyeX(), camera.getEyeY(), camera.getEyeZ()))
@@ -246,40 +220,10 @@ func processEventCameraTarget() {
 func updateCamera() {
   camera := getCamera()
 
-  // Update overall camera position
-  if camera.ObjectIndex == 0 {
-    // Free flight
-    camera.Camera = mgl32.Ident4()
-  } else {
-    // Orbit flight
-    camera.Camera = camera.ObjectMatrix
-  }
+  camera.Camera = mgl32.Ident4()
 
-  // Orbit camera or free flight camera? (reverse rotation <> translation)
-  if camera.ObjectIndex == 0 {
-    // Free flight camera
-    processEventCameraTarget()
-    processEventCameraEye()
-  } else {
-    // Orbit camera
-    processEventCameraEye()
-    processEventCameraTarget()
-  }
-}
-
-func toggleNextCameraObject() {
-  camera := getCamera()
-
-  // Go to next index
-  camera.ObjectIndex++
-
-  // Index overflow?
-  if camera.ObjectIndex > len(*camera.ObjectList) {
-    camera.ObjectIndex = 0
-  }
-
-  // Reset camera state
-  resetCamera()
+  processEventCameraTarget()
+  processEventCameraEye()
 }
 
 func resetCamera() {
@@ -293,31 +237,6 @@ func resetCamera() {
 
   camera.defaultEye()
   camera.defaultTarget()
-}
-
-func resetCameraObject() {
-  getCamera().ObjectIndex = 0
-}
-
-func initializeCameraLocks(objects *[]Object) {
-  // Initialize object list storage space
-  var objectList []string
-
-  getCamera().ObjectList = &objectList
-
-  // Create camera locks (in object list)
-  createCameraLocks(objects)
-}
-
-func createCameraLocks(objects *[]Object) {
-  camera := getCamera()
-
-  for o := range *objects {
-    *camera.ObjectList = append(*camera.ObjectList, (*objects)[o].Name)
-
-    // Create locks for child objects
-    createCameraLocks(&((*objects)[o]).Objects)
-  }
 }
 
 func bindCamera() {

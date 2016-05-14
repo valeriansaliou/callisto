@@ -134,9 +134,6 @@ func main() {
   voidbox := loadObjects("voidbox")
   stellar := loadObjects("stellar")
 
-  // Apply camera locks
-  initializeCameraLocks(stellar)
-
   // Apply orbit traces
   createOrbitTraces(stellar, program, vao)
 

@@ -40,7 +40,6 @@ Install the necessary utilities and libraries:
  * **Camera**
   * `R`: reset camera position
   * `SPACE`: turbo camera move (hold key)
-  * `TAB`: toggle camera view (from flight view to stellar object view lock)
 
  * **Simulation**
   * `Scroll UP` `Scroll DOWN`: decrease/increase simulation speed
