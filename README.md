@@ -44,6 +44,9 @@ Install the necessary utilities and libraries:
  * **Simulation**
   * `Scroll UP` `Scroll DOWN`: decrease/increase simulation speed
 
+ * **Application**
+  * `ESCAPE`: exit Callisto
+
 ## Disclaimer
 
 Distances and radiuses, as well as rotation/revolution periods have been respected. Since both the Sun, Jupiter and Saturn are quite huge relative to other Solar System objects, a square-root factor has been applied on all radiuses and distances. This makes huge objects smaller on display, and small objects visible on display.
