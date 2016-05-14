@@ -67,13 +67,8 @@ func main() {
   glfw.WindowHint(glfw.Resizable, glfw.False)
   glfw.WindowHint(glfw.ContextVersionMajor, 4)
   glfw.WindowHint(glfw.ContextVersionMinor, 1)
-
-  if runtime.GOOS == "darwin" {
-    glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-    glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-  } else {
-    glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLAnyProfile)
-  }
+  glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+  glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
   // Create window
   monitor := glfw.GetPrimaryMonitor()
