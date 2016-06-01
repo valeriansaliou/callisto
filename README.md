@@ -51,8 +51,6 @@ Install the necessary utilities and libraries:
 
 Distances and radiuses, as well as rotation/revolution periods have been respected. Since both the Sun, Jupiter and Saturn are quite huge relative to other Solar System objects, a square-root factor has been applied on all radiuses and distances. This makes huge objects smaller on display, and small objects visible on display.
 
-The main asteroid belt does not reflect reality, it has been trimmed down to some random objects only, while in reality it should contain at least 7,000 known asteroids. The Kuiper asteroid belt has been omitted for performance reasons (it should contain at least a trillon objects, which I doubt any GPU can handle in 2016).
-
 ## Thanks
 
 This project has been achieved following the excellent step-by-step tutorial available on [https://open.gl](https://open.gl)
